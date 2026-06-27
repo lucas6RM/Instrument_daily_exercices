@@ -1,0 +1,28 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "context": ".opencode/CONTEXT.md",
+  "agents": {
+    "mastermind": {
+      "instructions": ".opencode/agents/mastermind.md",
+      "tools": {
+        "bash": false,
+        "edit": false
+      }
+    },
+    "worker": {
+      "instructions": ".opencode/agents/worker.md",
+      "tools": {
+        "bash": true,
+        "edit": true
+      }
+    },
+    "reviewer": {
+      "instructions": ".opencode/agents/reviewer.md",
+      "tools": {
+        "bash": true,
+        "edit": true
+      }
+    }
+  },
+  "mcp": {}
+}
