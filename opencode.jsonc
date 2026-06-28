@@ -1,0 +1,59 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "mastermind",
+  "agent": {
+    "mastermind": {
+      "mode": "primary",
+      "instructions": ".opencode/agents/mastermind.md",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "edit": "deny",
+        "bash": "deny",
+        "task": {
+          "*": "deny",
+          "worker": "allow",
+          "reviewer": "allow",
+        },
+      },
+    },
+    "worker": {
+      "mode": "subagent",
+      "instructions": ".opencode/agents/worker.md",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "edit": {
+          ".opencode/*": "deny",
+          "*": "allow",
+        },
+        "bash": "allow",
+        "task": "deny",
+      },
+    },
+    "reviewer": {
+      "mode": "subagent",
+      "instructions": ".opencode/agents/reviewer.md",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "edit": {
+          ".opencode/todo.md": "allow",
+          "*": "deny",
+        },
+        "bash": {
+          "*": "ask",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "pnpm run lint": "allow",
+          "pnpm run test": "allow",
+        },
+        "task": "deny",
+      },
+    },
+  },
+  "mcp": {},
+}
