@@ -317,6 +317,125 @@ describe('ProgressStore', () => {
         expect(store.dailySessions()).toEqual(initialSessions);
       });
     });
+
+    describe('getWeekSessions', () => {
+      it('should return an empty array when there are no sessions', () => {
+        store.setProgressState({ dailySessions: [] });
+        const monday = new Date(2025, 0, 6); // 2025-01-06 (Monday)
+        const weekSessions = store.getWeekSessions(monday);
+
+        expect(weekSessions()).toEqual([]);
+      });
+
+      it('should return sessions within the week (Mon-Sun)', () => {
+        // 2025-01-06 is a Monday
+        const sessions: DailySession[] = [
+          {
+            date: '2025-01-06', // Monday
+            exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 10 }],
+          },
+          {
+            date: '2025-01-07', // Tuesday
+            exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 15 }],
+          },
+          {
+            date: '2025-01-12', // Sunday
+            exercises: [{ exerciseId: 'ex-1', completed: false, actualMinutes: 0 }],
+          },
+        ];
+        store.setProgressState({ dailySessions: sessions });
+
+        const monday = new Date(2025, 0, 6); // 2025-01-06 (Monday)
+        const weekSessions = store.getWeekSessions(monday);
+
+        expect(weekSessions()).toHaveLength(3);
+        expect(weekSessions().map((s: DailySession) => s.date)).toEqual([
+          '2025-01-06',
+          '2025-01-07',
+          '2025-01-12',
+        ]);
+      });
+
+      it('should exclude sessions before the week', () => {
+        const sessions: DailySession[] = [
+          {
+            date: '2025-01-05', // Sunday of previous week
+            exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 10 }],
+          },
+          {
+            date: '2025-01-06', // Monday of target week
+            exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 15 }],
+          },
+        ];
+        store.setProgressState({ dailySessions: sessions });
+
+        const monday = new Date(2025, 0, 6); // 2025-01-06 (Monday)
+        const weekSessions = store.getWeekSessions(monday);
+
+        expect(weekSessions()).toHaveLength(1);
+        expect(weekSessions()[0].date).toBe('2025-01-06');
+      });
+
+      it('should exclude sessions after the week', () => {
+        const sessions: DailySession[] = [
+          {
+            date: '2025-01-12', // Sunday of target week
+            exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 10 }],
+          },
+          {
+            date: '2025-01-13', // Monday of next week
+            exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 15 }],
+          },
+        ];
+        store.setProgressState({ dailySessions: sessions });
+
+        const monday = new Date(2025, 0, 6); // 2025-01-06 (Monday)
+        const weekSessions = store.getWeekSessions(monday);
+
+        expect(weekSessions()).toHaveLength(1);
+        expect(weekSessions()[0].date).toBe('2025-01-12');
+      });
+
+      it('should be reactive to state changes', () => {
+        store.setProgressState({ dailySessions: [] });
+        const monday = new Date(2025, 0, 6); // 2025-01-06 (Monday)
+        const weekSessions = store.getWeekSessions(monday);
+
+        expect(weekSessions()).toHaveLength(0);
+
+        store.addSession({
+          date: '2025-01-08', // Wednesday
+          exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 20 }],
+        });
+
+        expect(weekSessions()).toHaveLength(1);
+        expect(weekSessions()[0].date).toBe('2025-01-08');
+      });
+
+      it('should handle sessions outside the week range', () => {
+        const sessions: DailySession[] = [
+          {
+            date: '2024-12-01', // Far before
+            exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 10 }],
+          },
+          {
+            date: '2025-01-08', // Within week (Wed)
+            exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 15 }],
+          },
+          {
+            date: '2026-06-15', // Far after
+            exercises: [{ exerciseId: 'ex-1', completed: true, actualMinutes: 20 }],
+          },
+        ];
+        store.setProgressState({ dailySessions: sessions });
+
+        const monday = new Date(2025, 0, 6); // 2025-01-06 (Monday)
+        const weekSessions = store.getWeekSessions(monday);
+
+        expect(weekSessions()).toHaveLength(1);
+        expect(weekSessions()[0].date).toBe('2025-01-08');
+      });
+    });
   });
 
   describe('dependencies', () => {

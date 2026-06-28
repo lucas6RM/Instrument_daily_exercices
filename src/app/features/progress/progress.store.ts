@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { computed, inject, type Signal } from '@angular/core';
 import {
   patchState,
   signalStore,
@@ -89,6 +89,29 @@ export const ProgressStore = signalStore(
         if (stored) {
           patchState(store, stored);
         }
+      },
+      getWeekSessions(startDate: Date): Signal<DailySession[]> {
+        const toLocalISOString = (date: Date): string => {
+          const y = date.getFullYear();
+          const m = String(date.getMonth() + 1).padStart(2, '0');
+          const d = String(date.getDate()).padStart(2, '0');
+          return `${y}-${m}-${d}`;
+        };
+
+        return computed(() => {
+          const start = new Date(startDate);
+          start.setHours(0, 0, 0, 0);
+          const end = new Date(start);
+          end.setDate(end.getDate() + 6);
+          end.setHours(23, 59, 59, 999);
+
+          const startStr = toLocalISOString(start);
+          const endStr = toLocalISOString(end);
+
+          return store
+            .dailySessions()
+            .filter((s) => s.date >= startStr && s.date <= endStr);
+        });
       },
     };
   }),
