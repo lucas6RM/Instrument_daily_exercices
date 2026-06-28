@@ -34,7 +34,7 @@ Tableau de bord quotidien avec checklist des exercices, bouton PLAY qui déclenc
 
 ## Tableau d'Avancement (La Source de Vérité)
 ^- [x] Tâche 1 : Créer `ProgressBarComponent` avec input `completedCount`, `totalCount` et affichage visuel (barre + %).
-- [ ] Tâche 2 : Créer `ExerciseRowComponent` avec checkbox, nom, durée, bouton PLAY, lien YouTube.
+^- [x] Tâche 2 : Créer `ExerciseRowComponent` avec checkbox, nom, durée, bouton PLAY, lien YouTube.
 - [ ] Tâche 3 : Créer `DashboardComponent` qui charge la session du jour et affiche la liste + progress bar.
 - [ ] Tâche 4 : Lier le bouton PLAY au timer store (`start(exerciseId, durationMs)`).
 - [ ] Tâche 5 : Implémenter le auto-complete à l'expiration du timer (écoute du timer store → coche l'exercice → sauvegarde session).
