@@ -25,7 +25,7 @@ Interface d'administration pour gérer la routine d'exercices. Formulaire réact
 
 ## Tableau d'Avancement (La Source de Vérité)
 - [x] Tâche 1 : Créer `ExerciseFormComponent` avec `FormGroup` (name, durationMinutes, youtubeUrl, description) et validation.
-- [ ] Tâche 2 : Créer `ExerciseCardComponent` avec affichage des infos et boutons edit/delete.
+- [x] Tâche 2 : Créer `ExerciseCardComponent` avec affichage des infos et boutons edit/delete.
 - [ ] Tâche 3 : Créer `RoutineListComponent` qui injecte le store et affiche la liste + formulaire.
 - [ ] Tâche 4 : Implémenter la logique de suppression avec confirmation (dialog natif `confirm()`).
 - [ ] Tâche 5 : Implémenter l'édition (click edit → pré-remplir le formulaire → save update).
