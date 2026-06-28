@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { DailySession } from '../../core/models';
 import { ExerciseStore } from '../exercise/exercise.store';
 import { ProgressStore } from '../progress/progress.store';
+import { TimerStore } from '../timer/timer.store';
 import { ExerciseRowComponent } from './components/exercise-row/exercise-row.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 
@@ -48,6 +49,7 @@ function getTodayIso(): string {
 export class DashboardComponent implements OnInit {
   private readonly progressStore = inject(ProgressStore);
   private readonly exerciseStore = inject(ExerciseStore);
+  private readonly timerStore = inject(TimerStore);
 
   readonly today = getTodayIso();
 
@@ -115,7 +117,9 @@ export class DashboardComponent implements OnInit {
   }
 
   onPlayExercise(exerciseId: string): void {
-    // Task 4 will wire this to the timer store
-    void exerciseId;
+    const exercise = this.exerciseStore.sortedExercises().find((ex) => ex.id === exerciseId);
+    if (exercise) {
+      this.timerStore.start(exerciseId, exercise.durationMinutes * 60000);
+    }
   }
 }
