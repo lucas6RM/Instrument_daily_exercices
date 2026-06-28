@@ -1,15 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+import { AudioAlertService } from '../../core/services/audio-alert.service';
 import { TimerStore } from './timer.store';
 
 describe('TimerStore', () => {
   let store: InstanceType<typeof TimerStore>;
+  let audioAlert: AudioAlertService;
 
   beforeEach(() => {
     vi.useFakeTimers();
     TestBed.configureTestingModule({});
     store = TestBed.inject(TimerStore);
+    audioAlert = TestBed.inject(AudioAlertService);
   });
 
   afterEach(() => {
@@ -51,6 +54,38 @@ describe('TimerStore', () => {
 
       expect(store.isRunning()).toBe(false);
       expect(store.remainingMs()).toBe(0);
+    });
+
+    it('should play a beep on expiration', () => {
+      const playBeepSpy = vi.spyOn(audioAlert, 'playBeep');
+
+      store.start('exercise-1', 500);
+
+      vi.advanceTimersByTime(1000);
+
+      expect(playBeepSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reset all state on expiration', () => {
+      store.start('exercise-1', 500);
+
+      vi.advanceTimersByTime(1000);
+
+      expect(store.isRunning()).toBe(false);
+      expect(store.remainingMs()).toBe(0);
+      expect(store.currentExerciseId()).toBeNull();
+      expect(store.startTime()).toBeNull();
+      expect(store.endTime()).toBeNull();
+    });
+
+    it('should play the beep only once on expiration', () => {
+      const playBeepSpy = vi.spyOn(audioAlert, 'playBeep');
+
+      store.start('exercise-1', 500);
+
+      vi.advanceTimersByTime(2000);
+
+      expect(playBeepSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should clear previous interval when started again', () => {

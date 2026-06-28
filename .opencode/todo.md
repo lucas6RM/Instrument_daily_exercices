@@ -36,7 +36,7 @@ Implémentation du timer global persistant basé sur `Date.now()` diff. Le timer
 - [x] Tâche 3 : Implémenter le tick du timer (100ms) avec `setInterval` dans le store, cleanup à la pause/reset.
 - [x] Tâche 4 : Créer `TimerOverlayComponent` avec template (MM:SS, nom exercice, boutons Pause/Stop/Resume).
 - [x] Tâche 5 : Injecter le `TimerOverlayComponent` dans `app.html` pour qu'il soit visible globalement.
-- [ ] Tâche 6 : Lier l'expiration (`remainingMs <= 0`) au `AudioAlertService.playBeep()` et au reset automatique.
+- [x] Tâche 6 : Lier l'expiration (`remainingMs <= 0`) au `AudioAlertService.playBeep()` et au reset automatique.
 - [ ] Tâche 7 : Style overlay avec Tailwind (fond sombre, texte blanc, ombre, coins arrondis, z-index élevé).
 - [ ] Tâche 8 : Tests unitaires du store timer (start, pause, resume, reset, expiration).
 

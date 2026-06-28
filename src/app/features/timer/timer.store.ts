@@ -1,4 +1,4 @@
-import { computed } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import {
   patchState,
   signalStore,
@@ -7,6 +7,8 @@ import {
   withMethods,
   withState,
 } from '@ngrx/signals';
+
+import { AudioAlertService } from '../../core/services/audio-alert.service';
 
 export const TimerStore = signalStore(
   { providedIn: 'root' },
@@ -50,23 +52,40 @@ export const TimerStore = signalStore(
     };
   }),
   withMethods((store) => {
+    const audioAlert = inject(AudioAlertService);
     const intervalId = { value: undefined as ReturnType<typeof setInterval> | undefined };
+
+    const clearTick = (): void => {
+      clearInterval(intervalId.value);
+      intervalId.value = undefined;
+    };
+
+    const resetState = (): void => {
+      clearTick();
+
+      patchState(store, {
+        isRunning: false,
+        currentExerciseId: null,
+        startTime: null,
+        endTime: null,
+        durationMs: 0,
+        pausedRemainingMs: 0,
+      });
+    };
 
     const tick = (): void => {
       patchState(store, (state) => ({ tickCounter: state.tickCounter + 1 }));
 
       const remaining = store.remainingMs();
       if (remaining <= 0) {
-        patchState(store, { isRunning: false });
-        clearInterval(intervalId.value);
-        intervalId.value = undefined;
+        audioAlert.playBeep();
+        resetState();
       }
     };
 
     return {
       start(exerciseId: string, durationMs: number): void {
-        clearInterval(intervalId.value);
-        intervalId.value = undefined;
+        clearTick();
 
         const now = Date.now();
 
@@ -83,8 +102,7 @@ export const TimerStore = signalStore(
       },
 
       pause(): void {
-        clearInterval(intervalId.value);
-        intervalId.value = undefined;
+        clearTick();
 
         const start = store.startTime();
         const duration = store.durationMs();
@@ -113,19 +131,7 @@ export const TimerStore = signalStore(
         intervalId.value = setInterval(tick, 250);
       },
 
-      reset(): void {
-        clearInterval(intervalId.value);
-        intervalId.value = undefined;
-
-        patchState(store, {
-          isRunning: false,
-          currentExerciseId: null,
-          startTime: null,
-          endTime: null,
-          durationMs: 0,
-          pausedRemainingMs: 0,
-        });
-      },
+      reset: resetState,
     };
   }),
   withHooks(({ pause }) => ({
