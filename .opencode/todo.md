@@ -51,14 +51,14 @@ interface ProgressState {
 - `/history` → Historique (lazy-loaded)
 
 ## Tableau d'Avancement (La Source de Vérité)
-- [ ] Tâche 1 : Installer `@ngrx/signals` et mettre à jour `app.config.ts`.
-- [ ] Tâche 2 : Créer les interfaces TypeScript (`Exercise`, `DailySession`, `ProgressState`) dans `src/app/core/models/`.
-- [ ] Tâche 3 : Créer le `StorageService` avec méthodes génériques `get<T>()`, `set<T>()`, `remove()` et clés nommées.
-- [ ] Tâche 4 : Créer `exercise.store.ts` avec CRUD (add, update, delete, load from storage) et `effect()` de sync.
-- [ ] Tâche 5 : Créer `timer.store.ts` avec les signaux `isRunning`, `remainingMs`, `currentExerciseId`, `startTime` et les méthodes `start()`, `pause()`, `reset()`.
-- [ ] Tâche 6 : Créer `progress.store.ts` avec `addSession()`, `getSession(date)`, `getAllSessions()` et sync LocalStorage.
-- [ ] Tâche 7 : Configurer le routing avec lazy-loading des 3 routes (`/`, `/routine`, `/history`) et créer les shells vides des feature modules.
-- [ ] Tâche 8 : Créer un composant `NavigationComponent` minimal (liens vers les 3 routes) injecté dans `app.html`.
+- [x] Tâche 1 : Installer `@ngrx/signals` et mettre à jour `app.config.ts`.
+- [x] Tâche 2 : Créer les interfaces TypeScript (`Exercise`, `DailySession`, `ProgressState`) dans `src/app/core/models/`.
+- [x] Tâche 3 : Créer le `StorageService` avec méthodes génériques `get<T>()`, `set<T>()`, `remove()` et clés nommées.
+- [x] Tâche 4 : Créer `exercise.store.ts` avec CRUD (add, update, delete, load from storage) et `effect()` de sync.
+- [x] Tâche 5 : Créer `timer.store.ts` avec les signaux `isRunning`, `remainingMs`, `currentExerciseId`, `startTime` et les méthodes `start()`, `pause()`, `reset()`.
+- [x] Tâche 6 : Créer `progress.store.ts` avec `addSession()`, `getSession(date)`, `getAllSessions()` et sync LocalStorage.
+- [x] Tâche 7 : Configurer le routing avec lazy-loading des 3 routes (`/`, `/routine`, `/history`) et créer les shells vides des feature modules.
+^- [x] Tâche 8 : Créer un composant `NavigationComponent` minimal (liens vers les 3 routes) injecté dans `app.html`.
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
