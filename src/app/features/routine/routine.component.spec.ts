@@ -46,6 +46,44 @@ describe('RoutineComponent', () => {
     vi.restoreAllMocks();
   });
 
+  describe('onEdit', () => {
+    it('should set editingExercise to the passed exercise', () => {
+      component.onEdit(mockExercises[0]);
+
+      expect(component.editingExercise()).toEqual(mockExercises[0]);
+    });
+  });
+
+  describe('onSave', () => {
+    const formValue = {
+      name: 'Flexibilité',
+      durationMinutes: 10,
+      youtubeUrl: 'https://youtube.com/example',
+      description: 'Étirements',
+    };
+
+    it('should call store.updateExercise and reset editingExercise in edit mode', () => {
+      component.onEdit(mockExercises[0]);
+
+      component.onSave(formValue);
+
+      expect(mockStore.updateExercise).toHaveBeenCalledWith(
+        mockExercises[0].id,
+        formValue,
+      );
+      expect(component.editingExercise()).toBeNull();
+    });
+
+    it('should call store.addExercise with order in add mode', () => {
+      component.onSave(formValue);
+
+      expect(mockStore.addExercise).toHaveBeenCalledWith({
+        ...formValue,
+        order: mockExercises.length,
+      });
+    });
+  });
+
   describe('onDelete', () => {
     it('should call store.deleteExercise when user confirms', () => {
       confirmSpy.mockReturnValue(true);
