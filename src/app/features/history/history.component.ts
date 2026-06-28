@@ -70,8 +70,11 @@ function formatDateRange(startDate: Date): string {
 
           <button
             type="button"
-            class="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            [class]="isNextWeekDisabled()
+              ? 'inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-gray-100 px-3 py-2 text-sm font-medium text-gray-400 shadow-sm cursor-not-allowed'
+              : 'inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'"
             (click)="nextWeek()"
+            [attr.disabled]="isNextWeekDisabled() ? 'true' : null"
             aria-label="Semaine suivante"
           >
             Suivant
@@ -140,6 +143,12 @@ export class HistoryComponent {
   readonly weekRangeLabel = computed(() =>
     formatDateRange(this.currentWeekStart())
   );
+
+  readonly isNextWeekDisabled = computed(() => {
+    const current = this.currentWeekStart();
+    const todayMonday = getMondayOfCurrentWeek();
+    return current.getTime() >= todayMonday.getTime();
+  });
 
   previousWeek(): void {
     this.currentWeekStart.update((date) => {
