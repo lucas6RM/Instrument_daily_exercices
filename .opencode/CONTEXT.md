@@ -12,6 +12,9 @@
 - Lint : `pnpm run lint`
 - Serve : `pnpm run serve`
 
+## Décisions Architecturales
+- Voir [`docs/adr/`](docs/adr/) pour les ADR (SignalStore par domaine, Timer Date.now, Routing sans shell)
+
 ## Standards de Code (voir AGENTS.md pour le détail complet)
 - Composants standalone uniquement
 - Signals pour la gestion d'état
