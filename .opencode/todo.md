@@ -32,8 +32,8 @@ Implémentation du timer global persistant basé sur `Date.now()` diff. Le timer
 
 ## Tableau d'Avancement (La Source de Vérité)
 - [x] Tâche 1 : Créer le `AudioAlertService` avec méthode `playBeep()` via Web Audio API.
-- [ ] Tâche 2 : Étendre `timer.store.ts` avec la logique `Date.now()` diff (`startTime`, `endTime`, calcul `remainingMs`).
-- [ ] Tâche 3 : Implémenter le tick du timer (100ms) avec `setInterval` dans le store, cleanup à la pause/reset.
+- [x] Tâche 2 : Étendre `timer.store.ts` avec la logique `Date.now()` diff (`startTime`, `endTime`, calcul `remainingMs`).
+- [x] Tâche 3 : Implémenter le tick du timer (100ms) avec `setInterval` dans le store, cleanup à la pause/reset.
 - [ ] Tâche 4 : Créer `TimerOverlayComponent` avec template (MM:SS, nom exercice, boutons Pause/Stop/Resume).
 - [ ] Tâche 5 : Injecter le `TimerOverlayComponent` dans `app.html` pour qu'il soit visible globalement.
 - [ ] Tâche 6 : Lier l'expiration (`remainingMs <= 0`) au `AudioAlertService.playBeep()` et au reset automatique.
