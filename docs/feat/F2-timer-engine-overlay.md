@@ -4,6 +4,7 @@
 Implémentation du timer global persistant basé sur `Date.now()` diff. Le timer continue de fonctionner même en background (tab inactif). Un composant overlay flottant (`fixed top-right`) affiche le compte à rebours. Un bip sonore via Web Audio API retentit à l'expiration.
 
 > 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
+> 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
 
 ## Standards du Projet & Commandes
 - Build : `pnpm run build`

@@ -4,6 +4,7 @@
 Tableau de bord quotidien avec checklist des exercices, bouton PLAY qui déclenche le timer overlay (F2), et barre de progression visuelle. C'est la vue principale (`/`) que l'utilisateur consulte quotidiennement.
 
 > 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
+> 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
 
 ## Standards du Projet & Commandes
 - Build : `pnpm run build`
