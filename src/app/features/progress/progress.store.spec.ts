@@ -325,4 +325,84 @@ describe('ProgressStore', () => {
       expect(storageService).toBeDefined();
     });
   });
+
+  describe('persistence to localStorage', () => {
+    it('should persist to localStorage when addSession is called', () => {
+      // Reset store to empty state for isolation
+      store.setProgressState({ dailySessions: [] });
+      // Clear the storage key from the mock
+      delete lsStore[STORAGE_KEYS.PROGRESS];
+
+      const session: DailySession = {
+        date: '2025-06-28',
+        exercises: [
+          { exerciseId: 'ex-1', completed: true, actualMinutes: 10 },
+        ],
+      };
+      store.addSession(session);
+
+      // The store should have persisted the updated state to localStorage
+      const persisted = JSON.parse(lsStore[STORAGE_KEYS.PROGRESS]) as ProgressState;
+      expect(persisted.dailySessions).toEqual([session]);
+    });
+
+    it('should persist the updated session when an exercise completion toggles', () => {
+      // Reset store to empty state for isolation
+      store.setProgressState({ dailySessions: [] });
+      delete lsStore[STORAGE_KEYS.PROGRESS];
+
+      // Initial session with exercise not completed
+      const initialSession: DailySession = {
+        date: '2025-06-28',
+        exercises: [
+          { exerciseId: 'ex-1', completed: false, actualMinutes: 0 },
+        ],
+      };
+      store.addSession(initialSession);
+
+      // Simulate toggle: mark exercise as completed
+      const updatedSession: DailySession = {
+        date: '2025-06-28',
+        exercises: [
+          { exerciseId: 'ex-1', completed: true, actualMinutes: 10 },
+        ],
+      };
+      store.addSession(updatedSession);
+
+      // The effect should have persisted the updated state
+      const persisted = JSON.parse(lsStore[STORAGE_KEYS.PROGRESS]) as ProgressState;
+      expect(persisted.dailySessions).toEqual([updatedSession]);
+
+      // Verify the store state reflects the update
+      const retrieved = store.getSession('2025-06-28');
+      expect(retrieved?.exercises[0].completed).toBe(true);
+    });
+
+    it('should persist multiple sessions independently', () => {
+      // Reset store to empty state for isolation
+      store.setProgressState({ dailySessions: [] });
+      delete lsStore[STORAGE_KEYS.PROGRESS];
+
+      const session1: DailySession = {
+        date: '2025-06-27',
+        exercises: [
+          { exerciseId: 'ex-1', completed: true, actualMinutes: 10 },
+        ],
+      };
+      const session2: DailySession = {
+        date: '2025-06-28',
+        exercises: [
+          { exerciseId: 'ex-1', completed: false, actualMinutes: 0 },
+        ],
+      };
+
+      store.addSession(session1);
+      store.addSession(session2);
+
+      // Both sessions should be persisted
+      const persisted = JSON.parse(lsStore[STORAGE_KEYS.PROGRESS]) as ProgressState;
+      expect(persisted.dailySessions).toHaveLength(2);
+      expect(persisted.dailySessions).toEqual([session1, session2]);
+    });
+  });
 });
