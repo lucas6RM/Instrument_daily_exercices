@@ -1,8 +1,7 @@
-import { effect, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import {
   patchState,
   signalStore,
-  withHooks,
   withMethods,
   withState,
 } from '@ngrx/signals';
@@ -15,6 +14,13 @@ export const ProgressStore = signalStore(
   withState<ProgressState>({ dailySessions: [] }),
   withMethods((store) => {
     const storageService = inject(StorageService);
+
+    // Persist current state to localStorage
+    const persist = (): void => {
+      storageService.set<ProgressState>(STORAGE_KEYS.PROGRESS, {
+        dailySessions: store.dailySessions(),
+      });
+    };
 
     return {
       getSession(date: string): DailySession | null {
@@ -58,6 +64,7 @@ export const ProgressStore = signalStore(
             dailySessions: [...store.dailySessions(), session],
           });
         }
+        persist();
       },
       updateSession(date: string, changes: Partial<DailySession>): void {
         patchState(store, {
@@ -65,14 +72,17 @@ export const ProgressStore = signalStore(
             .dailySessions()
             .map((s) => (s.date === date ? { ...s, ...changes } : s)),
         });
+        persist();
       },
       deleteSession(date: string): void {
         patchState(store, {
           dailySessions: store.dailySessions().filter((s) => s.date !== date),
         });
+        persist();
       },
       setProgressState(state: ProgressState): void {
         patchState(store, state);
+        persist();
       },
       loadFromStorage(): void {
         const stored = storageService.get<ProgressState>(STORAGE_KEYS.PROGRESS);
@@ -82,13 +92,4 @@ export const ProgressStore = signalStore(
       },
     };
   }),
-  withHooks((store) => ({
-    onInit(): void {
-      const storageService = inject(StorageService);
-      effect(() => {
-        const dailySessions = store.dailySessions();
-        storageService.set<ProgressState>(STORAGE_KEYS.PROGRESS, { dailySessions });
-      });
-    },
-  })),
 );

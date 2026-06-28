@@ -75,16 +75,15 @@ describe('TimerStore', () => {
       expect(playBeepSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should reset all state on expiration', () => {
+    it('should stop on expiration but preserve exerciseId for dashboard reaction', () => {
       store.start('exercise-1', 500);
 
       vi.advanceTimersByTime(1000);
 
       expect(store.isRunning()).toBe(false);
       expect(store.remainingMs()).toBe(0);
-      expect(store.currentExerciseId()).toBeNull();
-      expect(store.startTime()).toBeNull();
-      expect(store.endTime()).toBeNull();
+      // currentExerciseId is preserved so the dashboard can auto-complete
+      expect(store.currentExerciseId()).toBe('exercise-1');
     });
 
     it('should play the beep only once on expiration', () => {
