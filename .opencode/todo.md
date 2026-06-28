@@ -1,10 +1,9 @@
-# Feature F2 : Timer Engine & Overlay
+# Feature F3 : Exercise CRUD
 
 ## Spécification Technique Globale
-Implémentation du timer global persistant basé sur `Date.now()` diff. Le timer continue de fonctionner même en background (tab inactif). Un composant overlay flottant (`fixed top-right`) affiche le compte à rebours. Un bip sonore via Web Audio API retentit à l'expiration.
+Interface d'administration pour gérer la routine d'exercices. Formulaire réactif pour ajouter/modifier un exercice. Liste avec boutons de suppression et réordonnancement. Les données sont persistées via le `exercise.store.ts` (F1) + LocalStorage.
 
 > 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
-> 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
 
 ## Standards du Projet & Commandes
 - Build : `pnpm run build`
@@ -12,6 +11,29 @@ Implémentation du timer global persistant basé sur `Date.now()` diff. Le timer
 - Lint : `pnpm run lint`
 - Serve : `pnpm run serve`
 
+<<<<<<< HEAD
+## Fonctionnalités
+- Liste des exercices avec nom, durée, lien YouTube, description
+- Formulaire réactif (`FormGroup`) avec validation (nom requis, durée > 0)
+- Bouton Ajouter / Modifier / Supprimer
+- Ordre d'affichage (champ `order` numérique)
+- Lien YouTube cliquable (ouvre dans un nouvel onglet)
+
+## Composants Attendus
+- `RoutineListComponent` — Route `/routine`, affiche la liste et le formulaire
+- `ExerciseFormComponent` — Formulaire réactif réutilisable (add + edit mode via input)
+- `ExerciseCardComponent` — Carte d'exercice avec infos et boutons d'action
+
+## Tableau d'Avancement (La Source de Vérité)
+- [x] Tâche 1 : Créer `ExerciseFormComponent` avec `FormGroup` (name, durationMinutes, youtubeUrl, description) et validation.
+- [x] Tâche 2 : Créer `ExerciseCardComponent` avec affichage des infos et boutons edit/delete.
+- [x] Tâche 3 : Créer `RoutineListComponent` qui injecte le store et affiche la liste + formulaire.
+- [x] Tâche 4 : Implémenter la logique de suppression avec confirmation (dialog natif `confirm()`).
+- [x] Tâche 5 : Implémenter l'édition (click edit → pré-remplir le formulaire → save update).
+- [x] Tâche 6 : Styler la page avec Tailwind (responsive, carte épurée, boutons accessibles).
+- [x] Tâche 7 : Vérifier l'accessibilité WCAG AA (labels, focus, contrastes, aria sur les boutons).
+- [x] Tâche 8 : Test unitaire du formulaire (validations, submit add/edit).
+=======
 ## Comportement du Timer
 - `start(exerciseId, durationMs)` — Enregistre `startTime = Date.now()`, `endTime = startTime + durationMs`, `isRunning = true`
 - `pause()` — Calcule le temps écoulé, met à jour `remainingMs`, `isRunning = false`
@@ -39,6 +61,7 @@ Implémentation du timer global persistant basé sur `Date.now()` diff. Le timer
 - [x] Tâche 6 : Lier l'expiration (`remainingMs <= 0`) au `AudioAlertService.playBeep()` et au reset automatique.
 - [x] Tâche 7 : Style overlay avec Tailwind (fond sombre, texte blanc, ombre, coins arrondis, z-index élevé).
 - [x] Tâche 8 : Tests unitaires du store timer (start, pause, resume, reset, expiration).
+>>>>>>> main
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
