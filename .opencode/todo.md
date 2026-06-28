@@ -1,9 +1,10 @@
-# Feature F3 : Exercise CRUD
+# Feature F4 : Daily Dashboard
 
 ## Spécification Technique Globale
-Interface d'administration pour gérer la routine d'exercices. Formulaire réactif pour ajouter/modifier un exercice. Liste avec boutons de suppression et réordonnancement. Les données sont persistées via le `exercise.store.ts` (F1) + LocalStorage.
+Tableau de bord quotidien avec checklist des exercices, bouton PLAY qui déclenche le timer overlay (F2), et barre de progression visuelle. C'est la vue principale (`/`) que l'utilisateur consulte quotidiennement.
 
 > 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
+> 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
 
 ## Standards du Projet & Commandes
 - Build : `pnpm run build`
@@ -11,57 +12,35 @@ Interface d'administration pour gérer la routine d'exercices. Formulaire réact
 - Lint : `pnpm run lint`
 - Serve : `pnpm run serve`
 
-<<<<<<< HEAD
-## Fonctionnalités
-- Liste des exercices avec nom, durée, lien YouTube, description
-- Formulaire réactif (`FormGroup`) avec validation (nom requis, durée > 0)
-- Bouton Ajouter / Modifier / Supprimer
-- Ordre d'affichage (champ `order` numérique)
-- Lien YouTube cliquable (ouvre dans un nouvel onglet)
+## Comportement
+- À l'ouverture, charger ou créer la session du jour (`DailySession` avec date d'aujourd'hui)
+- Afficher chaque exercice sous forme de ligne avec :
+  - Checkbox (coché = exercice terminé)
+  - Nom de l'exercice + durée cible
+  - Bouton PLAY → lance le timer avec la durée de l'exercice
+  - Lien YouTube (si présent) → ouvre dans nouvel onglet
+- Barre de progression : `completed / total` exercices + pourcentage visuel
+- À l'expiration du timer, cocher automatiquement l'exercice et sauvegarder la session
+- Calcul du temps réel passé par exercice (diff entre start et end du timer)
 
 ## Composants Attendus
-- `RoutineListComponent` — Route `/routine`, affiche la liste et le formulaire
-- `ExerciseFormComponent` — Formulaire réactif réutilisable (add + edit mode via input)
-- `ExerciseCardComponent` — Carte d'exercice avec infos et boutons d'action
+- `DashboardComponent` — Route `/`, orchestrateur principal
+- `ExerciseRowComponent` — Ligne d'exercice avec checkbox, PLAY, lien YouTube
+- `ProgressBarComponent` — Barre de progression visuelle avec pourcentage
+
+## Connexion Timer → Dashboard
+- Le dashboard écoute le timer store : quand `remainingMs <= 0` et `currentExerciseId` correspond, il coche l'exercice
+- Le bouton PLAY injecte le timer store et appelle `start(exerciseId, exercise.durationMinutes * 60000)`
 
 ## Tableau d'Avancement (La Source de Vérité)
-- [x] Tâche 1 : Créer `ExerciseFormComponent` avec `FormGroup` (name, durationMinutes, youtubeUrl, description) et validation.
-- [x] Tâche 2 : Créer `ExerciseCardComponent` avec affichage des infos et boutons edit/delete.
-- [x] Tâche 3 : Créer `RoutineListComponent` qui injecte le store et affiche la liste + formulaire.
-- [x] Tâche 4 : Implémenter la logique de suppression avec confirmation (dialog natif `confirm()`).
-- [x] Tâche 5 : Implémenter l'édition (click edit → pré-remplir le formulaire → save update).
-- [x] Tâche 6 : Styler la page avec Tailwind (responsive, carte épurée, boutons accessibles).
-- [x] Tâche 7 : Vérifier l'accessibilité WCAG AA (labels, focus, contrastes, aria sur les boutons).
-- [x] Tâche 8 : Test unitaire du formulaire (validations, submit add/edit).
-=======
-## Comportement du Timer
-- `start(exerciseId, durationMs)` — Enregistre `startTime = Date.now()`, `endTime = startTime + durationMs`, `isRunning = true`
-- `pause()` — Calcule le temps écoulé, met à jour `remainingMs`, `isRunning = false`
-- `resume()` — Réinitialise `startTime = Date.now()`, `isRunning = true`
-- `reset()` — `isRunning = false`, `remainingMs = 0`, `currentExerciseId = null`
-- Calcul du `remainingMs` toujours via `endTime - Date.now()` (précis même en background)
-- Tick toutes les 100ms via `requestAnimationFrame` ou `setInterval` pour la fluidité de l'UI
-
-## Composant Overlay
-- `position: fixed; top: 1rem; right: 1rem;`
-- Affiche `MM:SS` en grand, nom de l'exercice, bouton Pause/Stop
-- Disparaît quand `isRunning = false`
-- Accessible : rôle `timer`, aria-live pour le compte à rebours
-
-## Audio
-- Bip généré via `AudioContext` + `OscillatorNode` (440Hz, 500ms)
-- Compatible avec la politique autoplay des navigateurs (l'utilisateur a cliqué sur PLAY)
-
-## Tableau d'Avancement (La Source de Vérité)
-- [x] Tâche 1 : Créer le `AudioAlertService` avec méthode `playBeep()` via Web Audio API.
-- [x] Tâche 2 : Étendre `timer.store.ts` avec la logique `Date.now()` diff (`startTime`, `endTime`, calcul `remainingMs`).
-- [x] Tâche 3 : Implémenter le tick du timer (100ms) avec `setInterval` dans le store, cleanup à la pause/reset.
-- [x] Tâche 4 : Créer `TimerOverlayComponent` avec template (MM:SS, nom exercice, boutons Pause/Stop/Resume).
-- [x] Tâche 5 : Injecter le `TimerOverlayComponent` dans `app.html` pour qu'il soit visible globalement.
-- [x] Tâche 6 : Lier l'expiration (`remainingMs <= 0`) au `AudioAlertService.playBeep()` et au reset automatique.
-- [x] Tâche 7 : Style overlay avec Tailwind (fond sombre, texte blanc, ombre, coins arrondis, z-index élevé).
-- [x] Tâche 8 : Tests unitaires du store timer (start, pause, resume, reset, expiration).
->>>>>>> main
+^- [x] Tâche 1 : Créer `ProgressBarComponent` avec input `completedCount`, `totalCount` et affichage visuel (barre + %).
+- [ ] Tâche 2 : Créer `ExerciseRowComponent` avec checkbox, nom, durée, bouton PLAY, lien YouTube.
+- [ ] Tâche 3 : Créer `DashboardComponent` qui charge la session du jour et affiche la liste + progress bar.
+- [ ] Tâche 4 : Lier le bouton PLAY au timer store (`start(exerciseId, durationMs)`).
+- [ ] Tâche 5 : Implémenter le auto-complete à l'expiration du timer (écoute du timer store → coche l'exercice → sauvegarde session).
+- [ ] Tâche 6 : Sauvegarder la session dans le `progress.store.ts` à chaque changement de checkbox.
+- [ ] Tâche 7 : Styler le dashboard avec Tailwind (responsive, liste épurée, accessible).
+- [ ] Tâche 8 : Test unitaire du dashboard (chargement session, auto-complete, sauvegarde).
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
@@ -71,4 +50,7 @@ Interface d'administration pour gérer la routine d'exercices. Formulaire réact
 - 0 / 5
 
 ### Dernier retour de Review :
+- Aucun.
+
+### Blocage Actuel :
 - Aucun.
