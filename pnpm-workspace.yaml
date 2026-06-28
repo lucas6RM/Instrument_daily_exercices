@@ -1,5 +1,6 @@
 allowBuilds:
   lmdb: false
+  unrs-resolver: set this to true or false
 minimumReleaseAgeExclude:
   - '@angular/animations@22.0.4'
   - '@angular/common@22.0.4'

@@ -65,3 +65,22 @@ Pour lancer le workflow :
 1. Remplis .opencode/todo.md avec ta feature et tes tâches
 2. Ouvre opencode et sélectionne l'agent mastermind
 3. Lance avec : "Démarre la boucle autonome sur la prochaine tâche."
+
+Voici ce qui a été créé :
+docs/
+├── adr/
+│   └── 001-architecture.md      # 3 ADR (SignalStore, Timer Date.now, Routing)
+├── feat/
+│   ├── F1-foundation-core.md    # Models, Stores, StorageService, Routing
+│   ├── F2-timer-engine-overlay.md # Timer Date.now(), Overlay, Audio beep
+│   ├── F3-exercise-crud.md      # Admin routine, formulaire réactif
+│   ├── F4-daily-dashboard.md    # Checklist, PLAY→Timer, progression %
+│   └── F5-weekly-history.md     # Vue semaine, temps/jour, temps/exercice
+└── glossary.md                  # Vocabulaire domaine
+Pour lancer une feature, copie le contenu de docs/feat/F*.md dans .opencode/todo.md puis lance ton agent mastermind :
+
+# Exemple pour démarrer avec la F1
+cp docs/feat/F1-foundation-core.md .opencode/todo.md
+# Puis lance @mastermind
+Ordre de build recommandé : F1 → F2 → F3 → F4 → F5 (les dépendances sont dans cet ordre).
+Chaque feature contient 8 tâches atomiques avec un tableau d'avancement prêt pour ton workflow. Les stores sont découpés par domaine (exercise, timer, progress) comme convenu.

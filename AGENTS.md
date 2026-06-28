@@ -53,3 +53,16 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## Commandes de Validation
+
+Après chaque modification de code, tu DOIS exécuter :
+
+- **Lint** : `pnpm run lint` — vérifie les règles de code et le style
+- **Test** : `pnpm run test --watch=false` — exécute les tests unitaires sans mode watch
+
+Si le lint ou les tests échouent, tu DOIS corriger les erreurs avant de considérer la tâche comme complétée.
+
+## Décisions Architecturales
+
+Voir [`docs/adr/`](docs/adr/) pour les décisions architecturales du projet.
