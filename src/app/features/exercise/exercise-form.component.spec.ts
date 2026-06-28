@@ -98,7 +98,7 @@ describe('ExerciseFormComponent', () => {
   });
 
   describe('submit', () => {
-    it('should emit save with form value when valid', async () => {
+    it('should emit save with form value when valid (add mode)', async () => {
       await fixture.whenStable();
 
       const emittedValue = new Promise((resolve) => {
@@ -123,6 +123,41 @@ describe('ExerciseFormComponent', () => {
       });
     });
 
+    it('should emit save with modified values (edit mode)', async () => {
+      const mockExercise: Exercise = {
+        id: 'test-id',
+        name: 'Original Exercise',
+        durationMinutes: 10,
+        youtubeUrl: 'https://youtube.com/watch?v=original',
+        description: 'Original description',
+        order: 1,
+      };
+
+      fixture.componentRef.setInput('exercise', mockExercise);
+      await fixture.whenStable();
+
+      const emittedValue = new Promise((resolve) => {
+        component.save.subscribe(resolve);
+      });
+
+      component.form.patchValue({
+        name: 'Modified Exercise',
+        durationMinutes: 20,
+        youtubeUrl: 'https://youtube.com/watch?v=modified',
+        description: 'Modified description',
+      });
+
+      component.onSubmit();
+
+      const value = await emittedValue;
+      expect(value).toEqual({
+        name: 'Modified Exercise',
+        durationMinutes: 20,
+        youtubeUrl: 'https://youtube.com/watch?v=modified',
+        description: 'Modified description',
+      });
+    });
+
     it('should not emit save when form is invalid', async () => {
       await fixture.whenStable();
 
@@ -134,6 +169,46 @@ describe('ExerciseFormComponent', () => {
       component.onSubmit();
 
       expect(emitted).toBe(false);
+    });
+  });
+
+  describe('optional fields', () => {
+    it('should be valid when youtubeUrl and description are empty', async () => {
+      await fixture.whenStable();
+
+      component.form.patchValue({
+        name: 'Minimal Exercise',
+        durationMinutes: 5,
+        youtubeUrl: '',
+        description: '',
+      });
+
+      expect(component.form.valid).toBe(true);
+      expect(component.form.get('youtubeUrl')?.valid).toBe(true);
+      expect(component.form.get('description')?.valid).toBe(true);
+    });
+
+    it('should emit with empty optional fields', async () => {
+      await fixture.whenStable();
+
+      const emittedValue = new Promise((resolve) => {
+        component.save.subscribe(resolve);
+      });
+
+      component.form.patchValue({
+        name: 'Minimal Exercise',
+        durationMinutes: 5,
+      });
+
+      component.onSubmit();
+
+      const value = await emittedValue;
+      expect(value).toEqual({
+        name: 'Minimal Exercise',
+        durationMinutes: 5,
+        youtubeUrl: '',
+        description: '',
+      });
     });
   });
 });
