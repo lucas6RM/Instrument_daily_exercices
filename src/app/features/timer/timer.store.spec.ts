@@ -38,6 +38,15 @@ describe('TimerStore', () => {
       expect(store.startTime()).not.toBeNull();
     });
 
+    it('should set endTime to startTime plus durationMs', () => {
+      store.start('exercise-1', 60000);
+
+      const startTime = store.startTime()!;
+      const endTime = store.endTime()!;
+
+      expect(endTime - startTime).toBe(60000);
+    });
+
     it('should decrement remainingMs over time', () => {
       store.start('exercise-1', 60000);
 
@@ -95,6 +104,12 @@ describe('TimerStore', () => {
       expect(store.currentExerciseId()).toBe('exercise-2');
       expect(store.remainingMs()).toBe(30000);
     });
+
+    it('should store the exact durationMs value', () => {
+      store.start('exercise-1', 45000);
+
+      expect(store.durationMs()).toBe(45000);
+    });
   });
 
   describe('pause', () => {
@@ -117,6 +132,138 @@ describe('TimerStore', () => {
 
       expect(store.remainingMs()).toBe(remainingBefore);
     });
+
+    it('should calculate remainingMs correctly based on elapsed time', () => {
+      store.start('exercise-1', 60000);
+      vi.advanceTimersByTime(10000);
+
+      store.pause();
+
+      // After 10s elapsed from 60s, remaining should be ~50000
+      expect(store.pausedRemainingMs()).toBeGreaterThan(48000);
+      expect(store.pausedRemainingMs()).toBeLessThanOrEqual(51000);
+    });
+
+    it('should preserve exerciseId after pause', () => {
+      store.start('exercise-1', 60000);
+      store.pause();
+
+      expect(store.currentExerciseId()).toBe('exercise-1');
+    });
+
+    it('should set isRunning to false', () => {
+      store.start('exercise-1', 60000);
+      store.pause();
+
+      expect(store.isRunning()).toBe(false);
+    });
+  });
+
+  describe('resume', () => {
+    it('should resume a paused timer', () => {
+      store.start('exercise-1', 60000);
+      store.pause();
+
+      store.resume();
+
+      expect(store.isRunning()).toBe(true);
+    });
+
+    it('should reset startTime on resume', () => {
+      store.start('exercise-1', 60000);
+      store.pause();
+      const oldStartTime = store.startTime();
+
+      vi.advanceTimersByTime(1000);
+      store.resume();
+
+      expect(store.startTime()).not.toBeNull();
+      expect(store.startTime()).toBeGreaterThan(oldStartTime!);
+    });
+
+    it('should continue counting down from paused remaining time', () => {
+      store.start('exercise-1', 60000);
+      vi.advanceTimersByTime(10000);
+      store.pause();
+
+      const remainingAfterPause = store.remainingMs();
+
+      store.resume();
+
+      // remainingMs should be close to what it was when paused
+      expect(store.remainingMs()).toBeGreaterThan(remainingAfterPause - 2000);
+      expect(store.remainingMs()).toBeLessThanOrEqual(remainingAfterPause);
+    });
+
+    it('should set endTime based on paused remaining time', () => {
+      store.start('exercise-1', 60000);
+      store.pause();
+
+      store.resume();
+
+      const startTime = store.startTime()!;
+      const endTime = store.endTime()!;
+
+      expect(endTime - startTime).toBe(store.pausedRemainingMs());
+    });
+
+    it('should not resume when pausedRemainingMs is 0', () => {
+      store.start('exercise-1', 100);
+      vi.advanceTimersByTime(1000);
+      // Timer expired and auto-reset, pausedRemainingMs is 0
+
+      store.resume();
+
+      expect(store.isRunning()).toBe(false);
+    });
+
+    it('should not resume when pausedRemainingMs is negative', () => {
+      store.start('exercise-1', 100);
+      vi.advanceTimersByTime(1000);
+      // Timer expired, pausedRemainingMs is 0
+
+      store.resume();
+
+      expect(store.isRunning()).toBe(false);
+      expect(store.remainingMs()).toBe(0);
+    });
+
+    it('should start a new interval on resume', () => {
+      store.start('exercise-1', 60000);
+      store.pause();
+
+      store.resume();
+      vi.advanceTimersByTime(3000);
+
+      // Timer should be counting down after resume
+      expect(store.remainingMs()).toBeLessThan(60000);
+    });
+
+    it('should preserve exerciseId after resume', () => {
+      store.start('exercise-1', 60000);
+      store.pause();
+      store.resume();
+
+      expect(store.currentExerciseId()).toBe('exercise-1');
+    });
+
+    it('should support pause-resume-pause cycle', () => {
+      store.start('exercise-1', 60000);
+      vi.advanceTimersByTime(5000);
+      store.pause();
+
+      const remainingAfterFirstPause = store.remainingMs();
+
+      store.resume();
+      vi.advanceTimersByTime(5000);
+      store.pause();
+
+      const remainingAfterSecondPause = store.remainingMs();
+
+      // Second pause should have ~10s less than first pause
+      expect(remainingAfterSecondPause).toBeLessThan(remainingAfterFirstPause);
+      expect(remainingAfterSecondPause).toBeGreaterThan(40000);
+    });
   });
 
   describe('reset', () => {
@@ -129,6 +276,49 @@ describe('TimerStore', () => {
       expect(store.remainingMs()).toBe(0);
       expect(store.currentExerciseId()).toBeNull();
       expect(store.startTime()).toBeNull();
+    });
+
+    it('should set endTime to null', () => {
+      store.start('exercise-1', 60000);
+      store.reset();
+
+      expect(store.endTime()).toBeNull();
+    });
+
+    it('should set durationMs to 0', () => {
+      store.start('exercise-1', 60000);
+      store.reset();
+
+      expect(store.durationMs()).toBe(0);
+    });
+
+    it('should set pausedRemainingMs to 0', () => {
+      store.start('exercise-1', 60000);
+      store.pause();
+      store.reset();
+
+      expect(store.pausedRemainingMs()).toBe(0);
+    });
+
+    it('should clear the interval timer', () => {
+      store.start('exercise-1', 60000);
+      store.reset();
+
+      vi.advanceTimersByTime(5000);
+
+      // remainingMs should stay at 0 (no interval running)
+      expect(store.remainingMs()).toBe(0);
+      expect(store.isRunning()).toBe(false);
+    });
+
+    it('should reset from paused state', () => {
+      store.start('exercise-1', 60000);
+      store.pause();
+      store.reset();
+
+      expect(store.isRunning()).toBe(false);
+      expect(store.remainingMs()).toBe(0);
+      expect(store.currentExerciseId()).toBeNull();
     });
   });
 

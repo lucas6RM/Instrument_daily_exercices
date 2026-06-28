@@ -38,7 +38,7 @@ Implémentation du timer global persistant basé sur `Date.now()` diff. Le timer
 - [x] Tâche 5 : Injecter le `TimerOverlayComponent` dans `app.html` pour qu'il soit visible globalement.
 - [x] Tâche 6 : Lier l'expiration (`remainingMs <= 0`) au `AudioAlertService.playBeep()` et au reset automatique.
 - [x] Tâche 7 : Style overlay avec Tailwind (fond sombre, texte blanc, ombre, coins arrondis, z-index élevé).
-- [ ] Tâche 8 : Tests unitaires du store timer (start, pause, resume, reset, expiration).
+- [x] Tâche 8 : Tests unitaires du store timer (start, pause, resume, reset, expiration).
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
