@@ -30,7 +30,7 @@ Interface d'administration pour gérer la routine d'exercices. Formulaire réact
 - [x] Tâche 4 : Implémenter la logique de suppression avec confirmation (dialog natif `confirm()`).
 - [x] Tâche 5 : Implémenter l'édition (click edit → pré-remplir le formulaire → save update).
 - [x] Tâche 6 : Styler la page avec Tailwind (responsive, carte épurée, boutons accessibles).
-- [ ] Tâche 7 : Vérifier l'accessibilité WCAG AA (labels, focus, contrastes, aria sur les boutons).
+- [x] Tâche 7 : Vérifier l'accessibilité WCAG AA (labels, focus, contrastes, aria sur les boutons).
 - [ ] Tâche 8 : Test unitaire du formulaire (validations, submit add/edit).
 
 ## Zone de Transit & Logs

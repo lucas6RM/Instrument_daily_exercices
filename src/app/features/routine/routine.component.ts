@@ -26,6 +26,17 @@ interface ExerciseFormValue {
         </p>
       </header>
 
+      <!-- Live region for accessibility announcements -->
+      <div
+        #liveRegion
+        class="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {{ liveMessage() }}
+      </div>
+
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-8">
         <!-- Liste des exercices -->
         <section aria-label="Liste des exercices" class="lg:col-span-3">
@@ -60,7 +71,7 @@ interface ExerciseFormValue {
               <p class="text-sm font-medium text-gray-500">
                 Aucun exercice pour le moment
               </p>
-              <p class="mt-1 text-xs text-gray-400">
+              <p class="mt-1 text-xs text-gray-500">
                 Ajoutez votre premier exercice ci-contre.
               </p>
             </div>
@@ -131,17 +142,22 @@ export class RoutineComponent {
 
   readonly editingExercise = this.editingExerciseSig.asReadonly();
 
+  private readonly liveMessageSig = signal('');
+  readonly liveMessage = this.liveMessageSig.asReadonly();
+
   onSave(value: ExerciseFormValue): void {
     const editing = this.editingExerciseSig();
     if (editing) {
       this.store.updateExercise(editing.id, value);
       this.editingExerciseSig.set(null);
+      this.liveMessageSig.set(`Exercice « ${value.name} » modifié avec succès.`);
     } else {
       const nextOrder = this.store.exercises().length;
       this.store.addExercise({
         ...value,
         order: nextOrder,
       });
+      this.liveMessageSig.set(`Exercice « ${value.name} » ajouté avec succès.`);
     }
   }
 
@@ -159,6 +175,7 @@ export class RoutineComponent {
     );
     if (confirmed) {
       this.store.deleteExercise(id);
+      this.liveMessageSig.set(`Exercice « ${exercise.name} » supprimé.`);
     }
   }
 }

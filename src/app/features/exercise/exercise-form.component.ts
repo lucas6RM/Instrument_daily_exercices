@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  afterNextRender,
+  effect,
+  input,
+  output,
+  viewChild,
+} from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Exercise } from '../../core/models/exercise';
 
@@ -33,13 +41,15 @@ function positiveNumberValidator(): (control: AbstractControl<number | null>) =>
             <span class="text-red-600" aria-hidden="true">*</span>
           </label>
           <input
+            #nameInput
             id="exercise-name"
             type="text"
             formControlName="name"
             required
+            aria-required="true"
             [attr.aria-invalid]="form.get('name')?.invalid && form.get('name')?.touched ? 'true' : null"
             [attr.aria-describedby]="form.get('name')?.invalid && form.get('name')?.touched ? 'name-error' : null"
-            class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           @if (form.get('name')?.invalid && form.get('name')?.touched) {
             <p id="name-error" class="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-600" role="alert">
@@ -63,9 +73,10 @@ function positiveNumberValidator(): (control: AbstractControl<number | null>) =>
             min="1"
             formControlName="durationMinutes"
             required
+            aria-required="true"
             [attr.aria-invalid]="form.get('durationMinutes')?.invalid && form.get('durationMinutes')?.touched ? 'true' : null"
             [attr.aria-describedby]="form.get('durationMinutes')?.invalid && form.get('durationMinutes')?.touched ? 'duration-error' : null"
-            class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           @if (form.get('durationMinutes')?.invalid && form.get('durationMinutes')?.touched) {
             <p id="duration-error" class="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-600" role="alert">
@@ -91,7 +102,7 @@ function positiveNumberValidator(): (control: AbstractControl<number | null>) =>
             type="url"
             formControlName="youtubeUrl"
             placeholder="https://www.youtube.com/watch?v=..."
-            class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -104,7 +115,7 @@ function positiveNumberValidator(): (control: AbstractControl<number | null>) =>
             id="exercise-description"
             formControlName="description"
             rows="3"
-            class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           ></textarea>
         </div>
 
@@ -164,6 +175,8 @@ export class ExerciseFormComponent {
   readonly exercise = input<Exercise | null>(null);
   readonly save = output<ExerciseFormValue>();
 
+  readonly nameInput = viewChild<HTMLInputElement>('nameInput');
+
   readonly form = new FormGroup({
     name: new FormControl('', [Validators.required]),
     durationMinutes: new FormControl(0, [Validators.required, positiveNumberValidator()]),
@@ -190,11 +203,26 @@ export class ExerciseFormComponent {
         });
       }
     });
+
+    afterNextRender(() => {
+      const el = this.nameInput();
+      if (el && typeof el.focus === 'function') {
+        el.focus();
+      }
+    });
   }
 
   onSubmit(): void {
     if (this.form.valid) {
       this.save.emit(this.form.value as ExerciseFormValue);
+
+      // After adding a new exercise, refocus the name input
+      if (!this.exercise()) {
+        const el = this.nameInput();
+        if (el && typeof el.focus === 'function') {
+          el.focus();
+        }
+      }
     }
   }
 }

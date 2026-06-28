@@ -23,12 +23,13 @@ import { Exercise } from '../../core/models/exercise';
 
           @if (ex.youtubeUrl) {
             <p class="mt-2">
-              <a
-                [href]="ex.youtubeUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1 text-sm font-medium text-red-600 underline decoration-red-600/30 underline-offset-2 transition-colors hover:text-red-500 hover:decoration-red-500/30 focus-visible:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-              >
+               <a
+                 [href]="ex.youtubeUrl"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 [attr.aria-label]="'Voir la vidéo YouTube pour ' + ex.name"
+                 class="inline-flex items-center gap-1 text-sm font-medium text-red-600 underline decoration-red-600/30 underline-offset-2 transition-colors hover:text-red-500 hover:decoration-red-500/30 focus-visible:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+               >
                 <svg
                   class="h-4 w-4"
                   fill="currentColor"
