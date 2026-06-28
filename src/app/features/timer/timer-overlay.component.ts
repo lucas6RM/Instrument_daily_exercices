@@ -9,85 +9,46 @@ import { TimerStore } from './timer.store';
   template: `
     @if (visible()) {
       <div
-        class="timer-overlay"
+        class="fixed top-4 right-4 z-[1000] bg-slate-900 text-white p-4 px-6 rounded-xl shadow-xl flex flex-col items-center gap-2 min-w-[140px]"
         role="timer"
         aria-live="polite"
         aria-atomic="true"
         [attr.aria-label]="'Compte à rebours : ' + formattedTime() + ', exercice : ' + exerciseName()"
       >
-        <span class="timer-time">{{ formattedTime() }}</span>
+        <span class="text-5xl font-bold tabular-nums leading-none tracking-wide">{{ formattedTime() }}</span>
         @if (exerciseName()) {
-          <span class="timer-exercise">{{ exerciseName() }}</span>
+          <span class="text-sm text-gray-400 text-center">{{ exerciseName() }}</span>
         }
-        <div class="timer-actions">
+        <div class="flex gap-2 mt-1">
           @if (isRunning()) {
-            <button type="button" (click)="pause()" aria-label="Pause">⏸ Pause</button>
-            <button type="button" (click)="reset()" aria-label="Stop">⏹ Stop</button>
+            <button
+              type="button"
+              (click)="pause()"
+              aria-label="Pause"
+              class="bg-transparent border border-white/30 text-white py-1.5 px-3 rounded cursor-pointer text-xs transition-colors duration-200 hover:bg-white/10 hover:border-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            >⏸ Pause</button>
+            <button
+              type="button"
+              (click)="reset()"
+              aria-label="Stop"
+              class="bg-transparent border border-white/30 text-white py-1.5 px-3 rounded cursor-pointer text-xs transition-colors duration-200 hover:bg-white/10 hover:border-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            >⏹ Stop</button>
           } @else {
-            <button type="button" (click)="resume()" aria-label="Resume">▶ Resume</button>
-            <button type="button" (click)="reset()" aria-label="Stop">⏹ Stop</button>
+            <button
+              type="button"
+              (click)="resume()"
+              aria-label="Resume"
+              class="bg-transparent border border-white/30 text-white py-1.5 px-3 rounded cursor-pointer text-xs transition-colors duration-200 hover:bg-white/10 hover:border-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            >▶ Resume</button>
+            <button
+              type="button"
+              (click)="reset()"
+              aria-label="Stop"
+              class="bg-transparent border border-white/30 text-white py-1.5 px-3 rounded cursor-pointer text-xs transition-colors duration-200 hover:bg-white/10 hover:border-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            >⏹ Stop</button>
           }
         </div>
       </div>
-    }
-  `,
-  styles: `
-    .timer-overlay {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background-color: #1a1a2e;
-      color: #ffffff;
-      padding: 1rem 1.5rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      min-width: 140px;
-    }
-
-    .timer-time {
-      font-size: 2.5rem;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      line-height: 1;
-      letter-spacing: 0.05em;
-    }
-
-    .timer-exercise {
-      font-size: 0.875rem;
-      color: #b0b0b0;
-      text-align: center;
-    }
-
-    .timer-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.25rem;
-    }
-
-    .timer-actions button {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #ffffff;
-      padding: 0.35rem 0.75rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: background-color 0.2s, border-color 0.2s;
-    }
-
-    .timer-actions button:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.5);
-    }
-
-    .timer-actions button:focus-visible {
-      outline: 2px solid #4a90d9;
-      outline-offset: 2px;
     }
   `,
 })
