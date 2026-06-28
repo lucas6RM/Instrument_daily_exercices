@@ -31,12 +31,12 @@ Résumé hebdomadaire :
 
 ## Composants Attendus
 - `HistoryComponent` — Route `/history`, vue principale de la semaine
-- `WeekDayCardComponent` — Carte par jour avec temps total et liste d'exercices
+- `WeekDayCardComponent` — Carte par jour avec temps total et liste d'exercices (réalisés/non réalisés)
 - `WeeklySummaryComponent` — Résumé global (temps total, temps par exercice, %)
 
 ## Tableau d'Avancement (La Source de Vérité)
 ^- [x] Tâche 1 : Étendre `progress.store.ts` avec un computed `getWeekSessions(startDate)` qui filtre les sessions d'une semaine.
-- [ ] Tâche 2 : Créer un computed `getWeeklyStats()` qui agrège le temps par jour et par exercice.
+- [x] Tâche 2 : Créer un computed `getWeeklyStats()` qui agrège le temps par jour et par exercice.
 - [ ] Tâche 3 : Créer `WeekDayCardComponent` avec affichage du jour, temps total, et liste d'exercices (réalisés/non réalisés).
 - [ ] Tâche 4 : Créer `WeeklySummaryComponent` avec résumé (temps total, temps par exercice, taux de complétion).
 - [ ] Tâche 5 : Créer `HistoryComponent` qui affiche les 7 jours + résumé avec navigation semaine précédente/suivante.
