@@ -4,6 +4,7 @@
 Angular 22 SPA pure-client. Installation de `@ngrx/signals`. Création des modèles de domaine, des stores par domaine (`exercise`, `timer`, `progress`), du `StorageService` pour le LocalStorage, et du routing shell (`/`, `/routine`, `/history`).
 
 > 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
+> 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
 
 ## Standards du Projet & Commandes
 - Build : `pnpm run build`
