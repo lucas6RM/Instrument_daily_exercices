@@ -10,7 +10,10 @@
         "glob": "allow",
         "grep": "allow",
         "edit": "deny",
-        "bash": "deny",
+        "bash": {
+          "*": "deny",
+          "cp*": "allow",
+        },
         "task": {
           "*": "deny",
           "worker": "allow",
@@ -44,13 +47,7 @@
           ".opencode/todo.md": "allow",
           "*": "deny",
         },
-        "bash": {
-          "*": "ask",
-          "git diff*": "allow",
-          "git log*": "allow",
-          "pnpm run lint": "allow",
-          "pnpm run test": "allow",
-        },
+        "bash": "allow",
         "task": "deny",
       },
     },
