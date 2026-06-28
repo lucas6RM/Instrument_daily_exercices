@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { DailySession } from '../../core/models';
 import { ExerciseStore } from '../exercise/exercise.store';
 import { ProgressStore } from '../progress/progress.store';
@@ -76,6 +76,27 @@ export class DashboardComponent implements OnInit {
 
   readonly totalCount = computed(() => {
     return this.exercisesWithProgress().length;
+  });
+
+  private readonly timerExpirationEffect = effect(() => {
+    const remaining = this.timerStore.remainingMs();
+    const isRunning = this.timerStore.isRunning();
+    const exerciseId = this.timerStore.currentExerciseId();
+
+    // Timer expired: remainingMs <= 0, isRunning stopped, exercise ID still set
+    if (remaining <= 0 && !isRunning && exerciseId !== null) {
+      const session = this.session();
+      const alreadyCompleted = session?.exercises.some(
+        (se) => se.exerciseId === exerciseId && se.completed,
+      );
+
+      if (!alreadyCompleted) {
+        this.onToggleComplete(exerciseId);
+      }
+
+      // Reset timer to prevent re-triggering the effect
+      this.timerStore.reset();
+    }
   });
 
   ngOnInit(): void {

@@ -79,7 +79,13 @@ export const TimerStore = signalStore(
       const remaining = store.remainingMs();
       if (remaining <= 0) {
         audioAlert.playBeep();
-        resetState();
+        clearTick();
+        // Stop the timer but keep currentExerciseId so the dashboard
+        // can react to the expiration and auto-complete the exercise.
+        patchState(store, {
+          isRunning: false,
+          pausedRemainingMs: 0,
+        });
       }
     };
 
