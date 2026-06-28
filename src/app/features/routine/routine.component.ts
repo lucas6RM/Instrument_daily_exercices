@@ -81,6 +81,15 @@ export class RoutineComponent {
   }
 
   onDelete(id: string): void {
-    this.store.deleteExercise(id);
+    const exercise = this.store.exercises().find((e) => e.id === id);
+    if (!exercise) {
+      return;
+    }
+    const confirmed = confirm(
+      `Êtes-vous sûr de vouloir supprimer « ${exercise.name} » ?`,
+    );
+    if (confirmed) {
+      this.store.deleteExercise(id);
+    }
   }
 }
