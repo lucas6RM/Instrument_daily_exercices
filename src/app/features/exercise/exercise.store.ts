@@ -29,9 +29,7 @@ export const ExerciseStore = signalStore(
     },
     updateExercise(id: string, changes: Partial<Exercise>): void {
       patchState(store, {
-        exercises: store
-          .exercises()
-          .map((e) => (e.id === id ? { ...e, ...changes } : e)),
+        exercises: store.exercises().map((e) => (e.id === id ? { ...e, ...changes } : e)),
       });
     },
     deleteExercise(id: string): void {

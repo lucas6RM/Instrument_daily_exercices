@@ -1,7 +1,7 @@
-# Feature F4 : Daily Dashboard
+# Feature F5 : Weekly History View
 
 ## Spécification Technique Globale
-Tableau de bord quotidien avec checklist des exercices, bouton PLAY qui déclenche le timer overlay (F2), et barre de progression visuelle. C'est la vue principale (`/`) que l'utilisateur consulte quotidiennement.
+Vue hebdomadaire de l'historique des pratiques. Affiche la semaine en cours avec le temps passé journalier global, les exercices réalisés chaque jour, et le temps cumulé par exercice sur la semaine.
 
 > 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
 > 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
@@ -12,35 +12,37 @@ Tableau de bord quotidien avec checklist des exercices, bouton PLAY qui déclenc
 - Lint : `pnpm run lint`
 - Serve : `pnpm run serve`
 
-## Comportement
-- À l'ouverture, charger ou créer la session du jour (`DailySession` avec date d'aujourd'hui)
-- Afficher chaque exercice sous forme de ligne avec :
-  - Checkbox (coché = exercice terminé)
-  - Nom de l'exercice + durée cible
-  - Bouton PLAY → lance le timer avec la durée de l'exercice
-  - Lien YouTube (si présent) → ouvre dans nouvel onglet
-- Barre de progression : `completed / total` exercices + pourcentage visuel
-- À l'expiration du timer, cocher automatiquement l'exercice et sauvegarder la session
-- Calcul du temps réel passé par exercice (diff entre start et end du timer)
+## Données Affichées
+Pour chaque jour de la semaine (Lun → Dim) :
+- Date + jour de la semaine
+- Temps total de pratique (somme des `actualMinutes` des exercices complétés)
+- Liste des exercices réalisés (nom + durée effective)
+- Exercices non réalisés (grisés)
+
+Résumé hebdomadaire :
+- Temps total de la semaine
+- Temps par exercice (agrégé sur 7 jours)
+- Taux de complétion global (%)
+
+## Calculs
+- Semaine en cours : du lundi au dimanche inclus
+- Données sources : `progress.store.ts` → `DailySession[]` filtrées par date
+- Agrégation par exercice : `sum(actualMinutes)` groupé par `exerciseId`
 
 ## Composants Attendus
-- `DashboardComponent` — Route `/`, orchestrateur principal
-- `ExerciseRowComponent` — Ligne d'exercice avec checkbox, PLAY, lien YouTube
-- `ProgressBarComponent` — Barre de progression visuelle avec pourcentage
-
-## Connexion Timer → Dashboard
-- Le dashboard écoute le timer store : quand `remainingMs <= 0` et `currentExerciseId` correspond, il coche l'exercice
-- Le bouton PLAY injecte le timer store et appelle `start(exerciseId, exercise.durationMinutes * 60000)`
+- `HistoryComponent` — Route `/history`, vue principale de la semaine
+- `WeekDayCardComponent` — Carte par jour avec temps total et liste d'exercices (réalisés/non réalisés)
+- `WeeklySummaryComponent` — Résumé global (temps total, temps par exercice, %)
 
 ## Tableau d'Avancement (La Source de Vérité)
-^- [x] Tâche 1 : Créer `ProgressBarComponent` avec input `completedCount`, `totalCount` et affichage visuel (barre + %).
-^- [x] Tâche 2 : Créer `ExerciseRowComponent` avec checkbox, nom, durée, bouton PLAY, lien YouTube.
-- [x] Tâche 3 : Créer `DashboardComponent` qui charge la session du jour et affiche la liste + progress bar.
-- [x] Tâche 4 : Lier le bouton PLAY au timer store (`start(exerciseId, durationMs)`).
-- [x] Tâche 5 : Implémenter le auto-complete à l'expiration du timer (écoute du timer store → coche l'exercice → sauvegarde session).
-- [x] Tâche 6 : Sauvegarder la session dans le `progress.store.ts` à chaque changement de checkbox.
-- [x] Tâche 7 : Styler le dashboard avec Tailwind (responsive, liste épurée, accessible).
-- [x] Tâche 8 : Test unitaire du dashboard (chargement session, auto-complete, sauvegarde).
+^- [x] Tâche 1 : Étendre `progress.store.ts` avec un computed `getWeekSessions(startDate)` qui filtre les sessions d'une semaine.
+- [x] Tâche 2 : Créer un computed `getWeeklyStats()` qui agrège le temps par jour et par exercice.
+- [x] Tâche 3 : Créer `WeekDayCardComponent` avec affichage du jour, temps total, et liste d'exercices (réalisés/non réalisés).
+- [x] Tâche 4 : Créer `WeeklySummaryComponent` avec résumé (temps total, temps par exercice, taux de complétion).
+^- [x] Tâche 5 : Créer `HistoryComponent` qui affiche les 7 jours + résumé avec navigation semaine précédente/suivante.
+- [x] Tâche 6 : Implémenter la navigation entre semaines (boutons ← →) avec mise à jour des données.
+- [x] Tâche 7 : Style avec Tailwind (responsive, cartes épurées, code couleur vert/gris pour réalisé/non réalisé).
+^- [x] Tâche 8 : Test unitaire des computed du store (filtrage semaine, agrégation stats).
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
