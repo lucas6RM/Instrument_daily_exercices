@@ -4,6 +4,7 @@
 Interface d'administration pour gérer la routine d'exercices. Formulaire réactif pour ajouter/modifier un exercice. Liste avec boutons de suppression et réordonnancement. Les données sont persistées via le `exercise.store.ts` (F1) + LocalStorage.
 
 > 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
+> 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
 
 ## Standards du Projet & Commandes
 - Build : `pnpm run build`

@@ -1,4 +1,4 @@
-import { signal, computed } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import {
   patchState,
   signalStore,
@@ -8,18 +8,40 @@ import {
   withState,
 } from '@ngrx/signals';
 
+import { AudioAlertService } from '../../core/services/audio-alert.service';
+
 export const TimerStore = signalStore(
   { providedIn: 'root' },
   withState({
     isRunning: false,
-    remainingMs: 0,
     currentExerciseId: null as string | null,
     startTime: null as number | null,
+    endTime: null as number | null,
     durationMs: 0,
+    pausedRemainingMs: 0,
+    tickCounter: 0,
   }),
-  withComputed(({ remainingMs }) => {
+  withComputed((store) => {
+    const remainingMs = computed(() => {
+      // Force recalculation on every tick (tickCounter changes)
+      void store.tickCounter();
+
+      if (!store.isRunning()) {
+        return Math.max(0, store.pausedRemainingMs());
+      }
+
+      const end = store.endTime();
+      if (end === null) {
+        return 0;
+      }
+
+      return Math.max(0, end - Date.now());
+    });
+
     const remainingSeconds = computed(() => Math.ceil(remainingMs() / 1000));
+
     return {
+      remainingMs,
       remainingSeconds,
       formattedTime: computed(() => {
         const totalSeconds = remainingSeconds();
@@ -30,64 +52,86 @@ export const TimerStore = signalStore(
     };
   }),
   withMethods((store) => {
-    const intervalId = signal<ReturnType<typeof setInterval> | undefined>(undefined);
+    const audioAlert = inject(AudioAlertService);
+    const intervalId = { value: undefined as ReturnType<typeof setInterval> | undefined };
+
+    const clearTick = (): void => {
+      clearInterval(intervalId.value);
+      intervalId.value = undefined;
+    };
+
+    const resetState = (): void => {
+      clearTick();
+
+      patchState(store, {
+        isRunning: false,
+        currentExerciseId: null,
+        startTime: null,
+        endTime: null,
+        durationMs: 0,
+        pausedRemainingMs: 0,
+      });
+    };
 
     const tick = (): void => {
-      const start = store.startTime();
-      const duration = store.durationMs();
+      patchState(store, (state) => ({ tickCounter: state.tickCounter + 1 }));
 
-      if (start === null || duration === 0) {
-        return;
-      }
-
-      const endTime = start + duration;
-      const remaining = Math.max(0, endTime - Date.now());
-
-      patchState(store, { remainingMs: remaining });
-
+      const remaining = store.remainingMs();
       if (remaining <= 0) {
-        patchState(store, { isRunning: false });
-        clearInterval(intervalId());
-        intervalId.set(undefined);
+        audioAlert.playBeep();
+        resetState();
       }
     };
 
     return {
       start(exerciseId: string, durationMs: number): void {
-        clearInterval(intervalId());
-        intervalId.set(undefined);
+        clearTick();
 
         const now = Date.now();
 
         patchState(store, {
           isRunning: true,
-          remainingMs: durationMs,
           currentExerciseId: exerciseId,
           startTime: now,
+          endTime: now + durationMs,
           durationMs,
+          pausedRemainingMs: 0,
         });
 
-        const id = setInterval(tick, 250);
-        intervalId.set(id);
+        intervalId.value = setInterval(tick, 250);
       },
 
       pause(): void {
-        clearInterval(intervalId());
-        intervalId.set(undefined);
-        patchState(store, { isRunning: false });
-      },
+        clearTick();
 
-      reset(): void {
-        clearInterval(intervalId());
-        intervalId.set(undefined);
+        const start = store.startTime();
+        const duration = store.durationMs();
+        const elapsed = start !== null ? Date.now() - start : 0;
+        const remaining = Math.max(0, duration - elapsed);
+
         patchState(store, {
           isRunning: false,
-          remainingMs: 0,
-          currentExerciseId: null,
-          startTime: null,
-          durationMs: 0,
+          pausedRemainingMs: remaining,
         });
       },
+
+      resume(): void {
+        const remaining = store.pausedRemainingMs();
+        if (remaining <= 0) {
+          return;
+        }
+
+        patchState(store, {
+          isRunning: true,
+          startTime: Date.now(),
+          endTime: Date.now() + remaining,
+          durationMs: remaining,
+        });
+
+        intervalId.value = setInterval(tick, 250);
+      },
+
+      reset: resetState,
     };
   }),
   withHooks(({ pause }) => ({
