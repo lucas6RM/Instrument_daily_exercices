@@ -33,14 +33,14 @@ Tableau de bord quotidien avec checklist des exercices, bouton PLAY qui déclenc
 - Le bouton PLAY injecte le timer store et appelle `start(exerciseId, exercise.durationMinutes * 60000)`
 
 ## Tableau d'Avancement (La Source de Vérité)
-- [ ] Tâche 1 : Créer `ProgressBarComponent` avec input `completedCount`, `totalCount` et affichage visuel (barre + %).
-- [ ] Tâche 2 : Créer `ExerciseRowComponent` avec checkbox, nom, durée, bouton PLAY, lien YouTube.
-- [ ] Tâche 3 : Créer `DashboardComponent` qui charge la session du jour et affiche la liste + progress bar.
-- [ ] Tâche 4 : Lier le bouton PLAY au timer store (`start(exerciseId, durationMs)`).
-- [ ] Tâche 5 : Implémenter le auto-complete à l'expiration du timer (écoute du timer store → coche l'exercice → sauvegarde session).
-- [ ] Tâche 6 : Sauvegarder la session dans le `progress.store.ts` à chaque changement de checkbox.
-- [ ] Tâche 7 : Styler le dashboard avec Tailwind (responsive, liste épurée, accessible).
-- [ ] Tâche 8 : Test unitaire du dashboard (chargement session, auto-complete, sauvegarde).
+^- [x] Tâche 1 : Créer `ProgressBarComponent` avec input `completedCount`, `totalCount` et affichage visuel (barre + %).
+^- [x] Tâche 2 : Créer `ExerciseRowComponent` avec checkbox, nom, durée, bouton PLAY, lien YouTube.
+- [x] Tâche 3 : Créer `DashboardComponent` qui charge la session du jour et affiche la liste + progress bar.
+- [x] Tâche 4 : Lier le bouton PLAY au timer store (`start(exerciseId, durationMs)`).
+- [x] Tâche 5 : Implémenter le auto-complete à l'expiration du timer (écoute du timer store → coche l'exercice → sauvegarde session).
+- [x] Tâche 6 : Sauvegarder la session dans le `progress.store.ts` à chaque changement de checkbox.
+- [x] Tâche 7 : Styler le dashboard avec Tailwind (responsive, liste épurée, accessible).
+- [x] Tâche 8 : Test unitaire du dashboard (chargement session, auto-complete, sauvegarde).
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
