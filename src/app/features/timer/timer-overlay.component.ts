@@ -9,13 +9,17 @@ import { TimerStore } from './timer.store';
   template: `
     @if (visible()) {
       <div
-        class="fixed top-4 right-4 z-[1000] bg-slate-900 text-white p-4 px-6 rounded-xl shadow-xl flex flex-col items-center gap-2 min-w-[140px]"
+        class="fixed top-4 right-4 z-1000 bg-slate-900 text-white p-4 px-6 rounded-xl shadow-xl flex flex-col items-center gap-2 min-w-35"
         role="timer"
         aria-live="polite"
         aria-atomic="true"
-        [attr.aria-label]="'Compte à rebours : ' + formattedTime() + ', exercice : ' + exerciseName()"
+        [attr.aria-label]="
+          'Compte à rebours : ' + formattedTime() + ', exercice : ' + exerciseName()
+        "
       >
-        <span class="text-5xl font-bold tabular-nums leading-none tracking-wide">{{ formattedTime() }}</span>
+        <span class="text-5xl font-bold tabular-nums leading-none tracking-wide">{{
+          formattedTime()
+        }}</span>
         @if (exerciseName()) {
           <span class="text-sm text-gray-400 text-center">{{ exerciseName() }}</span>
         }
@@ -26,26 +30,34 @@ import { TimerStore } from './timer.store';
               (click)="pause()"
               aria-label="Pause"
               class="bg-transparent border border-white/30 text-white py-1.5 px-3 rounded cursor-pointer text-xs transition-colors duration-200 hover:bg-white/10 hover:border-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-            >⏸ Pause</button>
+            >
+              ⏸ Pause
+            </button>
             <button
               type="button"
               (click)="reset()"
               aria-label="Stop"
               class="bg-transparent border border-white/30 text-white py-1.5 px-3 rounded cursor-pointer text-xs transition-colors duration-200 hover:bg-white/10 hover:border-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-            >⏹ Stop</button>
+            >
+              ⏹ Stop
+            </button>
           } @else {
             <button
               type="button"
               (click)="resume()"
               aria-label="Resume"
               class="bg-transparent border border-white/30 text-white py-1.5 px-3 rounded cursor-pointer text-xs transition-colors duration-200 hover:bg-white/10 hover:border-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-            >▶ Resume</button>
+            >
+              ▶ Resume
+            </button>
             <button
               type="button"
               (click)="reset()"
               aria-label="Stop"
               class="bg-transparent border border-white/30 text-white py-1.5 px-3 rounded cursor-pointer text-xs transition-colors duration-200 hover:bg-white/10 hover:border-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-            >⏹ Stop</button>
+            >
+              ⏹ Stop
+            </button>
           }
         </div>
       </div>
@@ -67,14 +79,11 @@ export class TimerOverlayComponent {
     if (!exerciseId) {
       return '';
     }
-    const exercise = this.exerciseStore
-      .exercises()
-      .find((e) => e.id === exerciseId);
+    const exercise = this.exerciseStore.exercises().find((e) => e.id === exerciseId);
     return exercise?.name ?? '';
   });
 
   protected readonly visible = computed(
-    () =>
-      this.timerStore.isRunning() || this.timerStore.pausedRemainingMs() > 0,
+    () => this.timerStore.isRunning() || this.timerStore.pausedRemainingMs() > 0,
   );
 }
