@@ -9,14 +9,20 @@ import { Exercise } from '../../../../core/models/exercise';
     @let ex = exercise();
     @let completed = isCompleted();
 
-    <div class="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm transition-colors hover:bg-gray-50">
+    <div
+      class="group flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-all duration-200 ease-in-out hover:border-blue-200 hover:shadow-md sm:gap-4"
+      [class.border-green-200]="completed"
+      [class.bg-green-50]="completed"
+    >
       <div class="flex shrink-0 items-center">
         <input
           type="checkbox"
           [id]="'checkbox-' + ex.id"
           [checked]="completed"
           (change)="toggleComplete.emit()"
-          class="h-5 w-5 rounded border-gray-300 text-blue-600 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          class="h-5 w-5 cursor-pointer rounded border-gray-300 text-blue-600 shadow-sm transition-all duration-150 ease-in-out hover:border-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          [class.border-green-400]="completed"
+          [class.text-green-600]="completed"
         />
         <label
           [for]="'checkbox-' + ex.id"
@@ -30,7 +36,7 @@ import { Exercise } from '../../../../core/models/exercise';
         <span
           [class.line-through]="completed"
           [class.text-gray-400]="completed"
-          class="block truncate text-sm font-medium text-gray-900"
+          class="block truncate text-sm font-medium text-gray-900 transition-colors duration-200"
         >
           {{ ex.name }}
         </span>
@@ -44,10 +50,10 @@ import { Exercise } from '../../../../core/models/exercise';
           type="button"
           (click)="playExercise.emit()"
           aria-label="Lancer le timer pour {{ ex.name }}"
-          class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all duration-150 ease-in-out hover:bg-blue-500 hover:shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:scale-95 sm:px-4 sm:py-2 sm:text-sm"
         >
           <svg
-            class="h-3.5 w-3.5"
+            class="h-3.5 w-3.5 sm:h-4 sm:w-4"
             fill="currentColor"
             viewBox="0 0 24 24"
             aria-hidden="true"
@@ -63,7 +69,7 @@ import { Exercise } from '../../../../core/models/exercise';
             target="_blank"
             rel="noopener noreferrer"
             [attr.aria-label]="'Voir la vidéo YouTube pour ' + ex.name"
-            class="inline-flex items-center rounded-lg p-1.5 text-red-600 transition-colors hover:bg-red-50 hover:text-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+            class="inline-flex items-center rounded-lg p-1.5 text-red-600 transition-all duration-150 ease-in-out hover:bg-red-50 hover:text-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
           >
             <svg
               class="h-5 w-5"

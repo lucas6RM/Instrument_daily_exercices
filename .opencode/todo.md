@@ -39,7 +39,7 @@ Tableau de bord quotidien avec checklist des exercices, bouton PLAY qui déclenc
 - [x] Tâche 4 : Lier le bouton PLAY au timer store (`start(exerciseId, durationMs)`).
 - [x] Tâche 5 : Implémenter le auto-complete à l'expiration du timer (écoute du timer store → coche l'exercice → sauvegarde session).
 - [x] Tâche 6 : Sauvegarder la session dans le `progress.store.ts` à chaque changement de checkbox.
-- [ ] Tâche 7 : Styler le dashboard avec Tailwind (responsive, liste épurée, accessible).
+- [x] Tâche 7 : Styler le dashboard avec Tailwind (responsive, liste épurée, accessible).
 - [ ] Tâche 8 : Test unitaire du dashboard (chargement session, auto-complete, sauvegarde).
 
 ## Zone de Transit & Logs

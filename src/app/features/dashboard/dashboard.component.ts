@@ -15,22 +15,45 @@ function getTodayIso(): string {
   selector: 'app-dashboard',
   imports: [ExerciseRowComponent, ProgressBarComponent],
   template: `
-    <div class="mx-auto max-w-2xl px-4 py-6">
-      <h1 class="mb-6 text-2xl font-bold text-gray-900">
-        Séance du jour
-      </h1>
+    <main class="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12">
+      <header class="mb-6 sm:mb-8">
+        <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+          Séance du jour
+        </h1>
+        <p class="mt-2 text-sm text-gray-500">
+          Vos exercices quotidiens — restez régulier !
+        </p>
+      </header>
 
-      <app-progress-bar
-        [completedCount]="completedCount()"
-        [totalCount]="totalCount()"
-      />
+      <section aria-label="Progression de la séance">
+        <app-progress-bar
+          [completedCount]="completedCount()"
+          [totalCount]="totalCount()"
+        />
+      </section>
 
       @if (exercisesWithProgress().length === 0) {
-        <p class="mt-6 text-center text-gray-500">
-          Aucun exercice configuré. Ajoutez des exercices dans la rubrique Routine.
-        </p>
+        <div class="mt-6 sm:mt-8 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 py-12 text-center">
+          <svg
+            class="mx-auto h-12 w-12 text-gray-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M12 6v6l4 2"
+            />
+          </svg>
+          <p class="mt-4 text-sm text-gray-500">
+            Aucun exercice configuré. Ajoutez des exercices dans la rubrique Routine.
+          </p>
+        </div>
       } @else {
-        <div class="mt-6 space-y-3" role="list" aria-label="Liste des exercices">
+        <div class="mt-6 sm:mt-8 space-y-3" role="list" aria-label="Liste des exercices">
           @for (item of exercisesWithProgress(); track item.exercise.id) {
             <app-exercise-row
               role="listitem"
@@ -42,7 +65,7 @@ function getTodayIso(): string {
           }
         </div>
       }
-    </div>
+    </main>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
