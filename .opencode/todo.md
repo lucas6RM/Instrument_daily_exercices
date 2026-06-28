@@ -40,7 +40,7 @@ Résumé hebdomadaire :
 - [x] Tâche 3 : Créer `WeekDayCardComponent` avec affichage du jour, temps total, et liste d'exercices (réalisés/non réalisés).
 - [x] Tâche 4 : Créer `WeeklySummaryComponent` avec résumé (temps total, temps par exercice, taux de complétion).
 ^- [x] Tâche 5 : Créer `HistoryComponent` qui affiche les 7 jours + résumé avec navigation semaine précédente/suivante.
-- [ ] Tâche 6 : Implémenter la navigation entre semaines (boutons ← →) avec mise à jour des données.
+- [x] Tâche 6 : Implémenter la navigation entre semaines (boutons ← →) avec mise à jour des données.
 - [ ] Tâche 7 : Style avec Tailwind (responsive, cartes épurées, code couleur vert/gris pour réalisé/non réalisé).
 - [ ] Tâche 8 : Test unitaire des computed du store (filtrage semaine, agrégation stats).
 
