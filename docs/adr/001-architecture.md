@@ -67,3 +67,33 @@ Navigation via un composant `NavigationComponent` injecté dans `app.html`.
 - **+** Simplicité
 - **+** Pas de nested routing à gérer
 - **-** La navigation est répétée dans chaque route (gérée par app.html)
+
+---
+
+# ADR-004 : Workflow Agentic Unifié Feature / Fix
+
+## Statut
+Accepté
+
+## Contexte
+Le projet utilise un workflow agentic avec trois agents (Mastermind, Worker, Reviewer) pour implémenter des features définies dans `docs/feat/`. Un besoin apparaît pour supporter aussi la résolution de bugs via `docs/fix/`.
+
+## Décision
+Un **flow unique** pour les features et les fixes. Le Mastermind est paramétrable par le type de spec (feat ou fix) :
+
+| Aspect | Feature | Fix |
+|--------|---------|-----|
+| Source | `docs/feat/FX-xxx.md` | `docs/fix/BX-xxx.md` |
+| Branch | `feat/xxx` | `fix/xxx` |
+| Spec format | Identique | Identique |
+| Boucle | Worker → Reviewer | Worker → Reviewer |
+| PR | Obligatoire | Obligatoire |
+| Scope | Une feature | Un ou plusieurs bugs regroupés |
+
+Le Worker et le Reviewer restent agnostiques — ils lisent `.opencode/todo.md` sans distinction.
+
+## Conséquences
+- **+** Un seul Mastermind à maintenir
+- **+** Worker et Reviewer réutilisés sans modification
+- **+** L'utilisateur contrôle le scope en découpant intelligemment les specs
+- **-** Pas de fast-track pour les fixes urgents (à ajouter si besoin)
