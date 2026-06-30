@@ -152,15 +152,15 @@ Une fois les 3 services migrés et les consommateurs mis à jour :
 ## Tableau d'Avancement (La Source de Vérité)
 
 ### Phase 1 — TimerService (le plus complexe, plus de bugs)
-- [ ] Tâche 1 : Créer `src/app/features/timer/timer.service.ts` avec les signals `isRunning`, `currentExerciseId`, `endTime`, `durationMs`, `pausedRemainingMs`.
-- [ ] Tâche 2 : Implémenter le tick réactif avec `interval(250)` + `toSignal()` et les computed `remainingMs`, `remainingSeconds`, `formattedTime`.
-- [ ] Tâche 3 : Implémenter les méthodes `start()`, `pause()`, `resume()`, `reset()` avec la logique `Date.now()` diff (ADR-002).
-- [ ] Tâche 4 : Ajouter le `Subject<TimerExpiredEvent>` + `expired$` observable, émis à l'expiration avec `AudioAlertService.playBeep()`.
-- [ ] Tâche 5 : Implémenter `ngOnDestroy()` pour cleanup du timer.
+- [x] Tâche 1 : Créer `src/app/features/timer/timer.service.ts` avec les signals `isRunning`, `currentExerciseId`, `endTime`, `durationMs`, `pausedRemainingMs`.
+- [x] Tâche 2 : Implémenter le tick réactif avec `interval(250)` + `toSignal()` et les computed `remainingMs`, `remainingSeconds`, `formattedTime`.
+- [x] Tâche 3 : Implémenter les méthodes `start()`, `pause()`, `resume()`, `reset()` avec la logique `Date.now()` diff (ADR-002).
+- [x] Tâche 4 : Ajouter le `Subject<TimerExpiredEvent>` + `expired$` observable, émis à l'expiration avec `AudioAlertService.playBeep()`.
+- [x] Tâche 5 : Implémenter `ngOnDestroy()` pour cleanup du timer.
 - [ ] Tâche 6 : Migrer `TimerOverlayComponent` pour injecter `TimerService` à la place de `TimerStore`.
 - [ ] Tâche 7 : Migrer `DashboardComponent` — remplacer l'`effect()` d'expiration par l'écoute de `expired$` via `toSignal()`.
-- [ ] Tâche 8 : Écrire les tests unitaires du `TimerService` (couverture équivalente à `timer.store.spec.ts`).
-- [ ] Tâche 9 : Supprimer `timer.store.ts` et `timer.store.spec.ts`.
+- [x] Tâche 8 : Écrire les tests unitaires du `TimerService` (couverture équivalente à `timer.store.spec.ts`).
+- [x] Tâche 9 : Supprimer `timer.store.ts` et `timer.store.spec.ts`.
 
 ### Phase 2 — ExerciseService
 - [ ] Tâche 10 : Créer `src/app/features/exercise/exercise.service.ts` avec le signal `exercises`, le computed `sortedExercises`, et les méthodes CRUD.
@@ -173,14 +173,14 @@ Une fois les 3 services migrés et les consommateurs mis à jour :
 - [ ] Tâche 15 : Créer `src/app/features/progress/progress.service.ts` avec le signal `dailySessions` et toutes les méthodes (`getSession`, `streak`, `addSession`, `updateSession`, `deleteSession`, `getWeekSessions`, `getWeeklyStats`).
 - [ ] Tâche 16 : Implémenter la persistance LocalStorage explicite (`persist()` après chaque mutation) + chargement à l'init.
 - [ ] Tâche 17 : Migrer `DashboardComponent` et `HistoryComponent` pour injecter `ProgressService`.
-- [ ] Tâche 18 : Adapter les tests existants de `progress.store.spec.ts` vers `progress.service.spec.ts`.
+- [x] Tâche 18 : Adapter les tests existants de `progress.store.spec.ts` vers `progress.service.spec.ts`.
 - [ ] Tâche 19 : Supprimer `progress.store.ts` et `progress.store.spec.ts`.
 
 ### Phase 4 — Nettoyage NgRx
-- [ ] Tâche 20 : Vérifier qu'aucun import `@ngrx/signals` ne subsiste dans le codebase.
-- [ ] Tâche 21 : Supprimer `@ngrx/signals` de `package.json` via `pnpm remove @ngrx/signals`.
-- [ ] Tâche 22 : Mettre à jour ADR-001 pour refléter l'architecture Services Signals natifs.
-- [ ] Tâche 23 : Build + lint + test final pour valider la migration complète.
+- [x] Tâche 20 : Vérifier qu'aucun import `@ngrx/signals` ne subsiste dans le codebase.
+- [x] Tâche 21 : Supprimer `@ngrx/signals` de `package.json` via `pnpm remove @ngrx/signals`.
+- [x] Tâche 22 : Mettre à jour ADR-001 pour refléter l'architecture Services Signals natifs.
+- [x] Tâche 23 : Build + lint + test final pour valider la migration complète.
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
