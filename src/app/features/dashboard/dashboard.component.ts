@@ -5,6 +5,7 @@ import {
   computed,
   inject,
   ApplicationRef,
+  effect,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'; // Pour nettoyer proprement l'abonnement
 import { DailySession } from '../../core/models';
@@ -22,40 +23,7 @@ function getTodayIso(): string {
 @Component({
   selector: 'app-dashboard',
   imports: [ExerciseRowComponent, ProgressBarComponent],
-  template: `
-    <main class="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12">
-      <header class="mb-6 sm:mb-8">
-        <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Séance du jour</h1>
-        <p class="mt-2 text-sm text-gray-500">Vos exercices quotidiens — restez régulier !</p>
-      </header>
-
-      <section aria-label="Progression de la séance">
-        <app-progress-bar [completedCount]="completedCount()" [totalCount]="totalCount()" />
-      </section>
-
-      @if (exercisesWithProgress().length === 0) {
-        <div
-          class="mt-6 sm:mt-8 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 py-12 text-center"
-        >
-          <p class="mt-4 text-sm text-gray-500">
-            Aucun exercice configuré. Ajoutez des exercices dans la rubrique Routine.
-          </p>
-        </div>
-      } @else {
-        <div class="mt-6 sm:mt-8 space-y-3" role="list" aria-label="Liste des exercices">
-          @for (item of exercisesWithProgress(); track item.exercise.id) {
-            <app-exercise-row
-              role="listitem"
-              [exercise]="item.exercise"
-              [isCompleted]="item.completed"
-              (playExercise)="onPlayExercise(item.exercise.id)"
-            />
-          }
-        </div>
-      }
-    </main>
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
   private readonly progressService = inject(ProgressService);
@@ -120,16 +88,35 @@ export class DashboardComponent implements OnInit {
     const exercise = this.exerciseService.sortedExercises().find((ex) => ex.id === exerciseId);
     const current = this.progressService.getSession(this.today);
 
-    if (!exercise || !current) return;
+    if (!exercise || !current) {
+      return;
+    }
 
-    // Mise à jour de l'état directement dans le service global
-    const updatedExercises = current.exercises.map((se) =>
-      se.exerciseId === exerciseId
-        ? { ...se, completed: true, actualMinutes: exercise.durationSeconds }
-        : se,
-    );
+    // 1. On vérifie si l'exercice fait déjà partie de la séance enregistrée
+    const hasExercise = current.exercises.some((se) => se.exerciseId === exerciseId);
 
-    this.progressService.addSession({ ...current, exercises: updatedExercises });
+    let updatedExercises;
+    if (hasExercise) {
+      // S'il existe, on le met à jour classiquement
+      updatedExercises = current.exercises.map((se) =>
+        se.exerciseId === exerciseId
+          ? { ...se, completed: true, actualMinutes: exercise.durationSeconds }
+          : se,
+      );
+    } else {
+      // S'il n'existe pas (ajouté après la création de la séance), on l'injecte dynamiquement !
+      updatedExercises = [
+        ...current.exercises,
+        {
+          exerciseId: exerciseId,
+          completed: true,
+          actualMinutes: exercise.durationSeconds,
+        },
+      ];
+    }
+
+    const updated = { ...current, exercises: updatedExercises };
+    this.progressService.addSession(updated);
   }
 
   onPlayExercise(exerciseId: string): void {

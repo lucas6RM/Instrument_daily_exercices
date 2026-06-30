@@ -114,9 +114,6 @@ importers:
       vitest:
         specifier: ^4.1.9
         version: 4.1.9(@types/node@26.0.1)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@7.3.5(@types/node@26.0.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.46.2))
-      zone.js:
-        specifier: ^0.16.2
-        version: 0.16.2
 
 packages:
 
@@ -11568,4 +11565,5 @@ snapshots:
 
   zod@4.4.2: {}
 
-  zone.js@0.16.2: {}
+  zone.js@0.16.2:
+    optional: true

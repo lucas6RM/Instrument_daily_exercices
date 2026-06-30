@@ -38,9 +38,7 @@ export class ExerciseService {
   }
 
   updateExercise(id: string, changes: Partial<Exercise>): void {
-    this.exercises.update((list) =>
-      list.map((e) => (e.id === id ? { ...e, ...changes } : e)),
-    );
+    this.exercises.update((list) => list.map((e) => (e.id === id ? { ...e, ...changes } : e)));
   }
 
   deleteExercise(id: string): void {

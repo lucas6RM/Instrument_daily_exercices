@@ -4,40 +4,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 @Component({
   selector: 'app-navigation',
   imports: [RouterLink, RouterLinkActive],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <nav aria-label="Navigation principale">
-      <ul>
-        <li>
-          <a
-            routerLink="/"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            Dashboard
-          </a>
-        </li>
-        <li>
-          <a
-            routerLink="/routine"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            Routine
-          </a>
-        </li>
-        <li>
-          <a
-            routerLink="/history"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            Historique
-          </a>
-        </li>
-      </ul>
-    </nav>
-  `,
+  templateUrl: './navigation.component.html',
   styles: `
     nav {
       background-color: #1a1a2e;

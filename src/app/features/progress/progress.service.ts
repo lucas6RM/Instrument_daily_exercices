@@ -34,7 +34,10 @@ export class ProgressService {
       return 0;
     }
 
-    const dates = sessions.map((s) => s.date).sort().reverse();
+    const dates = sessions
+      .map((s) => s.date)
+      .sort()
+      .reverse();
     let streak = 0;
 
     for (const dateStr of dates) {
