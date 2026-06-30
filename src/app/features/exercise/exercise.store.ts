@@ -50,6 +50,7 @@ export const ExerciseStore = signalStore(
   })),
   withHooks((store) => ({
     onInit(): void {
+      store.loadFromStorage();
       const storageService = inject(StorageService);
       effect(() => {
         const exercises = store.exercises();
