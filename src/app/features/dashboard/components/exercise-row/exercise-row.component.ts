@@ -40,7 +40,7 @@ import { Exercise } from '../../../../core/models/exercise';
         >
           {{ ex.name }}
         </span>
-        <span class="block truncate text-xs text-gray-500"> {{ ex.durationMinutes }} min </span>
+        <span class="block truncate text-xs text-gray-500"> {{ ex.durationSeconds }} s </span>
       </div>
 
       <p class="flex-1 w-full">{{ ex.description }}</p>

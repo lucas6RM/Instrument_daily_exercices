@@ -12,7 +12,7 @@ import { Exercise } from '../../core/models/exercise';
 
 interface ExerciseFormValue {
   name: string;
-  durationMinutes: number;
+  durationSeconds: number;
   youtubeUrl: string;
   description: string;
 }
@@ -64,28 +64,28 @@ function positiveNumberValidator(): (control: AbstractControl<number | null>) =>
         <!-- Duration -->
         <div>
           <label for="exercise-duration" class="block text-sm font-medium text-gray-700">
-            Durée (minutes)
+            Durée (secondes)
             <span class="text-red-600" aria-hidden="true">*</span>
           </label>
           <input
             id="exercise-duration"
             type="number"
             min="1"
-            formControlName="durationMinutes"
+            formControlName="durationSeconds"
             required
             aria-required="true"
-            [attr.aria-invalid]="form.get('durationMinutes')?.invalid && form.get('durationMinutes')?.touched ? 'true' : null"
-            [attr.aria-describedby]="form.get('durationMinutes')?.invalid && form.get('durationMinutes')?.touched ? 'duration-error' : null"
+            [attr.aria-invalid]="form.get('durationSeconds')?.invalid && form.get('durationSeconds')?.touched ? 'true' : null"
+            [attr.aria-describedby]="form.get('durationSeconds')?.invalid && form.get('durationSeconds')?.touched ? 'duration-error' : null"
             class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          @if (form.get('durationMinutes')?.invalid && form.get('durationMinutes')?.touched) {
+          @if (form.get('durationSeconds')?.invalid && form.get('durationSeconds')?.touched) {
             <p id="duration-error" class="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-600" role="alert">
               <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
               </svg>
-              @if (form.get('durationMinutes')?.errors?.['required']) {
+              @if (form.get('durationSeconds')?.errors?.['required']) {
                 La durée est requise.
-              } @else if (form.get('durationMinutes')?.errors?.['positive']) {
+              } @else if (form.get('durationSeconds')?.errors?.['positive']) {
                 La durée doit être supérieure à 0.
               }
             </p>
@@ -179,7 +179,7 @@ export class ExerciseFormComponent {
 
   readonly form = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    durationMinutes: new FormControl(0, [Validators.required, positiveNumberValidator()]),
+    durationSeconds: new FormControl(0, [Validators.required, positiveNumberValidator()]),
     youtubeUrl: new FormControl(''),
     description: new FormControl(''),
   });
@@ -190,14 +190,14 @@ export class ExerciseFormComponent {
       if (ex) {
         this.form.patchValue({
           name: ex.name,
-          durationMinutes: ex.durationMinutes,
+          durationSeconds: ex.durationSeconds,
           youtubeUrl: ex.youtubeUrl ?? '',
           description: ex.description ?? '',
         });
       } else {
         this.form.reset({
           name: '',
-          durationMinutes: 0,
+          durationSeconds: 0,
           youtubeUrl: '',
           description: '',
         });

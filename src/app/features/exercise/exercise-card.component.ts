@@ -18,7 +18,7 @@ import { Exercise } from '../../core/models/exercise';
           </h3>
 
           <p class="mt-1 text-sm text-gray-600">
-            Durée : {{ ex.durationMinutes }} min
+            Durée : {{ ex.durationSeconds }} s
           </p>
 
           @if (ex.youtubeUrl) {

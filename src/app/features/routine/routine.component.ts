@@ -6,7 +6,7 @@ import { Exercise } from '../../core/models/exercise';
 
 interface ExerciseFormValue {
   name: string;
-  durationMinutes: number;
+  durationSeconds: number;
   youtubeUrl: string;
   description: string;
 }

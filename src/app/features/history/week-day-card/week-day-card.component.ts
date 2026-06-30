@@ -102,7 +102,7 @@ import { Exercise, WeekDayStats } from '../../../core/models';
                   {{ ex.name }}
                 </span>
                 <span class="text-xs text-gray-400">
-                  {{ ex.durationMinutes }} min
+                  {{ ex.durationSeconds }} s
                 </span>
               </li>
             }
