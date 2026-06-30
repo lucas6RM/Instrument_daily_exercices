@@ -68,7 +68,7 @@ export interface DailySession {
 - [x] Tâche 6 : Mettre à jour `HistoryComponent` pour ne plus passer `scheduledExercises` aux cartes
 - [x] Tâche 7 : Mettre à jour `getWeeklyStats` pour utiliser `exerciseName`
 - [x] Tâche 8 : Supprimer le nettoyage en cascade de `deleteExercise` vers les sessions (s'il existe)
-- [ ] Tâche 9 : Gérer l'affichage fallback "(nom inconnu)" pour les anciennes séances
+- [x] Tâche 9 : Gérer l'affichage fallback "(nom inconnu)" pour les anciennes séances
 - [ ] Tâche 10 : Tests unitaires mis à jour (`ProgressService`, `ExerciseService`, composants)
 
 ## Zone de Transit & Logs
