@@ -101,7 +101,7 @@ describe('ExerciseRowComponent', () => {
       const nativeElement = fixture.nativeElement as HTMLElement;
       const checkbox = nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement | null;
       expect(checkbox).toBeTruthy();
-      expect(checkbox?.readOnly).toBe(true);
+      expect(checkbox?.disabled).toBe(true);
       expect(checkbox?.tabIndex).toBe(-1);
     });
 

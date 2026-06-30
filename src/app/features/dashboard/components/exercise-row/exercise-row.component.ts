@@ -23,6 +23,13 @@ import { Exercise } from '../../../../core/models/exercise';
           [attr.aria-label]="'Marquer ' + ex.name + ' comme terminé'"
           [class]="'h-5 w-5 rounded border transition-all duration-150 ease-in-out'"
         />
+        @if (completed) {
+          <span class="text-green-600 absolute inset-0 flex items-center justify-center pointer-events-none">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </span>
+        }
       </div>
 
       <div class="min-w-0 flex-1">

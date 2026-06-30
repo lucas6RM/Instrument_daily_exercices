@@ -68,11 +68,11 @@ Les exercices et la progression ne persistent pas correctement après un recharg
 - [x] Tâche 2 : Hydrater le ProgressStore au démarrage
 - [x] Tâche 3 : Timer uniquement pour compléter + `actualMinutes`
 - [x] Tâche 4 : Vérifier les tests E2E
-- [ ] Tâche 5 : Correction du test C2 — completion multiple exercices
+- [x] Tâche 5 : Correction du test C2 — completion multiple exercices
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Tâche 5
+- Aucune
 
 ### Compteur de rejets (tâche actuelle) :
 - 0 / 5
