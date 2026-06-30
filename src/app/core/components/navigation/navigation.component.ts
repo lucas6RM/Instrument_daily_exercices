@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -24,7 +24,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       text-decoration: none;
       padding: 0.5rem 1rem;
       border-radius: 4px;
-      transition: background-color 0.2s, color 0.2s;
+      transition:
+        background-color 0.2s,
+        color 0.2s;
     }
 
     a:hover {

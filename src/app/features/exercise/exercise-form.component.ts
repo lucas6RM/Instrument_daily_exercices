@@ -1,13 +1,12 @@
+import { Component, afterNextRender, effect, input, output, viewChild } from '@angular/core';
 import {
-  ChangeDetectionStrategy,
-  Component,
-  afterNextRender,
-  effect,
-  input,
-  output,
-  viewChild,
-} from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Exercise } from '../../core/models/exercise';
 
 interface ExerciseFormValue {
@@ -17,7 +16,9 @@ interface ExerciseFormValue {
   description: string;
 }
 
-function positiveNumberValidator(): (control: AbstractControl<number | null>) => ValidationErrors | null {
+function positiveNumberValidator(): (
+  control: AbstractControl<number | null>,
+) => ValidationErrors | null {
   return (control) => {
     const value = control.value;
     if (value == null) {

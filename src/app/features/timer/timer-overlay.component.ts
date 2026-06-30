@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 
 import { ExerciseService } from '../exercise/exercise.service';
 import { TimerService } from './timer.service';

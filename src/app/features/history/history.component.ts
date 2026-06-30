@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ExerciseService } from '../exercise/exercise.service';
 import { ProgressService } from '../progress/progress.service';
 import { WeekDayCardComponent } from './week-day-card/week-day-card.component';
@@ -38,12 +38,10 @@ export class HistoryComponent {
   readonly exercises = computed(() => this.exerciseService.sortedExercises());
 
   readonly weeklyStats = computed(() =>
-    this.progressService.getWeeklyStats(this.currentWeekStart())()
+    this.progressService.getWeeklyStats(this.currentWeekStart())(),
   );
 
-  readonly weekRangeLabel = computed(() =>
-    formatDateRange(this.currentWeekStart())
-  );
+  readonly weekRangeLabel = computed(() => formatDateRange(this.currentWeekStart()));
 
   readonly isNextWeekDisabled = computed(() => {
     const current = this.currentWeekStart();

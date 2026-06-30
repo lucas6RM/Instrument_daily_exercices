@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ExerciseService } from '../exercise/exercise.service';
+import { Component, computed, inject, signal } from '@angular/core';
+import { Exercise } from '../../core/models/exercise';
 import { ExerciseCardComponent } from '../exercise/exercise-card.component';
 import { ExerciseFormComponent } from '../exercise/exercise-form.component';
-import { Exercise } from '../../core/models/exercise';
+import { ExerciseService } from '../exercise/exercise.service';
 
 interface ExerciseFormValue {
   name: string;
@@ -53,9 +53,7 @@ export class RoutineComponent {
     if (!exercise) {
       return;
     }
-    const confirmed = confirm(
-      `Êtes-vous sûr de vouloir supprimer « ${exercise.name} » ?`,
-    );
+    const confirmed = confirm(`Êtes-vous sûr de vouloir supprimer « ${exercise.name} » ?`);
     if (confirmed) {
       this.exerciseService.deleteExercise(id);
       this.liveMessageSig.set(`Exercice « ${exercise.name} » supprimé.`);

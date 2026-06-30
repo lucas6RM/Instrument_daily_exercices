@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  computed,
-  inject,
-  ApplicationRef,
-  effect,
-} from '@angular/core';
+import { ApplicationRef, Component, OnInit, computed, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'; // Pour nettoyer proprement l'abonnement
 import { DailySession } from '../../core/models';
 import { ExerciseService } from '../exercise/exercise.service';
