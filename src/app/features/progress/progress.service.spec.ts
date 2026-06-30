@@ -321,6 +321,79 @@ describe('ProgressService', () => {
   });
 
   /* ------------------------------------------------------------------ */
+  /* addExerciseToTodaySession()                                         */
+  /* ------------------------------------------------------------------ */
+
+  describe('addExerciseToTodaySession()', () => {
+    const toLocalISOString = (date: Date): string => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+
+    it('should add the exercise to today session if it exists', () => {
+      const today = new Date();
+      const todayStr = toLocalISOString(today);
+
+      service.addSession({
+        date: todayStr,
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Ex1', completed: false, actualMinutes: 0 }],
+      });
+
+      service.addExerciseToTodaySession('e2', 'NewExercise');
+
+      const session = service.getSession(todayStr)!;
+      expect(session.exercises).toHaveLength(2);
+      expect(session.exercises[1]).toEqual({
+        exerciseId: 'e2',
+        exerciseName: 'NewExercise',
+        completed: false,
+        actualMinutes: 0,
+      });
+    });
+
+    it('should do nothing when there is no session for today', () => {
+      service.addSession({ date: '2025-01-01', exercises: [] });
+
+      service.addExerciseToTodaySession('e1', 'Exercise');
+
+      expect(service.dailySessions()).toHaveLength(1);
+      expect(service.getSession('2025-01-01')?.exercises).toHaveLength(0);
+    });
+
+    it('should not add a duplicate exercise', () => {
+      const today = new Date();
+      const todayStr = toLocalISOString(today);
+
+      service.addSession({
+        date: todayStr,
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Ex1', completed: false, actualMinutes: 0 }],
+      });
+
+      service.addExerciseToTodaySession('e1', 'Ex1');
+
+      const session = service.getSession(todayStr)!;
+      expect(session.exercises).toHaveLength(1);
+    });
+
+    it('should persist after adding the exercise', () => {
+      const today = new Date();
+      const todayStr = toLocalISOString(today);
+
+      service.addSession({
+        date: todayStr,
+        exercises: [],
+      });
+      setSpy.mockClear();
+
+      service.addExerciseToTodaySession('e1', 'Exercise');
+
+      expect(setSpy).toHaveBeenCalled();
+    });
+  });
+
+  /* ------------------------------------------------------------------ */
   /* loadFromStorage()                                                   */
   /* ------------------------------------------------------------------ */
 

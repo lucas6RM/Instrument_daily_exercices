@@ -4,16 +4,21 @@ import { ExerciseService } from './exercise.service';
 import { StorageService } from '../../core/services/storage.service';
 import { STORAGE_KEYS } from '../../core/services/storage-keys';
 import { Exercise } from '../../core/models/exercise';
+import { ProgressService } from '../progress/progress.service';
 
 describe('ExerciseService', () => {
   let service: ExerciseService;
   let getSpy: ReturnType<typeof vi.fn>;
   let setSpy: ReturnType<typeof vi.fn>;
   let appRef: ApplicationRef;
+  let progressServiceMock: { addExerciseToTodaySession: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     getSpy = vi.fn(() => null);
     setSpy = vi.fn();
+    progressServiceMock = {
+      addExerciseToTodaySession: vi.fn(),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -26,6 +31,10 @@ describe('ExerciseService', () => {
             remove: vi.fn(),
             keys: STORAGE_KEYS,
           },
+        },
+        {
+          provide: ProgressService,
+          useValue: progressServiceMock,
         },
       ],
     });
@@ -124,6 +133,18 @@ describe('ExerciseService', () => {
         expect.arrayContaining([
           expect.objectContaining({ name: 'Scales' }),
         ]),
+      );
+    });
+
+    it('should propagate the new exercise to today session via ProgressService', () => {
+      progressServiceMock.addExerciseToTodaySession.mockClear();
+      const exercise = { name: 'Scales', durationSeconds: 10, order: 1 };
+      service.addExercise(exercise);
+
+      const addedExercise = service.exercises()[0];
+      expect(progressServiceMock.addExerciseToTodaySession).toHaveBeenCalledWith(
+        addedExercise.id,
+        'Scales',
       );
     });
   });

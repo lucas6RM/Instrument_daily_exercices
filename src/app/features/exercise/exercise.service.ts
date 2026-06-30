@@ -3,10 +3,12 @@ import { effect, inject, Injectable, signal, computed } from '@angular/core';
 import { Exercise } from '../../core/models/exercise';
 import { STORAGE_KEYS } from '../../core/services/storage-keys';
 import { StorageService } from '../../core/services/storage.service';
+import { ProgressService } from '../progress/progress.service';
 
 @Injectable({ providedIn: 'root' })
 export class ExerciseService {
   private readonly storageService = inject(StorageService);
+  private readonly progressService = inject(ProgressService);
 
   // --- État (signal readonly) ---
   readonly exercises = signal<Exercise[]>([]);
@@ -35,6 +37,9 @@ export class ExerciseService {
       id: crypto.randomUUID(),
     };
     this.exercises.update((list) => [...list, newExercise]);
+
+    // Propage l'exercice à la séance du jour si elle existe
+    this.progressService.addExerciseToTodaySession(newExercise.id, newExercise.name);
   }
 
   updateExercise(id: string, changes: Partial<Exercise>): void {

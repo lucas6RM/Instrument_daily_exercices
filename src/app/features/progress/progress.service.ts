@@ -87,6 +87,40 @@ export class ProgressService {
     this.persist();
   }
 
+  /**
+   * Ajoute un nouvel exercice à la séance du jour si elle existe.
+   * Ne fait rien s'il n'y a pas de séance aujourd'hui ou si l'exercice est déjà présent.
+   */
+  addExerciseToTodaySession(exerciseId: string, exerciseName: string): void {
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    const session = this.getSession(todayStr);
+    if (!session) {
+      return;
+    }
+
+    // Évite les doublons
+    const alreadyExists = session.exercises.some((se) => se.exerciseId === exerciseId);
+    if (alreadyExists) {
+      return;
+    }
+
+    const updatedSession: DailySession = {
+      ...session,
+      exercises: [
+        ...session.exercises,
+        {
+          exerciseId,
+          exerciseName,
+          completed: false,
+          actualMinutes: 0,
+        },
+      ],
+    };
+    this.addSession(updatedSession);
+  }
+
   loadFromStorage(): void {
     const stored = this.storageService.get<ProgressState>(STORAGE_KEYS.PROGRESS);
     if (stored) {
