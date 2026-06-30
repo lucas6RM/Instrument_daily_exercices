@@ -59,7 +59,6 @@ function getTodayIso(): string {
               role="listitem"
               [exercise]="item.exercise"
               [isCompleted]="item.completed"
-              (toggleComplete)="onToggleComplete(item.exercise.id)"
               (playExercise)="onPlayExercise(item.exercise.id)"
             />
           }
@@ -114,7 +113,7 @@ export class DashboardComponent implements OnInit {
       );
 
       if (!alreadyCompleted) {
-        this.onToggleComplete(exerciseId);
+        this.onTimerComplete(exerciseId);
       }
 
       // Reset timer to prevent re-triggering the effect
@@ -142,14 +141,19 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  onToggleComplete(exerciseId: string): void {
+  onTimerComplete(exerciseId: string): void {
+    const exercise = this.exerciseStore.sortedExercises().find((ex) => ex.id === exerciseId);
+    if (!exercise) {
+      return;
+    }
+
     this.session.update((current) => {
       if (!current) {
         return current;
       }
       const updatedExercises = current.exercises.map((se) =>
         se.exerciseId === exerciseId
-          ? { ...se, completed: !se.completed }
+          ? { ...se, completed: true, actualMinutes: exercise.durationMinutes }
           : se,
       );
       const updated = { ...current, exercises: updatedExercises };

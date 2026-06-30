@@ -176,27 +176,28 @@ describe('DashboardComponent', () => {
       expect(component.completedCount()).toBe(0);
     });
 
-    it('should update completedCount when an exercise is toggled', () => {
-      component.onToggleComplete('ex-1');
+    it('should update completedCount when an exercise is timer-completed', () => {
+      component.onTimerComplete('ex-1');
       fixture.detectChanges();
 
       expect(component.completedCount()).toBe(1);
     });
 
-    it('should toggle an exercise from completed to not completed', () => {
-      component.onToggleComplete('ex-1');
+    it('should not toggle off an already completed exercise', () => {
+      component.onTimerComplete('ex-1');
       fixture.detectChanges();
       expect(component.completedCount()).toBe(1);
 
-      component.onToggleComplete('ex-1');
+      // Calling again should not toggle off (only timer can complete, not un-complete)
+      component.onTimerComplete('ex-1');
       fixture.detectChanges();
-      expect(component.completedCount()).toBe(0);
+      expect(component.completedCount()).toBe(1);
     });
 
     it('should reflect all exercises completed', () => {
-      component.onToggleComplete('ex-1');
-      component.onToggleComplete('ex-2');
-      component.onToggleComplete('ex-3');
+      component.onTimerComplete('ex-1');
+      component.onTimerComplete('ex-2');
+      component.onTimerComplete('ex-3');
       fixture.detectChanges();
 
       expect(component.completedCount()).toBe(3);
@@ -226,8 +227,8 @@ describe('DashboardComponent', () => {
       expect(items[0].completed).toBe(false);
     });
 
-    it('should reflect completed status after toggle', () => {
-      component.onToggleComplete('ex-2');
+    it('should reflect completed status after timer completion', () => {
+      component.onTimerComplete('ex-2');
       fixture.detectChanges();
 
       const items = component.exercisesWithProgress();
@@ -301,10 +302,10 @@ describe('DashboardComponent', () => {
   });
 
   describe('session persistence', () => {
-    it('should save session to progress store after toggle', () => {
+    it('should save session to progress store after timer completion', () => {
       component.ngOnInit();
 
-      component.onToggleComplete('ex-1');
+      component.onTimerComplete('ex-1');
 
       const session = progressStore.getSession(component.today);
       expect(session).not.toBeNull();
@@ -312,33 +313,40 @@ describe('DashboardComponent', () => {
       expect(ex1?.completed).toBe(true);
     });
 
-    it('should call progressStore.addSession on every toggle', () => {
+    it('should set actualMinutes to exercise duration on timer completion', () => {
+      component.ngOnInit();
+
+      component.onTimerComplete('ex-1');
+
+      const session = progressStore.getSession(component.today);
+      const ex1 = session?.exercises.find((e) => e.exerciseId === 'ex-1');
+      expect(ex1?.actualMinutes).toBe(5);
+    });
+
+    it('should call progressStore.addSession on every timer completion', () => {
       component.ngOnInit();
 
       const addSessionSpy = vi.spyOn(progressStore, 'addSession');
 
-      component.onToggleComplete('ex-1');
+      component.onTimerComplete('ex-1');
       expect(addSessionSpy).toHaveBeenCalledTimes(1);
 
-      component.onToggleComplete('ex-2');
+      component.onTimerComplete('ex-2');
       expect(addSessionSpy).toHaveBeenCalledTimes(2);
-
-      component.onToggleComplete('ex-1');
-      expect(addSessionSpy).toHaveBeenCalledTimes(3);
     });
 
-    it('should persist toggle-off (uncheck) to progress store', () => {
+    it('should not un-complete an already completed exercise', () => {
       component.ngOnInit();
 
-      // Check ex-1
-      component.onToggleComplete('ex-1');
+      // Complete ex-1
+      component.onTimerComplete('ex-1');
       let session = progressStore.getSession(component.today);
       expect(session?.exercises.find((e) => e.exerciseId === 'ex-1')?.completed).toBe(true);
 
-      // Uncheck ex-1
-      component.onToggleComplete('ex-1');
+      // Calling again should keep it completed (no toggle-off)
+      component.onTimerComplete('ex-1');
       session = progressStore.getSession(component.today);
-      expect(session?.exercises.find((e) => e.exerciseId === 'ex-1')?.completed).toBe(false);
+      expect(session?.exercises.find((e) => e.exerciseId === 'ex-1')?.completed).toBe(true);
     });
   });
 
@@ -411,8 +419,8 @@ describe('DashboardComponent', () => {
     });
 
     it('should not double-complete an already completed exercise', () => {
-      // First, manually complete ex-1
-      component.onToggleComplete('ex-1');
+      // First, complete ex-1 via timer
+      component.onTimerComplete('ex-1');
       fixture.detectChanges();
       expect(component.completedCount()).toBe(1);
 

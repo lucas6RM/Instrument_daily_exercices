@@ -14,22 +14,29 @@ import { Exercise } from '../../../../core/models/exercise';
       [class.border-green-200]="completed"
       [class.bg-green-50]="completed"
     >
-      <div class="flex shrink-0 items-center">
-        <input
-          type="checkbox"
-          [id]="'checkbox-' + ex.id"
-          [checked]="completed"
-          (change)="toggleComplete.emit()"
-          class="h-5 w-5 cursor-pointer rounded border-gray-300 text-blue-600 shadow-sm transition-all duration-150 ease-in-out hover:border-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-          [class.border-green-400]="completed"
-          [class.text-green-600]="completed"
-        />
-        <label
-          [for]="'checkbox-' + ex.id"
-          class="sr-only"
+      <div class="flex shrink-0 items-center" role="presentation">
+        <span
+          [class]="'inline-flex h-5 w-5 items-center justify-center rounded border shadow-sm transition-all duration-150 ease-in-out'"
+          [class.border-green-400.bg-green-100]="completed"
+          [class.border-gray-300.bg-gray-100]="!completed"
+          [attr.aria-label]="completed ? ex.name + ' terminé' : ex.name + ' non terminé'"
         >
-          Marquer {{ ex.name }} comme terminé
-        </label>
+          @if (completed) {
+            <svg
+              class="h-3.5 w-3.5 text-green-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="3"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          }
+        </span>
+        <span class="sr-only">
+          {{ completed ? 'Exercice ' + ex.name + ' terminé' : 'Exercice ' + ex.name + ' non terminé' }}
+        </span>
       </div>
 
       <div class="min-w-0 flex-1">
@@ -91,6 +98,5 @@ export class ExerciseRowComponent {
   readonly exercise = input.required<Exercise>();
   readonly isCompleted = input<boolean>(false);
 
-  readonly toggleComplete = output<void>();
   readonly playExercise = output<void>();
 }
