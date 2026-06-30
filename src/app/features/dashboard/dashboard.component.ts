@@ -123,8 +123,6 @@ export class DashboardComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.progressStore.loadFromStorage();
-
     const currentSession = this.progressStore.getSession(this.today);
 
     if (currentSession) {

@@ -2,6 +2,7 @@ import { computed, inject, type Signal } from '@angular/core';
 import {
   patchState,
   signalStore,
+  withHooks,
   withMethods,
   withState,
 } from '@ngrx/signals';
@@ -177,4 +178,9 @@ export const ProgressStore = signalStore(
       },
     };
   }),
+  withHooks((store) => ({
+    onInit(): void {
+      store.loadFromStorage();
+    },
+  })),
 );
