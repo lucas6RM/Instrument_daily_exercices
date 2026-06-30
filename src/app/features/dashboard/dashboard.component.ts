@@ -68,6 +68,7 @@ export class DashboardComponent implements OnInit {
         date: this.today,
         exercises: exercises.map((ex) => ({
           exerciseId: ex.id,
+          exerciseName: ex.name,
           completed: false,
           actualMinutes: 0,
         })),
@@ -101,6 +102,7 @@ export class DashboardComponent implements OnInit {
         ...current.exercises,
         {
           exerciseId: exerciseId,
+          exerciseName: exercise.name,
           completed: true,
           actualMinutes: exercise.durationSeconds,
         },
