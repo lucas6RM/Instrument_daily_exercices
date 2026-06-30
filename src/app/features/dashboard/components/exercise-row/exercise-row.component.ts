@@ -18,29 +18,11 @@ import { Exercise } from '../../../../core/models/exercise';
         <input
           type="checkbox"
           [checked]="completed"
-          readonly
+          [disabled]="true"
           tabindex="-1"
           [attr.aria-label]="'Marquer ' + ex.name + ' comme terminé'"
-          [class]="'h-5 w-5 rounded border shadow-sm transition-all duration-150 ease-in-out'"
-          [class.border-green-400.bg-green-100]="completed"
-          [class.border-gray-300.bg-gray-100]="!completed"
+          [class]="'h-5 w-5 rounded border transition-all duration-150 ease-in-out'"
         />
-        @if (completed) {
-          <span
-            class="absolute inset-0 flex items-center justify-center text-green-600 pointer-events-none"
-            aria-hidden="true"
-          >
-            <svg
-              class="h-3.5 w-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="3"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          </span>
-        }
       </div>
 
       <div class="min-w-0 flex-1">
@@ -51,17 +33,31 @@ import { Exercise } from '../../../../core/models/exercise';
         >
           {{ ex.name }}
         </span>
-        <span class="block truncate text-xs text-gray-500">
-          {{ ex.durationMinutes }} min
-        </span>
+        <span class="block truncate text-xs text-gray-500"> {{ ex.durationMinutes }} min </span>
       </div>
 
+      <p class="flex-1 w-full">{{ ex.description }}</p>
       <div class="flex shrink-0 items-center gap-2">
+        @if (ex.youtubeUrl) {
+          <a
+            [href]="ex.youtubeUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            [attr.aria-label]="'Voir la vidéo YouTube pour ' + ex.name"
+            class="inline-flex items-center rounded-lg p-1.5 text-red-600 transition-all duration-150 ease-in-out hover:bg-red-50 hover:text-red-500 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-red-600"
+          >
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+              />
+            </svg>
+          </a>
+        }
         <button
           type="button"
           (click)="playExercise.emit()"
           aria-label="Lancer le timer pour {{ ex.name }}"
-          class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all duration-150 ease-in-out hover:bg-blue-500 hover:shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:scale-95 sm:px-4 sm:py-2 sm:text-sm"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all duration-150 ease-in-out hover:bg-blue-500 hover:shadow focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:scale-95 sm:px-4 sm:py-2 sm:text-sm"
         >
           <svg
             class="h-3.5 w-3.5 sm:h-4 sm:w-4"
@@ -73,27 +69,6 @@ import { Exercise } from '../../../../core/models/exercise';
           </svg>
           PLAY
         </button>
-
-        @if (ex.youtubeUrl) {
-          <a
-            [href]="ex.youtubeUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            [attr.aria-label]="'Voir la vidéo YouTube pour ' + ex.name"
-            class="inline-flex items-center rounded-lg p-1.5 text-red-600 transition-all duration-150 ease-in-out hover:bg-red-50 hover:text-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
-              />
-            </svg>
-          </a>
-        }
       </div>
     </div>
   `,
