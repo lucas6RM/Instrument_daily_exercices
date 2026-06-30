@@ -14,29 +14,33 @@ import { Exercise } from '../../../../core/models/exercise';
       [class.border-green-200]="completed"
       [class.bg-green-50]="completed"
     >
-      <div class="flex shrink-0 items-center" role="presentation">
-        <span
-          [class]="'inline-flex h-5 w-5 items-center justify-center rounded border shadow-sm transition-all duration-150 ease-in-out'"
+      <div class="relative flex shrink-0 items-center" role="presentation">
+        <input
+          type="checkbox"
+          [checked]="completed"
+          readonly
+          tabindex="-1"
+          [attr.aria-label]="'Marquer ' + ex.name + ' comme terminé'"
+          [class]="'h-5 w-5 rounded border shadow-sm transition-all duration-150 ease-in-out'"
           [class.border-green-400.bg-green-100]="completed"
           [class.border-gray-300.bg-gray-100]="!completed"
-          [attr.aria-label]="completed ? ex.name + ' terminé' : ex.name + ' non terminé'"
-        >
-          @if (completed) {
+        />
+        @if (completed) {
+          <span
+            class="absolute inset-0 flex items-center justify-center text-green-600 pointer-events-none"
+            aria-hidden="true"
+          >
             <svg
-              class="h-3.5 w-3.5 text-green-600"
+              class="h-3.5 w-3.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
               stroke-width="3"
-              aria-hidden="true"
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
-          }
-        </span>
-        <span class="sr-only">
-          {{ completed ? 'Exercice ' + ex.name + ' terminé' : 'Exercice ' + ex.name + ' non terminé' }}
-        </span>
+          </span>
+        }
       </div>
 
       <div class="min-w-0 flex-1">

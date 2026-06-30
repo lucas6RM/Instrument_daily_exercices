@@ -60,17 +60,17 @@ Les exercices et la progression ne persistent pas correctement après un recharg
 - [x] Tâche 1 : Hydrater l'ExerciseStore au démarrage
 - [x] Tâche 2 : Hydrater le ProgressStore au démarrage
 - [x] Tâche 3 : Timer uniquement pour compléter + `actualMinutes`
-- [ ] Tâche 4 : Vérifier les tests E2E
+- [x] Tâche 4 : Vérifier les tests E2E
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Tâche 3 terminée
+- Tâche 4 terminée
 
 ### Compteur de rejets (tâche actuelle) :
 - 0 / 5
 
 ### Dernier retour de Review :
-- Tâche 3 validée.
+- Tâche 4 validée. Tous les tests E2E (A1, A2, B, C) passent.
 
 ### Blocage Actuel :
 - Aucun.

@@ -82,7 +82,7 @@ describe('ExerciseRowComponent', () => {
       fixture.detectChanges();
 
       const nativeElement = fixture.nativeElement as HTMLElement;
-      const checkmark = nativeElement.querySelector('svg.text-green-600');
+      const checkmark = nativeElement.querySelector('span.text-green-600');
       expect(checkmark).toBeNull();
     });
 
@@ -91,16 +91,18 @@ describe('ExerciseRowComponent', () => {
       fixture.detectChanges();
 
       const nativeElement = fixture.nativeElement as HTMLElement;
-      const checkmark = nativeElement.querySelector('svg.text-green-600');
+      const checkmark = nativeElement.querySelector('span.text-green-600 svg');
       expect(checkmark).toBeTruthy();
     });
 
-    it('should not have an interactive checkbox', () => {
+    it('should have a readonly checkbox for accessibility', () => {
       fixture.detectChanges();
 
       const nativeElement = fixture.nativeElement as HTMLElement;
-      const checkbox = nativeElement.querySelector('input[type="checkbox"]');
-      expect(checkbox).toBeNull();
+      const checkbox = nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement | null;
+      expect(checkbox).toBeTruthy();
+      expect(checkbox?.readOnly).toBe(true);
+      expect(checkbox?.tabIndex).toBe(-1);
     });
 
     it('should apply line-through and gray text when completed', () => {
@@ -153,20 +155,20 @@ describe('ExerciseRowComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should have a screen-reader-only label for the completion status', () => {
+    it('should have an aria-label on the checkbox for completion status', () => {
       const nativeElement = fixture.nativeElement as HTMLElement;
-      const srLabel = nativeElement.querySelector('span.sr-only');
-      expect(srLabel).toBeTruthy();
-      expect(srLabel?.textContent?.trim()).toBe('Exercice Scale Practice non terminé');
+      const checkbox = nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement | null;
+      expect(checkbox).toBeTruthy();
+      expect(checkbox?.getAttribute('aria-label')).toBe('Marquer Scale Practice comme terminé');
     });
 
-    it('should update screen-reader label when completed', () => {
+    it('should have checkbox checked when completed', () => {
       fixture.componentRef.setInput('isCompleted', true);
       fixture.detectChanges();
 
       const nativeElement = fixture.nativeElement as HTMLElement;
-      const srLabel = nativeElement.querySelector('span.sr-only');
-      expect(srLabel?.textContent?.trim()).toBe('Exercice Scale Practice terminé');
+      const checkbox = nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement | null;
+      expect(checkbox?.checked).toBe(true);
     });
 
     it('should have aria-label on the PLAY button', () => {
@@ -211,12 +213,12 @@ describe('ExerciseRowComponent', () => {
       fixture.detectChanges();
 
       const nativeElement = fixture.nativeElement as HTMLElement;
-      expect(nativeElement.querySelector('svg.text-green-600')).toBeNull();
+      expect(nativeElement.querySelector('span.text-green-600')).toBeNull();
 
       fixture.componentRef.setInput('isCompleted', true);
       fixture.detectChanges();
 
-      expect(nativeElement.querySelector('svg.text-green-600')).toBeTruthy();
+      expect(nativeElement.querySelector('span.text-green-600')).toBeTruthy();
     });
 
     it('should update PLAY button aria-label when exercise changes', () => {

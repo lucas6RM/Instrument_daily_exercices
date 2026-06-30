@@ -58,10 +58,11 @@ describe('HistoryComponent', () => {
   });
 
   describe('initial state', () => {
-    it('should initialize currentWeekStart to the Monday of the current week', () => {
+    it('should initialize currentWeekStart to today', () => {
       const start = component.currentWeekStart();
-      // Monday has getDay() === 1
-      expect(start.getDay()).toBe(1);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      expect(start.getTime()).toBe(today.getTime());
     });
 
     it('should display the week range label', () => {
@@ -127,7 +128,7 @@ describe('HistoryComponent', () => {
   });
 
   describe('goToCurrentWeek', () => {
-    it('should reset currentWeekStart to the Monday of the current week', () => {
+    it('should reset currentWeekStart to today', () => {
       // Navigate away first
       component.previousWeek();
       component.previousWeek();
@@ -139,8 +140,10 @@ describe('HistoryComponent', () => {
 
       // Should be different from the navigated date
       expect(afterReset.getTime()).not.toBe(afterNav.getTime());
-      // Should be a Monday
-      expect(afterReset.getDay()).toBe(1);
+      // Should be today
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      expect(afterReset.getTime()).toBe(today.getTime());
     });
   });
 

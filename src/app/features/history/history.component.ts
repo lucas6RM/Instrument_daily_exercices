@@ -6,12 +6,8 @@ import { WeeklySummaryComponent } from './weekly-summary/weekly-summary.componen
 
 function getMondayOfCurrentWeek(): Date {
   const today = new Date();
-  const dayOfWeek = today.getDay();
-  const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - diff);
-  monday.setHours(0, 0, 0, 0);
-  return monday;
+  today.setHours(0, 0, 0, 0);
+  return today;
 }
 
 function formatDateRange(startDate: Date): string {

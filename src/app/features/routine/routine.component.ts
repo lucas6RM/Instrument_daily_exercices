@@ -41,7 +41,7 @@ interface ExerciseFormValue {
         <!-- Liste des exercices -->
         <section aria-label="Liste des exercices" class="lg:col-span-3">
           @if (sortedExercises().length > 0) {
-            <div class="space-y-3" role="list">
+            <div class="space-y-3" role="list" aria-label="Liste des exercices">
               @for (exercise of sortedExercises(); track exercise.id) {
                 <app-exercise-card
                   [exercise]="exercise"
