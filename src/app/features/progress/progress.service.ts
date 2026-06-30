@@ -187,12 +187,13 @@ export class ProgressService {
       // Total minutes for the week
       const totalMinutes = days.reduce((sum, day) => sum + day.totalMinutes, 0);
 
-      // Minutes by exercise
+      // Minutes by exercise (using exerciseName from snapshot)
       const minutesByExercise = new Map<string, number>();
       for (const session of weekSessions) {
         for (const ex of session.exercises) {
-          const current = minutesByExercise.get(ex.exerciseId) ?? 0;
-          minutesByExercise.set(ex.exerciseId, current + ex.actualMinutes);
+          const name = ex.exerciseName ?? '(nom inconnu)';
+          const current = minutesByExercise.get(name) ?? 0;
+          minutesByExercise.set(name, current + ex.actualMinutes);
         }
       }
 

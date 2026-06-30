@@ -66,7 +66,7 @@ export interface DailySession {
 - [x] Tâche 4 : Propager un exercice ajouté à la séance du jour en cours
 - [x] Tâche 5 : Mettre à jour `WeekDayCardComponent` pour afficher `exerciseName` au lieu de résoudre via `scheduledExercises`
 - [x] Tâche 6 : Mettre à jour `HistoryComponent` pour ne plus passer `scheduledExercises` aux cartes
-- [ ] Tâche 7 : Mettre à jour `getWeeklyStats` pour utiliser `exerciseName`
+- [x] Tâche 7 : Mettre à jour `getWeeklyStats` pour utiliser `exerciseName`
 - [ ] Tâche 8 : Supprimer le nettoyage en cascade de `deleteExercise` vers les sessions (s'il existe)
 - [ ] Tâche 9 : Gérer l'affichage fallback "(nom inconnu)" pour les anciennes séances
 - [ ] Tâche 10 : Tests unitaires mis à jour (`ProgressService`, `ExerciseService`, composants)

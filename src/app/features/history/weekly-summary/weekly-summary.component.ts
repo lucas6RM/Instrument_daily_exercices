@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 
-import { Exercise, WeeklyStats } from '../../../core/models';
+import { WeeklyStats } from '../../../core/models';
 
 @Component({
   selector: 'app-weekly-summary',
@@ -8,7 +8,6 @@ import { Exercise, WeeklyStats } from '../../../core/models';
 })
 export class WeeklySummaryComponent {
   readonly weeklyStats = input.required<WeeklyStats>();
-  readonly exercises = input<Exercise[]>([]);
 
   readonly totalMinutesSignal = computed(() => this.weeklyStats().totalMinutes);
 
@@ -21,21 +20,13 @@ export class WeeklySummaryComponent {
 
   readonly exerciseEntriesSignal = computed(() => {
     const stats = this.weeklyStats();
-    const exercises = this.exercises();
     const minutesByExercise = stats.minutesByExercise;
 
-    const exerciseMap = new Map<string, Exercise>();
-    for (const ex of exercises) {
-      exerciseMap.set(ex.id, ex);
-    }
+    const entries: { exerciseName: string; minutes: number }[] = [];
 
-    const entries: { exerciseId: string; exerciseName: string; minutes: number }[] = [];
-
-    for (const [exerciseId, minutes] of minutesByExercise) {
-      const exercise = exerciseMap.get(exerciseId);
+    for (const [exerciseName, minutes] of minutesByExercise) {
       entries.push({
-        exerciseId,
-        exerciseName: exercise?.name ?? exerciseId,
+        exerciseName,
         minutes,
       });
     }

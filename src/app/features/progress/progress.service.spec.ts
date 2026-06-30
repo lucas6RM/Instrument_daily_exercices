@@ -519,7 +519,28 @@ describe('ProgressService', () => {
       expect(stats().totalMinutes).toBe(45);
     });
 
-    it('should calculate minutesByExercise correctly', () => {
+    it('should calculate minutesByExercise correctly using exerciseName', () => {
+      const start = new Date('2025-01-06');
+
+      service.addSession({
+        date: '2025-01-06',
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 }],
+      });
+      service.addSession({
+        date: '2025-01-07',
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 20 }],
+      });
+      service.addSession({
+        date: '2025-01-08',
+        exercises: [{ exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 5 }],
+      });
+
+      const stats = service.getWeeklyStats(start);
+      expect(stats().minutesByExercise.get('Chromatique')).toBe(30);
+      expect(stats().minutesByExercise.get('Gammes')).toBe(5);
+    });
+
+    it('should use fallback "(nom inconnu)" when exerciseName is missing', () => {
       const start = new Date('2025-01-06');
 
       service.addSession({
@@ -528,16 +549,11 @@ describe('ProgressService', () => {
       });
       service.addSession({
         date: '2025-01-07',
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 20 }],
-      });
-      service.addSession({
-        date: '2025-01-08',
         exercises: [{ exerciseId: 'e2', completed: true, actualMinutes: 5 }],
       });
 
       const stats = service.getWeeklyStats(start);
-      expect(stats().minutesByExercise.get('e1')).toBe(30);
-      expect(stats().minutesByExercise.get('e2')).toBe(5);
+      expect(stats().minutesByExercise.get('(nom inconnu)')).toBe(15);
     });
 
     it('should calculate completionRate based on days with sessions', () => {
@@ -609,17 +625,17 @@ describe('ProgressService', () => {
       service.addSession({
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', completed: true, actualMinutes: 10 },
-          { exerciseId: 'e2', completed: true, actualMinutes: 20 },
-          { exerciseId: 'e3', completed: false, actualMinutes: 5 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 },
+          { exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 20 },
+          { exerciseId: 'e3', exerciseName: 'Accords', completed: false, actualMinutes: 5 },
         ],
       });
 
       const stats = service.getWeeklyStats(start);
       expect(stats().totalMinutes).toBe(35);
-      expect(stats().minutesByExercise.get('e1')).toBe(10);
-      expect(stats().minutesByExercise.get('e2')).toBe(20);
-      expect(stats().minutesByExercise.get('e3')).toBe(5);
+      expect(stats().minutesByExercise.get('Chromatique')).toBe(10);
+      expect(stats().minutesByExercise.get('Gammes')).toBe(20);
+      expect(stats().minutesByExercise.get('Accords')).toBe(5);
     });
   });
 
