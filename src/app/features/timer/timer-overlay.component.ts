@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
-import { ExerciseStore } from '../exercise/exercise.store';
-import { TimerStore } from './timer.store';
+import { ExerciseService } from '../exercise/exercise.service';
+import { TimerService } from './timer.service';
 
 @Component({
   selector: 'app-timer-overlay',
@@ -65,25 +65,25 @@ import { TimerStore } from './timer.store';
   `,
 })
 export class TimerOverlayComponent {
-  private readonly timerStore = inject(TimerStore);
-  private readonly exerciseStore = inject(ExerciseStore);
+  private readonly timerService = inject(TimerService);
+  private readonly exerciseService = inject(ExerciseService);
 
-  protected readonly isRunning = this.timerStore.isRunning;
-  protected readonly formattedTime = this.timerStore.formattedTime;
-  protected readonly pause = this.timerStore.pause;
-  protected readonly resume = this.timerStore.resume;
-  protected readonly reset = this.timerStore.reset;
+  protected readonly isRunning = this.timerService.isRunning;
+  protected readonly formattedTime = this.timerService.formattedTime;
+  protected readonly pause = this.timerService.pause;
+  protected readonly resume = this.timerService.resume;
+  protected readonly reset = this.timerService.reset;
 
   protected readonly exerciseName = computed(() => {
-    const exerciseId = this.timerStore.currentExerciseId();
+    const exerciseId = this.timerService.currentExerciseId();
     if (!exerciseId) {
       return '';
     }
-    const exercise = this.exerciseStore.exercises().find((e) => e.id === exerciseId);
+    const exercise = this.exerciseService.exercises().find((e) => e.id === exerciseId);
     return exercise?.name ?? '';
   });
 
   protected readonly visible = computed(
-    () => this.timerStore.isRunning() || this.timerStore.pausedRemainingMs() > 0,
+    () => this.timerService.isRunning() || this.timerService.pausedRemainingMs() > 0,
   );
 }

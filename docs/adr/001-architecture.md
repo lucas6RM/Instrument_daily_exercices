@@ -1,28 +1,34 @@
-# ADR-001 : Architecture SignalStore par Domaine
+# ADR-001 : Service Signals Natifs par Domaine
 
 ## Statut
-Accepté
+Accepté — mis à jour suite à ADR-005
 
 ## Contexte
-Le projet utilise Angular 22 avec `@ngrx/signals` pour la gestion d'état. Le MVP repose sur un stockage LocalStorage exclusif sans backend.
+Le projet utilise Angular 22 avec les signals natifs pour la gestion d'état. Le MVP repose sur un stockage LocalStorage exclusif sans backend. La dépendance `@ngrx/signals` a été supprimée.
 
 ## Décision
-Utiliser 3 SignalStores par domaine plutôt qu'un store monolithique :
-- `exercise.store.ts` — CRUD des exercices de routine
-- `timer.store.ts` — État du timer global (running, remaining, current exercise)
-- `progress.store.ts` — Historique des sessions quotidiennes
+Utiliser 3 services `@Injectable({ providedIn: 'root' })` par domaine avec signals natifs plutôt qu'un store monolithique :
+- `exercise.service.ts` — CRUD des exercices de routine
+- `timer.service.ts` — État du timer global (running, remaining, current exercise)
+- `progress.service.ts` — Historique des sessions quotidiennes
 
 ## Conséquences
+- **+** Code impératif lisible de haut en bas — pas de sauts entre blocs de composition
+- **+** Debuggage trivial : les signals sont inspectables, les méthodes sont des fonctions classiques
+- **+** Zéro dépendance externe pour la gestion d'état
+- **+** Tests plus simples : instancier le service, lire les signals, appeler les méthodes
 - **+** Séparation claire des responsabilités
-- **+** Chaque store est testable indépendamment
+- **+** Chaque service est testable indépendamment
 - **+** Facilité de migration future vers un backend
-- **-** Légère surcharge pour un MVP (justifiée par la scalabilité)
 
 ## Détails Techniques
-- Chaque store utilise `effect()` pour sync automatique avec LocalStorage
-- `patchState` pour les mutations
-- `computed()` pour les données dérivées (progression, stats hebdo)
-- Timer utilise `Date.now()` diff pour la précision en background
+- Chaque service expose des **signals `readonly`** pour l'état (`signal()`)
+- **Computed** pour les données dérivées (`computed()`)
+- **Méthodes publiques** pour les actions (`start()`, `pause()`, `add()`, etc.)
+- **Persistance LocalStorage** gérée en interne
+- Le tick du timer utilise `interval()` RxJS + `toSignal()` pour la réactivité
+- L'expiration du timer émet un événement via `Subject<TimerExpiredEvent>` / `expired$` observable
+- Timer utilise `Date.now()` diff pour la précision en background (voir ADR-002)
 
 ---
 

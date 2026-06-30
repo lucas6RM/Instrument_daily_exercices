@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ExerciseStore } from '../exercise/exercise.store';
-import { ProgressStore } from '../progress/progress.store';
+import { ExerciseService } from '../exercise/exercise.service';
+import { ProgressService } from '../progress/progress.service';
 import { WeekDayCardComponent } from './week-day-card/week-day-card.component';
 import { WeeklySummaryComponent } from './weekly-summary/weekly-summary.component';
 
@@ -153,15 +153,15 @@ function formatDateRange(startDate: Date): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryComponent {
-  private readonly progressStore = inject(ProgressStore);
-  private readonly exerciseStore = inject(ExerciseStore);
+  private readonly progressService = inject(ProgressService);
+  private readonly exerciseService = inject(ExerciseService);
 
   readonly currentWeekStart = signal<Date>(getMondayOfCurrentWeek());
 
-  readonly exercises = computed(() => this.exerciseStore.sortedExercises());
+  readonly exercises = computed(() => this.exerciseService.sortedExercises());
 
   readonly weeklyStats = computed(() =>
-    this.progressStore.getWeeklyStats(this.currentWeekStart())()
+    this.progressService.getWeeklyStats(this.currentWeekStart())()
   );
 
   readonly weekRangeLabel = computed(() =>

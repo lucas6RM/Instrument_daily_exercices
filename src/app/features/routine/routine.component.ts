@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ExerciseStore } from '../exercise/exercise.store';
+import { ExerciseService } from '../exercise/exercise.service';
 import { ExerciseCardComponent } from '../exercise/exercise-card.component';
 import { ExerciseFormComponent } from '../exercise/exercise-form.component';
 import { Exercise } from '../../core/models/exercise';
@@ -134,9 +134,9 @@ interface ExerciseFormValue {
   `,
 })
 export class RoutineComponent {
-  private readonly store = inject(ExerciseStore);
+  private readonly exerciseService = inject(ExerciseService);
 
-  readonly sortedExercises = computed(() => this.store.sortedExercises());
+  readonly sortedExercises = computed(() => this.exerciseService.sortedExercises());
 
   private readonly editingExerciseSig = signal<Exercise | null>(null);
 
@@ -148,12 +148,12 @@ export class RoutineComponent {
   onSave(value: ExerciseFormValue): void {
     const editing = this.editingExerciseSig();
     if (editing) {
-      this.store.updateExercise(editing.id, value);
+      this.exerciseService.updateExercise(editing.id, value);
       this.editingExerciseSig.set(null);
       this.liveMessageSig.set(`Exercice « ${value.name} » modifié avec succès.`);
     } else {
-      const nextOrder = this.store.exercises().length;
-      this.store.addExercise({
+      const nextOrder = this.exerciseService.exercises().length;
+      this.exerciseService.addExercise({
         ...value,
         order: nextOrder,
       });
@@ -166,7 +166,7 @@ export class RoutineComponent {
   }
 
   onDelete(id: string): void {
-    const exercise = this.store.exercises().find((e) => e.id === id);
+    const exercise = this.exerciseService.exercises().find((e) => e.id === id);
     if (!exercise) {
       return;
     }
@@ -174,7 +174,7 @@ export class RoutineComponent {
       `Êtes-vous sûr de vouloir supprimer « ${exercise.name} » ?`,
     );
     if (confirmed) {
-      this.store.deleteExercise(id);
+      this.exerciseService.deleteExercise(id);
       this.liveMessageSig.set(`Exercice « ${exercise.name} » supprimé.`);
     }
   }

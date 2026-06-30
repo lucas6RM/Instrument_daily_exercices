@@ -22,7 +22,6 @@
     "@angular/platform-server": "22.0.4",
     "@angular/router": "^22.0.4",
     "@angular/ssr": "22.0.4",
-    "@ngrx/signals": "^21.1.1",
     "dotenv": "^17.4.2",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.3.1",

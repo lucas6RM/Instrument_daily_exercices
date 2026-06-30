@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { DailySession } from '../../core/models';
-import { ExerciseStore } from '../exercise/exercise.store';
-import { ProgressStore } from '../progress/progress.store';
-import { TimerStore } from '../timer/timer.store';
+import { ExerciseService } from '../exercise/exercise.service';
+import { ProgressService } from '../progress/progress.service';
+import { TimerService } from '../timer/timer.service';
 import { ExerciseRowComponent } from './components/exercise-row/exercise-row.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 
@@ -69,16 +70,26 @@ function getTodayIso(): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
-  private readonly progressStore = inject(ProgressStore);
-  private readonly exerciseStore = inject(ExerciseStore);
-  private readonly timerStore = inject(TimerStore);
+  private readonly progressService = inject(ProgressService);
+  private readonly exerciseService = inject(ExerciseService);
+  private readonly timerService = inject(TimerService);
 
   readonly today = getTodayIso();
 
   private readonly session = signal<DailySession | null>(null);
 
+  // --- Timer expiration via expired$ observable ---
+  private readonly expiredSignal = toSignal(this.timerService.expired$, { initialValue: null });
+  private readonly expirationEffect = effect(() => {
+    const event = this.expiredSignal();
+    if (event) {
+      this.onTimerComplete(event.exerciseId);
+      this.timerService.reset();
+    }
+  });
+
   readonly exercisesWithProgress = computed(() => {
-    const exercises = this.exerciseStore.sortedExercises();
+    const exercises = this.exerciseService.sortedExercises();
     const currentSession = this.session();
 
     return exercises.map((ex) => {
@@ -100,34 +111,13 @@ export class DashboardComponent implements OnInit {
     return this.exercisesWithProgress().length;
   });
 
-  private readonly timerExpirationEffect = effect(() => {
-    const remaining = this.timerStore.remainingMs();
-    const isRunning = this.timerStore.isRunning();
-    const exerciseId = this.timerStore.currentExerciseId();
-
-    // Timer expired: remainingMs <= 0, isRunning stopped, exercise ID still set
-    if (remaining <= 0 && !isRunning && exerciseId !== null) {
-      const session = this.session();
-      const alreadyCompleted = session?.exercises.some(
-        (se) => se.exerciseId === exerciseId && se.completed,
-      );
-
-      if (!alreadyCompleted) {
-        this.onTimerComplete(exerciseId);
-      }
-
-      // Reset timer to prevent re-triggering the effect
-      this.timerStore.reset();
-    }
-  });
-
   ngOnInit(): void {
-    const currentSession = this.progressStore.getSession(this.today);
+    const currentSession = this.progressService.getSession(this.today);
 
     if (currentSession) {
       this.session.set(currentSession);
     } else {
-      const exercises = this.exerciseStore.sortedExercises();
+      const exercises = this.exerciseService.sortedExercises();
       const newSession: DailySession = {
         date: this.today,
         exercises: exercises.map((ex) => ({
@@ -136,13 +126,13 @@ export class DashboardComponent implements OnInit {
           actualMinutes: 0,
         })),
       };
-      this.progressStore.addSession(newSession);
+      this.progressService.addSession(newSession);
       this.session.set(newSession);
     }
   }
 
   onTimerComplete(exerciseId: string): void {
-    const exercise = this.exerciseStore.sortedExercises().find((ex) => ex.id === exerciseId);
+    const exercise = this.exerciseService.sortedExercises().find((ex) => ex.id === exerciseId);
     if (!exercise) {
       return;
     }
@@ -157,15 +147,15 @@ export class DashboardComponent implements OnInit {
           : se,
       );
       const updated = { ...current, exercises: updatedExercises };
-      this.progressStore.addSession(updated);
+      this.progressService.addSession(updated);
       return updated;
     });
   }
 
   onPlayExercise(exerciseId: string): void {
-    const exercise = this.exerciseStore.sortedExercises().find((ex) => ex.id === exerciseId);
+    const exercise = this.exerciseService.sortedExercises().find((ex) => ex.id === exerciseId);
     if (exercise) {
-      this.timerStore.start(exerciseId, exercise.durationMinutes * 60000);
+      this.timerService.start(exerciseId, exercise.durationMinutes * 60000);
     }
   }
 }

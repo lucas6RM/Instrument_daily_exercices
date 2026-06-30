@@ -1,74 +1,186 @@
-# Fix B1 : Persistence LocalStorage & Réactivité
+# Feature F6 : Refactor Stores NgRx → Services Signals Natifs
 
-## Description du Bug
-Les exercices et la progression ne persistent pas correctement après un rechargement de page ou une navigation entre les routes. De plus, le marquage manuel des exercices comme terminés contourne le timer, ce qui fausse l'historique.
+## Spécification Technique Globale
+Remplacement des 3 SignalStores NgRx (`timer.store.ts`, `exercise.store.ts`, `progress.store.ts`) par des services Angular natifs utilisant les signals. L'objectif est un code plus lisible, plus facile à debugger, et la suppression de la dépendance `@ngrx/signals`.
 
-**Comportement observé:**
-- Après un `reload()`, la liste des exercices est vide (test B échoue)
-- Après navigation vers le dashboard, les exercices peuvent être absents si le ProgressStore n'a pas été hydraté (tests A1/A2)
-- Lorsqu'un exercice est complété via le timer, il n'apparaît pas dans l'historique car `actualMinutes` reste à 0 (test C)
-- L'utilisateur peut cocher manuellement un exercice sans lancer le timer, ce qui fausse la progression
+Chaque domaine devient un `@Injectable({ providedIn: 'root' })` unique avec :
+- **Signals readonly** pour l'état (`signal()`)
+- **Computed** pour les données dérivées (`computed()`)
+- **Méthodes publiques** pour les actions (`start()`, `pause()`, `add()`, etc.)
+- **Persistance LocalStorage** gérée en interne
 
-**Comportement attendu:**
-- Les exercices persistent après rechargement de page
-- La progression persiste après navigation entre routes
-- Un exercice complété via le timer apparaît dans l'historique avec sa durée
-- Seul le timer peut marquer un exercice comme terminé (pas de cocher manuel)
-
-## Reproduction
-1. Créer des exercices dans `/routine`
-2. Recharger la page → exercices disparus (test B)
-3. Naviguer vers `/` puis `/history` → progression absente (tests A1/A2)
-4. Lancer le timer pour un exercice, attendre l'expiration → exercice coché mais `actualMinutes: 0`, donc invisible dans l'historique (test C)
-
-## Cause Identifiée
-| # | Cause | Fichier | Ligne |
-|---|-------|---------|-------|
-| 1 | `ExerciseStore.onInit` ne charge pas `loadFromStorage()` — il ne configure que l'`effect` d'écriture | `exercise.store.ts` | 52-58 |
-| 2 | `ProgressStore` ne charge pas automatiquement depuis localStorage — il dépend du `ngOnInit` du Dashboard | `progress.store.ts` | 87-92 |
-| 3 | `onToggleComplete` dans le Dashboard ne définit pas `actualMinutes` — il ne toggle que `completed` | `dashboard.component.ts` | 147-160 |
-| 4 | `ExerciseRowComponent` permet le cocher manuel — contourne le timer | `exercise-row.component.ts` | 18-27 |
+> 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
+> 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
 
 ## Standards du Projet & Commandes
 - Build : `pnpm run build`
-- Test : `pnpm run test`
+- Test : `pnpm run test --watch=false`
 - Lint : `pnpm run lint`
 - Serve : `pnpm run serve`
-- E2E : `pnpm exec playwright test tests/persistence.spec.ts`
 
-## Plan de Correction
+## Architecture Cible
 
-### Tâche 1 : Hydrater l'ExerciseStore au démarrage
-- Ajouter `store.loadFromStorage()` dans `onInit` de l'ExerciseStore
-- Les exercices sont chargés depuis localStorage dès l'initialisation du store
+### Pattern de Service Signal
 
-### Tâche 2 : Hydrater le ProgressStore au démarrage
-- Ajouter `withHooks` avec `onInit` qui appelle `loadFromStorage()`
-- Plus besoin du `loadFromStorage()` explicite dans `DashboardComponent.ngOnInit`
+Chaque service suit ce pattern :
 
-### Tâche 3 : Réduire le marquage des exercices au timer uniquement
-- Désactiver le checkbox dans `ExerciseRowComponent` — le rendre en lecture seule
-- Retirer `(toggleComplete)` du template du Dashboard
-- À l'expiration du timer, définir `completed: true` **et** `actualMinutes: exercise.durationMinutes`
-- Mettre à jour `onToggleComplete` → `onTimerComplete` avec la logique correcte
+```typescript
+@Injectable({ providedIn: 'root' })
+export class TimerService {
+  private readonly audioAlert = inject(AudioAlertService);
 
-### Tâche 4 : Vérifier les tests E2E
-- Exécuter `pnpm exec playwright test tests/persistence.spec.ts`
-- Tous les tests (A1, A2, B, C1) doivent passer
+  // --- État (signals readonly) ---
+  readonly isRunning = signal(false);
+  readonly currentExerciseId = signal<string | null>(null);
+  readonly endTime = signal<number | null>(null);
+  readonly durationMs = signal(0);
+  readonly pausedRemainingMs = signal(0);
 
-### Tâche 5 : Correction du test C2 — completion multiple exercices
-- Le test C2 échoue : quand il y a plusieurs exercices, seul le premier se complète
-- Investiguer pourquoi le timer n'expire que pour le premier exercice
-- Corriger le DashboardComponent / ProgressStore pour que chaque timer expire indépendamment
-- Vérifier que les deux exercices apparaissent dans l'historique avec leurs durées respectives
-- Exécuter `pnpm exec playwright test tests/persistence.spec.ts` — tous les tests (A1, A2, B, C1, C2) doivent passer
+  // --- Tick réactif via interval + toSignal ---
+  private readonly tick$ = new Subject<void>();
+  private readonly tick = toSignal(this.tick$.pipe(interval(250)), { initialValue: 0 });
+
+  // --- Computed ---
+  readonly remainingMs = computed(() => {
+    this.tick(); // dépendance pour forcer le recalcul
+    if (!this.isRunning()) return Math.max(0, this.pausedRemainingMs());
+    const end = this.endTime();
+    return end ? Math.max(0, end - Date.now()) : 0;
+  });
+
+  readonly remainingSeconds = computed(() => Math.ceil(this.remainingMs() / 1000));
+  readonly formattedTime = computed(() => {
+    const total = this.remainingSeconds();
+    const mins = String(Math.floor(total / 60)).padStart(2, '0');
+    const secs = String(total % 60).padStart(2, '0');
+    return `${mins}:${secs}`;
+  });
+
+  // --- Événements ---
+  private readonly expiredSubject = new Subject<TimerExpiredEvent>();
+  readonly expired$ = this.expiredSubject.asObservable();
+
+  // --- Actions ---
+  start(exerciseId: string, durationMs: number): void { ... }
+  pause(): void { ... }
+  resume(): void { ... }
+  reset(): void { ... }
+
+  // --- Lifecycle ---
+  ngOnDestroy(): void { this.pause(); }
+}
+```
+
+### TimerService — Détails Spécifiques
+
+**Tick** : `interval(250)` de RxJS converti en signal via `toSignal()`. Plus de `tickCounter` hack.
+
+**Expiration** : un `Subject<TimerExpiredEvent>` émet un événement à l'expiration. Les composants s'abonnent via `expired$` ou `toSignal(expired$)`.
+
+```typescript
+interface TimerExpiredEvent {
+  exerciseId: string;
+  durationMs: number;
+}
+```
+
+**Méthodes** : `start()`, `pause()`, `resume()`, `reset()`.
+
+### ExerciseService — Détails Spécifiques
+
+**État** : `exercises` signal (`Exercise[]`).
+
+**Computed** : `sortedExercises` (trié par `order`).
+
+**Persistance** : `effect()` qui écoute `exercises()` et écrit dans LocalStorage via `StorageService`. Chargement au `ngOnInit` / construction.
+
+**Méthodes** : `addExercise()`, `updateExercise()`, `deleteExercise()`, `setExercises()`, `loadFromStorage()`.
+
+### ProgressService — Détails Spécifiques
+
+**État** : `dailySessions` signal (`DailySession[]`).
+
+**Persistance** : appel explicite de `persist()` après chaque mutation (pas d'`effect()`).
+
+**Méthodes** : `getSession(date)`, `streak()`, `addSession()`, `updateSession()`, `deleteSession()`, `setProgressState()`, `loadFromStorage()`, `getWeekSessions(startDate)`, `getWeeklyStats(startDate)`.
+
+**Note** : `getWeekSessions()` et `getWeeklyStats()` retournent des `Signal<>` computed créés à la volée.
+
+## Migration des Consommateurs
+
+| Consommateur | Stores actuels | Nouveau service |
+|---|---|---|
+| `DashboardComponent` | TimerStore, ExerciseStore, ProgressStore | TimerService, ExerciseService, ProgressService |
+| `TimerOverlayComponent` | TimerStore, ExerciseStore | TimerService, ExerciseService |
+| `RoutineComponent` | ExerciseStore | ExerciseService |
+| `HistoryComponent` | ProgressStore, ExerciseStore | ProgressService, ExerciseService |
+
+### DashboardComponent — Changement Clé
+
+L'`effect()` actuel qui détecte l'expiration du timer est remplacé par une écoute du `expired$` du TimerService :
+
+```typescript
+// Avant
+private readonly timerExpirationEffect = effect(() => {
+  const remaining = this.timerStore.remainingMs();
+  const isRunning = this.timerStore.isRunning();
+  // ...
+});
+
+// Après
+private readonly expiredSignal = toSignal(this.timerService.expired$, { initialValue: null });
+private readonly expirationEffect = effect(() => {
+  const event = this.expiredSignal();
+  if (event) {
+    this.onTimerComplete(event.exerciseId);
+    this.timerService.reset();
+  }
+});
+```
+
+## Suppression NgRx
+
+Une fois les 3 services migrés et les consommateurs mis à jour :
+1. Supprimer `@ngrx/signals` de `package.json`
+2. Supprimer les anciens fichiers `.store.ts`
+3. Vérifier qu'aucun import `@ngrx/signals` ne subsiste
+
+## ADR à Mettre à Jour
+
+- **ADR-001** : Remplacer "SignalStore par domaine" par "Service Signals natifs par domaine"
 
 ## Tableau d'Avancement (La Source de Vérité)
-- [x] Tâche 1 : Hydrater l'ExerciseStore au démarrage
-- [x] Tâche 2 : Hydrater le ProgressStore au démarrage
-- [x] Tâche 3 : Timer uniquement pour compléter + `actualMinutes`
-- [x] Tâche 4 : Vérifier les tests E2E
-- [x] Tâche 5 : Correction du test C2 — completion multiple exercices
+
+### Phase 1 — TimerService (le plus complexe, plus de bugs)
+- [x] Tâche 1 : Créer `src/app/features/timer/timer.service.ts` avec les signals `isRunning`, `currentExerciseId`, `endTime`, `durationMs`, `pausedRemainingMs`.
+- [x] Tâche 2 : Implémenter le tick réactif avec `interval(250)` + `toSignal()` et les computed `remainingMs`, `remainingSeconds`, `formattedTime`.
+- [x] Tâche 3 : Implémenter les méthodes `start()`, `pause()`, `resume()`, `reset()` avec la logique `Date.now()` diff (ADR-002).
+- [x] Tâche 4 : Ajouter le `Subject<TimerExpiredEvent>` + `expired$` observable, émis à l'expiration avec `AudioAlertService.playBeep()`.
+- [x] Tâche 5 : Implémenter `ngOnDestroy()` pour cleanup du timer.
+- [ ] Tâche 6 : Migrer `TimerOverlayComponent` pour injecter `TimerService` à la place de `TimerStore`.
+- [ ] Tâche 7 : Migrer `DashboardComponent` — remplacer l'`effect()` d'expiration par l'écoute de `expired$` via `toSignal()`.
+- [x] Tâche 8 : Écrire les tests unitaires du `TimerService` (couverture équivalente à `timer.store.spec.ts`).
+- [x] Tâche 9 : Supprimer `timer.store.ts` et `timer.store.spec.ts`.
+
+### Phase 2 — ExerciseService
+- [ ] Tâche 10 : Créer `src/app/features/exercise/exercise.service.ts` avec le signal `exercises`, le computed `sortedExercises`, et les méthodes CRUD.
+- [ ] Tâche 11 : Implémenter la persistance LocalStorage via `effect()` + `StorageService` (chargement à l'init, sync à chaque mutation).
+- [ ] Tâche 12 : Migrer `RoutineComponent`, `DashboardComponent`, `TimerOverlayComponent`, `HistoryComponent` pour injecter `ExerciseService`.
+- [ ] Tâche 13 : Écrire les tests unitaires du `ExerciseService` (aucun test n'existe actuellement).
+- [ ] Tâche 14 : Supprimer `exercise.store.ts`.
+
+### Phase 3 — ProgressService
+- [ ] Tâche 15 : Créer `src/app/features/progress/progress.service.ts` avec le signal `dailySessions` et toutes les méthodes (`getSession`, `streak`, `addSession`, `updateSession`, `deleteSession`, `getWeekSessions`, `getWeeklyStats`).
+- [ ] Tâche 16 : Implémenter la persistance LocalStorage explicite (`persist()` après chaque mutation) + chargement à l'init.
+- [ ] Tâche 17 : Migrer `DashboardComponent` et `HistoryComponent` pour injecter `ProgressService`.
+- [x] Tâche 18 : Adapter les tests existants de `progress.store.spec.ts` vers `progress.service.spec.ts`.
+- [ ] Tâche 19 : Supprimer `progress.store.ts` et `progress.store.spec.ts`.
+
+### Phase 4 — Nettoyage NgRx
+- [x] Tâche 20 : Vérifier qu'aucun import `@ngrx/signals` ne subsiste dans le codebase.
+- [x] Tâche 21 : Supprimer `@ngrx/signals` de `package.json` via `pnpm remove @ngrx/signals`.
+- [x] Tâche 22 : Mettre à jour ADR-001 pour refléter l'architecture Services Signals natifs.
+- [x] Tâche 23 : Build + lint + test final pour valider la migration complète.
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
