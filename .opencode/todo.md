@@ -54,23 +54,31 @@ Les exercices et la progression ne persistent pas correctement après un recharg
 
 ### Tâche 4 : Vérifier les tests E2E
 - Exécuter `pnpm exec playwright test tests/persistence.spec.ts`
-- Tous les tests (A1, A2, B, C) doivent passer
+- Tous les tests (A1, A2, B, C1) doivent passer
+
+### Tâche 5 : Correction du test C2 — completion multiple exercices
+- Le test C2 échoue : quand il y a plusieurs exercices, seul le premier se complète
+- Investiguer pourquoi le timer n'expire que pour le premier exercice
+- Corriger le DashboardComponent / ProgressStore pour que chaque timer expire indépendamment
+- Vérifier que les deux exercices apparaissent dans l'historique avec leurs durées respectives
+- Exécuter `pnpm exec playwright test tests/persistence.spec.ts` — tous les tests (A1, A2, B, C1, C2) doivent passer
 
 ## Tableau d'Avancement (La Source de Vérité)
 - [x] Tâche 1 : Hydrater l'ExerciseStore au démarrage
 - [x] Tâche 2 : Hydrater le ProgressStore au démarrage
 - [x] Tâche 3 : Timer uniquement pour compléter + `actualMinutes`
 - [x] Tâche 4 : Vérifier les tests E2E
+- [ ] Tâche 5 : Correction du test C2 — completion multiple exercices
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Tâche 4 terminée
+- Tâche 5
 
 ### Compteur de rejets (tâche actuelle) :
 - 0 / 5
 
 ### Dernier retour de Review :
-- Tâche 4 validée. Tous les tests E2E (A1, A2, B, C) passent.
+- Aucun.
 
 ### Blocage Actuel :
 - Aucun.

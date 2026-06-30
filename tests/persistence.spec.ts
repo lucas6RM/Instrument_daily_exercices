@@ -53,7 +53,7 @@ test.describe('Exercise persistence', () => {
     ).toHaveCount(2);
   });
 
-  test('C - exercise auto-completes after timer expiration and persists in history', async ({
+  test('C1 - exercise auto-completes after timer expiration and persists in history', async ({
     page,
   }) => {
     await page.clock.install();
@@ -82,5 +82,47 @@ test.describe('Exercise persistence', () => {
     const completedSection = todayCard.getByRole('region', { name: 'Exercices réalisés' });
     await expect(completedSection.locator('text=Timer Test')).toBeVisible();
     await expect(completedSection.locator('text=1 min')).toBeVisible();
+  });
+
+  test('C2 - two-exercises auto-completes after timer expiration and persists in history', async ({
+    page,
+  }) => {
+    await page.clock.install();
+
+    await createExercise(page, 'Timer Testa', 1);
+    await createExercise(page, 'Timer Testb', 2);
+
+    await page.locator('app-navigation').getByRole('link', { name: 'Dashboard' }).click();
+
+    await expect(
+      page.getByRole('list', { name: 'Liste des exercices' }).locator('app-exercise-row'),
+    ).toHaveCount(2);
+
+    await page.getByRole('button', { name: 'Lancer le timer pour Timer Testa' }).click();
+
+    await page.clock.fastForward(61_000);
+
+    await expect(
+      page.getByRole('checkbox', { name: 'Marquer Timer Testa comme terminé' }),
+    ).toBeChecked();
+
+    await page.getByRole('button', { name: 'Lancer le timer pour Timer Testb' }).click();
+
+    await page.clock.fastForward(121_000);
+
+    await expect(
+      page.getByRole('checkbox', { name: 'Marquer Timer Testb comme terminé' }),
+    ).toBeChecked();
+
+    await page.locator('app-navigation').getByRole('link', { name: 'Historique' }).click();
+
+    await expect(page.getByRole('heading', { name: 'Historique hebdomadaire' })).toBeVisible();
+
+    const todayCard = page.getByRole('article').first();
+    const completedSection = todayCard.getByRole('region', { name: 'Exercices réalisés' });
+    await expect(completedSection.locator('text=Timer Testa')).toBeVisible();
+    await expect(completedSection.locator('text=1 min')).toBeVisible();
+    await expect(completedSection.locator('text=Timer Testb')).toBeVisible();
+    await expect(completedSection.locator('text=2 min')).toBeVisible();
   });
 });
