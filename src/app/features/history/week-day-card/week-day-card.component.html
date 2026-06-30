@@ -49,12 +49,12 @@
         Réalisés
       </h4>
       <ul class="mb-3 space-y-1.5" role="list">
-        @for (item of completedExercises; track item.exercise.id) {
+        @for (item of completedExercises; track item.exerciseId) {
           <li
             class="flex items-center justify-between rounded-lg bg-green-50 px-3 py-2 text-sm ring-1 ring-green-100"
           >
             <span class="font-medium text-green-800">
-              {{ item.exercise.name }}
+              {{ item.exerciseName }}
             </span>
             <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-bold text-green-700">
               {{ item.actualMinutes }} min
@@ -93,9 +93,11 @@
             <span class="font-medium text-gray-400 line-through">
               {{ ex.name }}
             </span>
-            <span class="text-xs text-gray-400">
-              {{ ex.durationSeconds }} s
-            </span>
+            @if (ex.durationSeconds !== null) {
+              <span class="text-xs text-gray-400">
+                {{ ex.durationSeconds }} s
+              </span>
+            }
           </li>
         }
       </ul>

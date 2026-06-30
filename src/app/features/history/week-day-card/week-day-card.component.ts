@@ -29,32 +29,73 @@ export class WeekDayCardComponent {
 
   readonly completedExercisesSignal = computed(() => {
     const sessions = this.dayStats().sessions;
-    const scheduled = this.scheduledExercises();
 
-    const completedMap = new Map<string, number>();
+    const completedMap = new Map<string, { name: string; minutes: number }>();
 
     for (const session of sessions) {
       for (const ex of session.exercises) {
         if (ex.completed && ex.actualMinutes > 0) {
-          const current = completedMap.get(ex.exerciseId) ?? 0;
-          completedMap.set(ex.exerciseId, current + ex.actualMinutes);
+          const existing = completedMap.get(ex.exerciseId);
+          if (existing) {
+            existing.minutes += ex.actualMinutes;
+          } else {
+            completedMap.set(ex.exerciseId, {
+              name: ex.exerciseName ?? '(nom inconnu)',
+              minutes: ex.actualMinutes,
+            });
+          }
         }
       }
     }
 
-    return scheduled
-      .filter((ex) => completedMap.has(ex.id))
-      .map((ex) => ({
-        exercise: ex,
-        actualMinutes: completedMap.get(ex.id) ?? 0,
-      }));
+    return Array.from(completedMap.entries()).map(([exerciseId, data]) => ({
+      exerciseId,
+      exerciseName: data.name,
+      actualMinutes: data.minutes,
+    }));
   });
 
   readonly uncompletedExercisesSignal = computed(() => {
-    const completed = this.completedExercisesSignal();
+    const sessions = this.dayStats().sessions;
     const scheduled = this.scheduledExercises();
-    const completedIds = new Set(completed.map((c) => c.exercise.id));
+    const completedIds = new Set<string>();
+    const uncompletedMap = new Map<string, string>();
 
-    return scheduled.filter((ex) => !completedIds.has(ex.id));
+    // First pass: identify completed exercise IDs
+    for (const session of sessions) {
+      for (const ex of session.exercises) {
+        if (ex.completed) {
+          completedIds.add(ex.exerciseId);
+        }
+      }
+    }
+
+    // Second pass: collect uncompleted exercises from sessions (use snapshot name)
+    for (const session of sessions) {
+      for (const ex of session.exercises) {
+        if (!completedIds.has(ex.exerciseId) && !uncompletedMap.has(ex.exerciseId)) {
+          uncompletedMap.set(ex.exerciseId, ex.exerciseName ?? '(nom inconnu)');
+        }
+      }
+    }
+
+    // Third pass: add scheduled exercises not present in any session
+    for (const ex of scheduled) {
+      if (!completedIds.has(ex.id) && !uncompletedMap.has(ex.id)) {
+        uncompletedMap.set(ex.id, ex.name);
+      }
+    }
+
+    // Build scheduled lookup for durationSeconds fallback
+    const scheduledMap = new Map(scheduled.map((e) => [e.id, e]));
+
+    return Array.from(uncompletedMap.entries()).map(([id, name]) => {
+      const scheduledEx = scheduledMap.get(id);
+      return {
+        id,
+        name,
+        durationSeconds: scheduledEx?.durationSeconds,
+      };
+    });
   });
 }
