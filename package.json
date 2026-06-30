@@ -23,6 +23,7 @@
     "@angular/router": "^22.0.4",
     "@angular/ssr": "22.0.4",
     "@ngrx/signals": "^21.1.1",
+    "dotenv": "^17.4.2",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.3.1",
     "tslib": "^2.3.0"
@@ -34,8 +35,10 @@
     "@angular/cli": "^22.0.4",
     "@angular/compiler-cli": "^22.0.4",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4.1.12",
     "@types/jsdom": "^28.0.3",
+    "@types/node": "^26.0.1",
     "@vitest/coverage-v8": "^4.1.9",
     "angular-eslint": "22.0.0",
     "eslint": "^10.3.0",
