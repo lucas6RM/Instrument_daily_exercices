@@ -77,13 +77,20 @@ describe('ProgressService', () => {
   /* ------------------------------------------------------------------ */
 
   describe('streak()', () => {
+    const toLocalISOString = (date: Date): string => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+
     it('should return 0 when no sessions exist', () => {
       expect(service.streak()).toBe(0);
     });
 
     it('should return 1 when today has a session', () => {
       const today = new Date();
-      const dateStr = today.toISOString().slice(0, 10);
+      const dateStr = toLocalISOString(today);
       service.addSession({ date: dateStr, exercises: [] });
       expect(service.streak()).toBe(1);
     });
@@ -93,8 +100,8 @@ describe('ProgressService', () => {
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
 
-      service.addSession({ date: today.toISOString().slice(0, 10), exercises: [] });
-      service.addSession({ date: yesterday.toISOString().slice(0, 10), exercises: [] });
+      service.addSession({ date: toLocalISOString(today), exercises: [] });
+      service.addSession({ date: toLocalISOString(yesterday), exercises: [] });
 
       expect(service.streak()).toBe(2);
     });
@@ -104,8 +111,8 @@ describe('ProgressService', () => {
       const twoDaysAgo = new Date(today);
       twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
 
-      service.addSession({ date: today.toISOString().slice(0, 10), exercises: [] });
-      service.addSession({ date: twoDaysAgo.toISOString().slice(0, 10), exercises: [] });
+      service.addSession({ date: toLocalISOString(today), exercises: [] });
+      service.addSession({ date: toLocalISOString(twoDaysAgo), exercises: [] });
 
       expect(service.streak()).toBe(1);
     });
@@ -113,7 +120,7 @@ describe('ProgressService', () => {
     it('should return 0 when the most recent session is not today', () => {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      service.addSession({ date: yesterday.toISOString().slice(0, 10), exercises: [] });
+      service.addSession({ date: toLocalISOString(yesterday), exercises: [] });
       expect(service.streak()).toBe(0);
     });
   });

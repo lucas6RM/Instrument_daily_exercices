@@ -34,20 +34,21 @@ export class ProgressService {
       return 0;
     }
 
-    const dates = sessions
-      .map((s) => s.date)
-      .sort()
-      .reverse();
+    // Check if today has a session
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    if (!sessions.some((s) => s.date === todayStr)) {
+      return 0;
+    }
+
+    const sessionDates = new Set(sessions.map((s) => s.date));
     let streak = 0;
 
-    for (const dateStr of dates) {
-      const currentDate = new Date(dateStr);
-      const expectedDate = new Date();
-      expectedDate.setDate(expectedDate.getDate() - streak);
-      expectedDate.setHours(0, 0, 0, 0);
-      currentDate.setHours(0, 0, 0, 0);
-
-      if (currentDate.getTime() === expectedDate.getTime()) {
+    while (true) {
+      const checkDate = new Date(today);
+      checkDate.setDate(checkDate.getDate() - streak);
+      const checkStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+      if (sessionDates.has(checkStr)) {
         streak++;
       } else {
         break;

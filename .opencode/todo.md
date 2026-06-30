@@ -60,9 +60,9 @@ export interface DailySession {
 
 ## Tâches
 
-- [ ] Tâche 1 : Ajouter `exerciseName` au modèle `DailySession` avec type optionnel pour la compatibilité
-- [ ] Tâche 2 : Mettre à jour la création de la séance du jour pour inclure le snapshot du nom
-- [ ] Tâche 3 : Figérer la séance du jour au premier lancement (ne pas reconstruire à chaque chargement)
+ - [x] Tâche 1 : Ajouter `exerciseName` au modèle `DailySession` avec type optionnel pour la compatibilité
+- [x] Tâche 2 : Mettre à jour la création de la séance du jour pour inclure le snapshot du nom
+- [ ] Tâche 3 : Figér la séance du jour au premier lancement (ne pas reconstruire à chaque chargement)
 - [ ] Tâche 4 : Propager un exercice ajouté à la séance du jour en cours
 - [ ] Tâche 5 : Mettre à jour `WeekDayCardComponent` pour afficher `exerciseName` au lieu de résoudre via `scheduledExercises`
 - [ ] Tâche 6 : Mettre à jour `HistoryComponent` pour ne plus passer `scheduledExercises` aux cartes
@@ -83,3 +83,4 @@ export interface DailySession {
 
 ### Blocage Actuel :
 - Aucun.
+
