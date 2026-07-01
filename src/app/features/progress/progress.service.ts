@@ -29,6 +29,17 @@ export class ProgressService {
     return this.dailySessions().find((s) => s.date === date) ?? null;
   }
 
+  getOrCreateSession(date: string): DailySession {
+    const existing = this.dailySessions().find((s) => s.date === date);
+    if (existing) {
+      return existing;
+    }
+    const newSession: DailySession = { date, exercises: [] };
+    this.dailySessions.update((sessions) => [...sessions, newSession]);
+    this.persist();
+    return newSession;
+  }
+
   streak(): number {
     const sessions = this.dailySessions();
     if (sessions.length === 0) {
