@@ -145,3 +145,62 @@ Suppression complète de `@ngrx/signals` du projet.
 - **+** Tests plus simples : instancier le service, lire les signals, appeler les méthodes
 - **-** Migration manuelle de tous les consommateurs (4 composants à mettre à jour)
 - **-** Perte de `patchState` (à remplacer par `signal.update()` ou `signal.set()`)
+
+---
+
+# ADR-006 : Vue Semaine Interactive avec Rattrapage et Bonus Minutes (F8)
+
+## Statut
+Proposé
+
+## Contexte
+La vue historique (F5) affiche une semaine en lecture seule. L'utilisateur souhaite :
+1. **Rattraper des exercices** des jours passés de la semaine en cours directement depuis la vue historique
+2. **Dépasser les objectifs journaliers** en rejouant un exercice terminé pour accumuler du temps bonus, compensant ainsi un exercice non réalisé ailleurs dans la semaine
+
+## Décision
+
+### 1. Vue semaine interactive (Lun → Dim)
+La vue `/history` affiche systématiquement la semaine en cours (lundi → dimanche). Chaque jour de la semaine est cliquable et ouvre un **modal centré** permettant de cocher/rejouer les exercices de ce jour.
+
+### 2. Bonus minutes
+Le modèle `DailySession` est étendu avec un champ `bonusMinutes` par exercice :
+
+```typescript
+export interface DailySession {
+  date: string;
+  exercises: {
+    exerciseId: string;
+    completed: boolean;
+    actualMinutes: number; // durée de la dernière session
+    bonusMinutes: number; // cumul des replays
+  }[];
+}
+```
+
+- `actualMinutes` conserve la durée de la dernière session de l'exercice
+- `bonusMinutes` s'incrémente à chaque replay (replay = relancer PLAY sur un exercice déjà coché)
+- Temps total d'un exercice = `actualMinutes + bonusMinutes`
+
+### 3. Compensation par temps total
+Le taux de complétion hebdomadaire passe de `exercices complétés / total` à `temps réel total / temps cible total` :
+
+```
+completionRate = (sum(actualMinutes + bonusMinutes) / sum(durationSeconds)) * 100
+```
+
+### 4. Bornes du rattrapage
+- Seulement les jours de la **semaine en cours** (Lun → Dim)
+- Seulement les exercices figurant dans la **routine actuelle**
+- Un exercice supprimé de la routine s'affiche grisé avec "(supprimé)" et n'est pas rejouable
+
+### 5. Dashboard replay
+Le Dashboard permet de relancer PLAY sur un exercice terminé. L'affichage indique : `"✅ 20min + 10min bonus (2×)"`.
+
+## Conséquences
+- **+** L'utilisateur peut compenser un jour manqué avec du temps bonus un autre jour
+- **+** Migration du modèle : ajouter `bonusMinutes: 0` aux sessions existantes en localStorage
+- **+** Pas de changement de route — tout se passe dans `/history` et `/`
+- **-** Le taux de complétion n'est plus binaire (exercice fait/pas fait), ce qui change la sémantique de l'historique
+- **-** Migration required : toutes les sessions existantes doivent être initialisées avec `bonusMinutes: 0`
+- **-** Le calcul du temps cible doit tenir compte des exercices supprimés (on utilise la routine actuelle comme référence)
