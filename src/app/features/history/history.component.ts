@@ -38,7 +38,7 @@ export class HistoryComponent {
   readonly exercises = computed(() => this.exerciseService.sortedExercises());
 
   readonly weeklyStats = computed(() =>
-    this.progressService.getWeeklyStats(this.currentWeekStart())(),
+    this.progressService.getWeeklyStats(this.currentWeekStart(), this.exerciseService.exercises())(),
   );
 
   readonly weekRangeLabel = computed(() => formatDateRange(this.currentWeekStart()));

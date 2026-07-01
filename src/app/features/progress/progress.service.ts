@@ -1,5 +1,6 @@
 import { Injectable, inject, signal, computed, type Signal } from '@angular/core';
 
+import { Exercise } from '../../core/models/exercise';
 import { DailySession, ProgressState, WeekDayStats, WeeklyStats } from '../../core/models';
 import { STORAGE_KEYS } from '../../core/services/storage-keys';
 import { StorageService } from '../../core/services/storage.service';
@@ -180,7 +181,7 @@ export class ProgressService {
     });
   }
 
-  getWeeklyStats(startDate: Date): Signal<WeeklyStats> {
+  getWeeklyStats(startDate: Date, exercises: Exercise[]): Signal<WeeklyStats> {
     const toLocalISOString = (date: Date): string => {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -227,9 +228,17 @@ export class ProgressService {
         }
       }
 
-      // Completion rate: days with at least one session / 7 * 100
-      const daysWithSessions = days.filter((day) => day.sessions.length > 0).length;
-      const completionRate = (daysWithSessions / 7) * 100;
+      // Completion rate: (actual time + bonus time) / (target time for the week) * 100
+      // Target time = sum of current routine exercise durations × 7 days
+      const totalTargetSeconds = exercises.reduce((sum, ex) => sum + ex.durationSeconds, 0) * 7;
+
+      const totalActualSeconds = weekSessions.reduce(
+        (sum, session) =>
+          sum + session.exercises.reduce((eSum, ex) => eSum + ex.actualMinutes + ex.bonusMinutes, 0),
+        0,
+      );
+
+      const completionRate = totalTargetSeconds > 0 ? (totalActualSeconds / totalTargetSeconds) * 100 : 0;
 
       return {
         days,

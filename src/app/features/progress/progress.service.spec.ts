@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ProgressService } from './progress.service';
 import { StorageService } from '../../core/services/storage.service';
 import { STORAGE_KEYS } from '../../core/services/storage-keys';
-import { DailySession, ProgressState } from '../../core/models';
+import { DailySession, Exercise, ProgressState } from '../../core/models';
 
 describe('ProgressService', () => {
   let service: ProgressService;
@@ -628,14 +628,19 @@ describe('ProgressService', () => {
   /* ------------------------------------------------------------------ */
 
   describe('getWeeklyStats()', () => {
+    const routine: Exercise[] = [
+      { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+      { id: 'e2', name: 'Gammes', durationSeconds: 30, order: 2 },
+    ];
+
     it('should return a Signal', () => {
-      const result = service.getWeeklyStats(new Date('2025-01-06'));
+      const result = service.getWeeklyStats(new Date('2025-01-06'), routine);
       expect(typeof result).toBe('function');
     });
 
     it('should return 7 days in the days array', () => {
       const start = new Date('2025-01-06');
-      const stats = service.getWeeklyStats(start);
+      const stats = service.getWeeklyStats(start, routine);
 
       expect(stats().days).toHaveLength(7);
     });
@@ -645,17 +650,17 @@ describe('ProgressService', () => {
 
       service.addSession({
         date: '2025-01-06',
-exercises: [
-            { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 },
-            { exerciseId: 'e2', completed: true, actualMinutes: 15, bonusMinutes: 0 },
-          ],
+        exercises: [
+          { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 },
+          { exerciseId: 'e2', completed: true, actualMinutes: 15, bonusMinutes: 0 },
+        ],
       });
       service.addSession({
         date: '2025-01-07',
         exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 20, bonusMinutes: 0 }],
       });
 
-      const stats = service.getWeeklyStats(start);
+      const stats = service.getWeeklyStats(start, routine);
       expect(stats().totalMinutes).toBe(45);
     });
 
@@ -675,7 +680,7 @@ exercises: [
         exercises: [{ exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 5, bonusMinutes: 0 }],
       });
 
-      const stats = service.getWeeklyStats(start);
+      const stats = service.getWeeklyStats(start, routine);
       expect(stats().minutesByExercise.get('Chromatique')).toBe(30);
       expect(stats().minutesByExercise.get('Gammes')).toBe(5);
     });
@@ -692,44 +697,96 @@ exercises: [
         exercises: [{ exerciseId: 'e2', completed: true, actualMinutes: 5, bonusMinutes: 0 }],
       });
 
-      const stats = service.getWeeklyStats(start);
+      const stats = service.getWeeklyStats(start, routine);
       expect(stats().minutesByExercise.get('(nom inconnu)')).toBe(15);
     });
 
-    it('should calculate completionRate based on days with sessions', () => {
+    it('should calculate completionRate as actual time / target time', () => {
       const start = new Date('2025-01-06');
 
-      // 3 out of 7 days have sessions
-      service.addSession({ date: '2025-01-06', exercises: [] });
-      service.addSession({ date: '2025-01-08', exercises: [] });
-      service.addSession({ date: '2025-01-10', exercises: [] });
+      // Routine: 2 exercises × 30s = 60s/day → 420s/week target
 
-      const stats = service.getWeeklyStats(start);
-      expect(stats().completionRate).toBeCloseTo((3 / 7) * 100);
+      // Day 1: 10 + 15 = 25s actual
+      service.addSession({
+        date: '2025-01-06',
+        exercises: [
+          { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 },
+          { exerciseId: 'e2', completed: true, actualMinutes: 15, bonusMinutes: 0 },
+        ],
+      });
+      // Day 2: 20s actual
+      service.addSession({
+        date: '2025-01-07',
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 20, bonusMinutes: 0 }],
+      });
+
+      const stats = service.getWeeklyStats(start, routine);
+      // totalActual = 10 + 15 + 20 = 45, totalTarget = 60 * 7 = 420
+      expect(stats().completionRate).toBeCloseTo((45 / 420) * 100);
+    });
+
+    it('should include bonusMinutes in completionRate', () => {
+      const start = new Date('2025-01-06');
+      const singleRoutine: Exercise[] = [
+        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+      ];
+
+      // 30s actual + 10s bonus = 40s, target = 30 * 7 = 210
+      service.addSession({
+        date: '2025-01-06',
+        exercises: [
+          { exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 10 },
+        ],
+      });
+
+      const stats = service.getWeeklyStats(start, singleRoutine);
+      expect(stats().completionRate).toBeCloseTo((40 / 210) * 100);
     });
 
     it('should return 0 completionRate when no sessions in the week', () => {
       const start = new Date('2025-01-06');
-      const stats = service.getWeeklyStats(start);
+
+      const stats = service.getWeeklyStats(start, routine);
 
       expect(stats().completionRate).toBe(0);
     });
 
-    it('should return 100 completionRate when all 7 days have sessions', () => {
+    it('should return 0 completionRate when no exercises in routine', () => {
       const start = new Date('2025-01-06');
+
+      // Empty routine → target = 0 → completionRate = 0
+      service.addSession({
+        date: '2025-01-06',
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 0 }],
+      });
+
+      const stats = service.getWeeklyStats(start, []);
+      expect(stats().completionRate).toBe(0);
+    });
+
+    it('should return 100 completionRate when actual equals target', () => {
+      const start = new Date('2025-01-06');
+      const singleRoutine: Exercise[] = [
+        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+      ];
+
+      // Fill all 7 days with 30s each = 210s = target
       for (let i = 0; i < 7; i++) {
         const d = new Date(start);
         d.setDate(d.getDate() + i);
-        service.addSession({ date: d.toISOString().slice(0, 10), exercises: [] });
+        service.addSession({
+          date: d.toISOString().slice(0, 10),
+          exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 0 }],
+        });
       }
 
-      const stats = service.getWeeklyStats(start);
-      expect(stats().completionRate).toBe(100);
+      const stats = service.getWeeklyStats(start, singleRoutine);
+      expect(stats().completionRate).toBeCloseTo(100);
     });
 
     it('should have correct dates for each day', () => {
       const start = new Date('2025-01-06'); // Monday
-      const stats = service.getWeeklyStats(start);
+      const stats = service.getWeeklyStats(start, routine);
 
       const expectedDates = ['2025-01-06', '2025-01-07', '2025-01-08', '2025-01-09',
         '2025-01-10', '2025-01-11', '2025-01-12'];
@@ -740,7 +797,7 @@ exercises: [
 
     it('should reactively update when sessions change', () => {
       const start = new Date('2025-01-06');
-      const stats = service.getWeeklyStats(start);
+      const stats = service.getWeeklyStats(start, routine);
 
       expect(stats().totalMinutes).toBe(0);
 
@@ -754,7 +811,7 @@ exercises: [
 
     it('should return empty minutesByExercise when no sessions', () => {
       const start = new Date('2025-01-06');
-      const stats = service.getWeeklyStats(start);
+      const stats = service.getWeeklyStats(start, routine);
 
       expect(stats().minutesByExercise.size).toBe(0);
     });
@@ -764,14 +821,14 @@ exercises: [
 
       service.addSession({
         date: '2025-01-06',
-exercises: [
-            { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10, bonusMinutes: 0 },
-            { exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 20, bonusMinutes: 0 },
-            { exerciseId: 'e3', exerciseName: 'Accords', completed: false, actualMinutes: 5, bonusMinutes: 0 },
-          ],
+        exercises: [
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10, bonusMinutes: 0 },
+          { exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 20, bonusMinutes: 0 },
+          { exerciseId: 'e3', exerciseName: 'Accords', completed: false, actualMinutes: 5, bonusMinutes: 0 },
+        ],
       });
 
-      const stats = service.getWeeklyStats(start);
+      const stats = service.getWeeklyStats(start, routine);
       expect(stats().totalMinutes).toBe(35);
       expect(stats().minutesByExercise.get('Chromatique')).toBe(10);
       expect(stats().minutesByExercise.get('Gammes')).toBe(20);

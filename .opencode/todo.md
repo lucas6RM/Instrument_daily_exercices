@@ -98,7 +98,7 @@ export interface WeeklyStats {
 ### Phase 1 — Modèle et migration
 - [x] Tâche 1 : Ajouter `bonusMinutes: number` à `DailySession.exercises` dans `daily-session.ts`.
 - [x] Tâche 2 : Implémenter la migration localStorage dans `ProgressService` (initialiser `bonusMinutes: 0` pour les sessions existantes).
-- [ ] Tâche 3 : Mettre à jour `WeeklyStats.completionRate` pour utiliser `temps réel / temps cible`.
+- [x] Tâche 3 : Mettre à jour `WeeklyStats.completionRate` pour utiliser `temps réel / temps cible`.
 - [ ] Tâche 4 : Ajouter `getOrCreateSession(date)` dans `ProgressService`.
 - [ ] Tâche 5 : Test unitaire de la migration et du nouveau calcul de `completionRate`.
 
