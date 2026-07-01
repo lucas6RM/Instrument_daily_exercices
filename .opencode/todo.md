@@ -104,7 +104,7 @@ export interface WeeklyStats {
 
 ### Phase 2 — Bonus minutes dans le Dashboard
 ^- [x] Tâche 6 : Permettre le replay d'un exercice terminé dans `DashboardComponent` (PLAY sur exercice coché → incrémenter `bonusMinutes`).
-- [ ] Tâche 7 : Créer `ExerciseTimeDisplayComponent` avec affichage `"✅ {actualMinutes}min + {bonusMinutes}min bonus ({playCount}×)"`.
+^- [x] Tâche 7 : Créer `ExerciseTimeDisplayComponent` avec affichage `"✅ {actualMinutes}min + {bonusMinutes}min bonus ({playCount}×)"`.
 - [ ] Tâche 8 : Test unitaire du replay et du calcul du temps affiché.
 
 ### Phase 3 — Modal de rattrapage
