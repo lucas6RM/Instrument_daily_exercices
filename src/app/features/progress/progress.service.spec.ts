@@ -572,6 +572,71 @@ describe('ProgressService', () => {
   });
 
   /* ------------------------------------------------------------------ */
+  /* getOrCreateSession()                                                */
+  /* ------------------------------------------------------------------ */
+
+  describe('getOrCreateSession()', () => {
+    it('should return the existing session when one exists for the date', () => {
+      const existing: DailySession = {
+        date: '2025-01-01',
+        exercises: [
+          { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 },
+        ],
+      };
+      service.addSession(existing);
+
+      const result = service.getOrCreateSession('2025-01-01');
+
+      expect(result).toBe(existing);
+      expect(result.exercises).toHaveLength(1);
+    });
+
+    it('should create and return a new session when none exists', () => {
+      const result = service.getOrCreateSession('2025-01-01');
+
+      expect(result.date).toBe('2025-01-01');
+      expect(result.exercises).toEqual([]);
+      expect(service.dailySessions()).toHaveLength(1);
+    });
+
+    it('should persist the new session to storage', () => {
+      setSpy.mockClear();
+      service.getOrCreateSession('2025-01-01');
+
+      expect(setSpy).toHaveBeenCalledWith(STORAGE_KEYS.PROGRESS, {
+        dailySessions: expect.arrayContaining([
+          expect.objectContaining({ date: '2025-01-01', exercises: [] }),
+        ]),
+      });
+    });
+
+    it('should not persist when returning an existing session', () => {
+      service.addSession({ date: '2025-01-01', exercises: [] });
+      setSpy.mockClear();
+
+      service.getOrCreateSession('2025-01-01');
+
+      expect(setSpy).not.toHaveBeenCalled();
+    });
+
+    it('should return the same session on repeated calls', () => {
+      const first = service.getOrCreateSession('2025-01-01');
+      const second = service.getOrCreateSession('2025-01-01');
+
+      expect(first).toBe(second);
+      expect(service.dailySessions()).toHaveLength(1);
+    });
+
+    it('should create separate sessions for different dates', () => {
+      const jan1 = service.getOrCreateSession('2025-01-01');
+      const jan2 = service.getOrCreateSession('2025-01-02');
+
+      expect(jan1).not.toBe(jan2);
+      expect(service.dailySessions()).toHaveLength(2);
+    });
+  });
+
+  /* ------------------------------------------------------------------ */
   /* getWeekSessions()                                                   */
   /* ------------------------------------------------------------------ */
 

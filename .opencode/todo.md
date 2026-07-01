@@ -100,7 +100,7 @@ export interface WeeklyStats {
 - [x] Tâche 2 : Implémenter la migration localStorage dans `ProgressService` (initialiser `bonusMinutes: 0` pour les sessions existantes).
 - [x] Tâche 3 : Mettre à jour `WeeklyStats.completionRate` pour utiliser `temps réel / temps cible`.
 - [x] Tâche 4 : Ajouter `getOrCreateSession(date)` dans `ProgressService`.
-- [ ] Tâche 5 : Test unitaire de la migration et du nouveau calcul de `completionRate`.
+- [x] Tâche 5 : Test unitaire de la migration et du nouveau calcul de `completionRate`.
 
 ### Phase 2 — Bonus minutes dans le Dashboard
 - [ ] Tâche 6 : Permettre le replay d'un exercice terminé dans `DashboardComponent` (PLAY sur exercice coché → incrémenter `bonusMinutes`).
