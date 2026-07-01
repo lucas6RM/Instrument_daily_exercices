@@ -108,7 +108,7 @@ export interface WeeklyStats {
 - [x] Tâche 8 : Test unitaire du replay et du calcul du temps affiché.
 
 ### Phase 3 — Modal de rattrapage
-- [ ] Tâche 9 : Créer `CatchUpModalComponent` avec liste d'exercices du jour, checkbox, PLAY, et gestion des exercices supprimés.
+- [x] Tâche 9 : Créer `CatchUpModalComponent` avec liste d'exercices du jour, checkbox, PLAY, et gestion des exercices supprimés.
 - [ ] Tâche 10 : Lier le modal au `ProgressService` avec la date du jour sélectionné (pas aujourd'hui).
 - [ ] Tâche 11 : Gérer le timer pour le rattrapage : à l'expiration, marquer comme complété OU incrémenter `bonusMinutes`.
 - [ ] Tâche 12 : Styler le modal avec Tailwind (accessible, focus trap, overlay, aria-modal).
