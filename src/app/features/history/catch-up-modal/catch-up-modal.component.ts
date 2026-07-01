@@ -27,7 +27,6 @@ export interface CatchUpExercise {
 })
 export class CatchUpModalComponent {
   readonly date = input.required<string>();
-  readonly session = input.required<DailySession>();
   readonly exercises = input.required<Exercise[]>();
   readonly closed = output<void>();
 
@@ -35,17 +34,18 @@ export class CatchUpModalComponent {
   private readonly timerService = inject(TimerService);
   private readonly appRef = inject(ApplicationRef);
 
-  // Local copy of the session that we manage
+  // Local copy of the session managed via ProgressService
   private readonly localSession = signal<DailySession>({ date: '', exercises: [] });
 
   // Track which exercise timer is currently active
   readonly activeTimerExerciseId = signal<string | null>(null);
 
   constructor() {
-    // Sync local session with input changes
+    // On date change (or init), get or create the session from ProgressService
     effect(() => {
-      const s = this.session();
-      this.localSession.set({ ...s });
+      const date = this.date();
+      const session = this.progressService.getOrCreateSession(date);
+      this.localSession.set({ ...session });
     });
 
     // Listen for timer expiration
