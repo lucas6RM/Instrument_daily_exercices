@@ -92,7 +92,7 @@ describe('DashboardComponent', () => {
       const existingSession: DailySession = {
         date: today,
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'AncienNom', completed: false, actualMinutes: 0 },
+          { exerciseId: 'e1', exerciseName: 'AncienNom', completed: false, actualMinutes: 0, bonusMinutes: 0 },
         ],
       };
       progressService.addSession(existingSession);
@@ -156,7 +156,7 @@ describe('DashboardComponent', () => {
       progressService.addSession({
         date: today,
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: false, actualMinutes: 0 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: false, actualMinutes: 0, bonusMinutes: 0 },
         ],
       });
 

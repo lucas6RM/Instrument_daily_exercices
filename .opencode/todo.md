@@ -1,75 +1,125 @@
-# Feature F7 : Snapshot d'Exercice dans les Séances
+# Feature F8 : Vue Semaine Interactive — Rattrapage et Bonus Minutes
 
 ## Spécification Technique Globale
-Chaque `DailySession` doit conserver un snapshot du nom de chaque exercice pratiqué, afin que l'historique reste lisible même si l'exercice est supprimé ou renomé de la Routine. La séance du jour est figée au premier lancement : les renommages et suppressions ne la modifient pas, seuls les ajouts s'y propagent.
+Transformation de la vue historique en vue semaine interactive (Lun → Dim) avec capacité de rattrapage des jours passés via un modal inline. Ajout du concept de bonus minutes : un exercice terminé peut être rejoué pour accumuler du temps bonus, compensant les exercices non réalisés dans la semaine.
 
-> 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
+> 📋 Décisions architecturales : voir [`docs/adr/001-architecture.md#adr-006`](docs/adr/001-architecture.md#adr-006)
+> 📋 Dépend : F7 (Snapshot d'Exercice) — le modèle `DailySession` contient déjà `exerciseName`
 > 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
 
 ## Standards du Projet & Commandes
 - Build : `pnpm run build`
-- Test : `pnpm run test`
+- Test : `pnpm run test --watch=false`
 - Lint : `pnpm run lint`
 - Serve : `pnpm run serve`
 
-## Fonctionnalités
-- Le modèle `DailySession` inclut un `exerciseName` en plus de `exerciseId`, `completed`, `actualMinutes`
-- La séance du jour est figée au premier lancement de la journée (snapshot de la Routine)
-- Un exercice ajouté à la Routine en cours de jour s'ajoute à la séance du jour
-- Un exercice supprimé ou renomé de la Routine n'affecte pas la séance du jour ni les séances passées
-- L'historique affiche le nom snapshot sans lien vers la Routine actuelle
-- Aucune migration des données existantes : les anciennes séances sans `exerciseName` affichent "(nom inconnu)"
+## Comportement
 
-## Impact sur les Modèles
+### Rattrapage de jours passés
+- La vue `/history` affiche systématiquement la semaine en cours (Lun → Dim)
+- Chaque jour est cliquable → ouvre un modal centré avec la liste des exercices de ce jour
+- Le modal affiche les exercices de la routine actuelle avec leur statut pour cette date :
+  - Exercice complété : checkbox cochée + temps affiché
+  - Exercice non complété : checkbox décochée, bouton PLAY disponible
+  - Exercice supprimé de la routine : affiché grisé avec le nom snapshot (F7) + "(supprimé)", non rejouable
+- Le timer fonctionne comme dans le Dashboard : PLAY → décompte → auto-complétion
+- La session est sauvegardée avec la date du jour sélectionné (pas aujourd'hui)
+- Si aucune session n'existe pour ce jour, elle est créée à l'ouverture du modal
 
-### `DailySession` (modifié)
-```ts
+### Bonus minutes
+- Sur le Dashboard et dans le modal de rattrapage, un exercice déjà terminé peut être rejoué
+- Chaque replay ajoute `durationSeconds` au champ `bonusMinutes` de l'exercice
+- Affichage : `"✅ {actualMinutes}min + {bonusMinutes}min bonus ({playCount}×)"`
+  - `playCount` = 1 (session initiale) + nombre de replays
+
+### Compensation par temps total
+- Le taux de complétion hebdomadaire est recalculé :
+  - `completionRate = (sum(actualMinutes + bonusMinutes) / sum(durationSeconds)) * 100`
+  - `sum(durationSeconds)` = somme des durées cibles de la routine actuelle × 7 jours
+- Un seul taux affiché, remplace l'ancien taux binaire par exercice
+
+### Bornes
+- Rattrapage limité à la semaine en cours (Lun → Dim)
+- La navigation vers les semaines passées reste en lecture seule
+- Les exercices de la routine actuelle sont la référence pour le rattrapage
+
+## Changements de Modèle
+
+### `DailySession.exercises` — ajout `bonusMinutes`
+> Note : `exerciseName` existe déjà (F7 snapshot). Le modèle final combine les deux features.
+
+```typescript
 export interface DailySession {
-  date: string; // ISO date 'YYYY-MM-DD'
+  date: string;
   exercises: {
     exerciseId: string;
-    exerciseName: string; // ← NOUVEAU : snapshot du nom
+    exerciseName?: string; // snapshot du nom (F7, optionnel pour compatibilité)
     completed: boolean;
-    actualMinutes: number;
+    actualMinutes: number; // durée de la dernière session
+    bonusMinutes: number; // cumul des replays (F8)
   }[];
 }
 ```
 
-## Impact sur les Services
+### `WeeklyStats` — recalcul `completionRate`
+```typescript
+export interface WeeklyStats {
+  days: WeekDayStats[];
+  totalMinutes: number;
+  minutesByExercise: Map<string, number>;
+  completionRate: number; // temps réel total / temps cible total
+}
+```
 
-### `ProgressService`
-- `addSession()` : la séance reçue contient déjà les noms snapshot
-- `getWeeklyStats()` : utiliser `exerciseName` pour l'affichage au lieu de résoudre via la Routine
-- `getSession()` : retourne la séance avec les noms snapshot
-
-### `ExerciseService`
-- `deleteExercise()` : ne touche plus les `DailySession` (pas de nettoyage en cascade)
-- `updateExercise()` : ne touche plus la séance du jour (le nom est figé)
-
-### Composants d'historique
-- `WeekDayCardComponent` : afficher `exerciseName` au lieu de résoudre via `scheduledExercises`
-- `HistoryComponent` : ne plus passer `scheduledExercises` aux cartes historiques
+### Migration localStorage
+- À l'ouverture de l'app, parcourir les sessions existantes
+- Pour chaque exercice sans `bonusMinutes`, initialiser à `0`
+- Persister le résultat
+- F7 a déjà migré `exerciseName` — pas de conflit de migration
 
 ## Composants Attendus
-- Modification de `DailySession` (modèle)
-- Modification de `ProgressService` (service)
-- Modification de `ExerciseService` (service)
-- Modification de `WeekDayCardComponent` (composant)
-- Modification de `HistoryComponent` (composant)
-- Modification de `DashboardComponent` (création de la séance du jour en `ngOnInit`, ligne 61-76)
 
-## Tâches
+### Modification de composants existants
+- `HistoryComponent` — rendre chaque jour cliquable, ouvrir le modal de rattrapage
+- `WeekDayCardComponent` — indicateur visuel si le jour est rattrapable (semaine en cours)
+- `WeeklySummaryComponent` — afficher le nouveau taux de complétion par temps
 
- - [x] Tâche 1 : Ajouter `exerciseName` au modèle `DailySession` avec type optionnel pour la compatibilité
-- [x] Tâche 2 : Mettre à jour la création de la séance du jour pour inclure le snapshot du nom
-- [x] Tâche 3 : Figér la séance du jour au premier lancement (ne pas reconstruire à chaque chargement)
-- [x] Tâche 4 : Propager un exercice ajouté à la séance du jour en cours
-- [x] Tâche 5 : Mettre à jour `WeekDayCardComponent` pour afficher `exerciseName` au lieu de résoudre via `scheduledExercises`
-- [x] Tâche 6 : Mettre à jour `HistoryComponent` pour ne plus passer `scheduledExercises` aux cartes
-- [x] Tâche 7 : Mettre à jour `getWeeklyStats` pour utiliser `exerciseName`
-- [x] Tâche 8 : Supprimer le nettoyage en cascade de `deleteExercise` vers les sessions (s'il existe)
-- [x] Tâche 9 : Gérer l'affichage fallback "(nom inconnu)" pour les anciennes séances
- - [x] Tâche 10 : Tests unitaires mis à jour (`ProgressService`, `ExerciseService`, composants)
+### Nouveaux composants
+- `CatchUpModalComponent` — modal centré avec la liste d'exercices du jour sélectionné, checkbox + PLAY
+- `ExerciseTimeDisplayComponent` — affichage unifié du temps : `"✅ 20min + 10min bonus (2×)"`
+
+### Services modifiés
+- `ProgressService` — ajouter `getOrCreateSession(date)`, migration `bonusMinutes`
+- `ProgressService` — recalculer `getWeeklyStats()` avec le nouveau `completionRate`
+- `DashboardComponent` — permettre le replay d'un exercice terminé (incrémentation `bonusMinutes`)
+
+## Tableau d'Avancement (La Source de Vérité)
+
+### Phase 1 — Modèle et migration
+- [x] Tâche 1 : Ajouter `bonusMinutes: number` à `DailySession.exercises` dans `daily-session.ts`.
+- [ ] Tâche 2 : Implémenter la migration localStorage dans `ProgressService` (initialiser `bonusMinutes: 0` pour les sessions existantes).
+- [ ] Tâche 3 : Mettre à jour `WeeklyStats.completionRate` pour utiliser `temps réel / temps cible`.
+- [ ] Tâche 4 : Ajouter `getOrCreateSession(date)` dans `ProgressService`.
+- [ ] Tâche 5 : Test unitaire de la migration et du nouveau calcul de `completionRate`.
+
+### Phase 2 — Bonus minutes dans le Dashboard
+- [ ] Tâche 6 : Permettre le replay d'un exercice terminé dans `DashboardComponent` (PLAY sur exercice coché → incrémenter `bonusMinutes`).
+- [ ] Tâche 7 : Créer `ExerciseTimeDisplayComponent` avec affichage `"✅ {actualMinutes}min + {bonusMinutes}min bonus ({playCount}×)"`.
+- [ ] Tâche 8 : Test unitaire du replay et du calcul du temps affiché.
+
+### Phase 3 — Modal de rattrapage
+- [ ] Tâche 9 : Créer `CatchUpModalComponent` avec liste d'exercices du jour, checkbox, PLAY, et gestion des exercices supprimés.
+- [ ] Tâche 10 : Lier le modal au `ProgressService` avec la date du jour sélectionné (pas aujourd'hui).
+- [ ] Tâche 11 : Gérer le timer pour le rattrapage : à l'expiration, marquer comme complété OU incrémenter `bonusMinutes`.
+- [ ] Tâche 12 : Styler le modal avec Tailwind (accessible, focus trap, overlay, aria-modal).
+- [ ] Tâche 13 : Test unitaire du modal (ouverture, fermeture, complétion, replay, exercices supprimés).
+
+### Phase 4 — Intégration dans la vue History
+- [ ] Tâche 14 : Rendre chaque jour de la semaine en cours cliquable dans `HistoryComponent`.
+- [ ] Tâche 15 : Indicateur visuel sur `WeekDayCardComponent` pour les jours rattrapables.
+- [ ] Tâche 16 : Mettre à jour `WeeklySummaryComponent` avec le nouveau taux de complétion.
+- [ ] Tâche 17 : Navigation semaines passées → lecture seule (pas de modal).
+- [ ] Tâche 18 : Build + lint + test final.
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
@@ -83,4 +133,3 @@ export interface DailySession {
 
 ### Blocage Actuel :
 - Aucun.
-

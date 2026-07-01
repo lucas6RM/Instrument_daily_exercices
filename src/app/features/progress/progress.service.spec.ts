@@ -53,7 +53,7 @@ describe('ProgressService', () => {
     it('should return the session matching the date', () => {
       const session: DailySession = {
         date: '2025-01-01',
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 }],
       };
       service.addSession(session);
 
@@ -64,7 +64,7 @@ describe('ProgressService', () => {
     it('should return null for a date with no session', () => {
       const session: DailySession = {
         date: '2025-01-01',
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 }],
       };
       service.addSession(session);
 
@@ -133,7 +133,7 @@ describe('ProgressService', () => {
     it('should add a new session to the list', () => {
       const session: DailySession = {
         date: '2025-01-01',
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 }],
       };
       service.addSession(session);
 
@@ -151,11 +151,11 @@ describe('ProgressService', () => {
     it('should replace an existing session with the same date', () => {
       const session1: DailySession = {
         date: '2025-01-01',
-        exercises: [{ exerciseId: 'e1', completed: false, actualMinutes: 5 }],
+        exercises: [{ exerciseId: 'e1', completed: false, actualMinutes: 5, bonusMinutes: 0 }],
       };
       const session2: DailySession = {
         date: '2025-01-01',
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 }],
       };
 
       service.addSession(session1);
@@ -185,14 +185,14 @@ describe('ProgressService', () => {
     beforeEach(() => {
       service.addSession({
         date: '2025-01-01',
-        exercises: [{ exerciseId: 'e1', completed: false, actualMinutes: 5 }],
+        exercises: [{ exerciseId: 'e1', completed: false, actualMinutes: 5, bonusMinutes: 0 }],
       });
       setSpy.mockClear();
     });
 
     it('should update the session with the given changes', () => {
       service.updateSession('2025-01-01', {
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 }],
       });
 
       const session = service.getSession('2025-01-01')!;
@@ -202,7 +202,7 @@ describe('ProgressService', () => {
 
     it('should preserve the date field', () => {
       service.updateSession('2025-01-01', {
-        exercises: [{ exerciseId: 'e2', completed: true, actualMinutes: 15 }],
+        exercises: [{ exerciseId: 'e2', completed: true, actualMinutes: 15, bonusMinutes: 0 }],
       });
 
       expect(service.getSession('2025-01-01')?.date).toBe('2025-01-01');
@@ -211,10 +211,10 @@ describe('ProgressService', () => {
     it('should not affect other sessions', () => {
       service.addSession({
         date: '2025-01-02',
-        exercises: [{ exerciseId: 'e1', completed: false, actualMinutes: 5 }],
+        exercises: [{ exerciseId: 'e1', completed: false, actualMinutes: 5, bonusMinutes: 0 }],
       });
       service.updateSession('2025-01-01', {
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 }],
       });
 
       const jan2 = service.getSession('2025-01-02')!;
@@ -229,7 +229,7 @@ describe('ProgressService', () => {
 
     it('should persist after updating', () => {
       service.updateSession('2025-01-01', {
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 }],
       });
 
       expect(setSpy).toHaveBeenCalled();
@@ -338,7 +338,7 @@ describe('ProgressService', () => {
 
       service.addSession({
         date: todayStr,
-        exercises: [{ exerciseId: 'e1', exerciseName: 'Ex1', completed: false, actualMinutes: 0 }],
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Ex1', completed: false, actualMinutes: 0, bonusMinutes: 0 }],
       });
 
       service.addExerciseToTodaySession('e2', 'NewExercise');
@@ -350,6 +350,7 @@ describe('ProgressService', () => {
         exerciseName: 'NewExercise',
         completed: false,
         actualMinutes: 0,
+        bonusMinutes: 0,
       });
     });
 
@@ -368,7 +369,7 @@ describe('ProgressService', () => {
 
       service.addSession({
         date: todayStr,
-        exercises: [{ exerciseId: 'e1', exerciseName: 'Ex1', completed: false, actualMinutes: 0 }],
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Ex1', completed: false, actualMinutes: 0, bonusMinutes: 0 }],
       });
 
       service.addExerciseToTodaySession('e1', 'Ex1');
@@ -401,8 +402,8 @@ describe('ProgressService', () => {
     it('should load sessions from storage when data exists', () => {
       const stored: ProgressState = {
         dailySessions: [
-          { date: '2025-01-01', exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10 }] },
-          { date: '2025-01-02', exercises: [{ exerciseId: 'e2', completed: false, actualMinutes: 5 }] },
+          { date: '2025-01-01', exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 }] },
+          { date: '2025-01-02', exercises: [{ exerciseId: 'e2', completed: false, actualMinutes: 5, bonusMinutes: 0 }] },
         ],
       };
       getSpy.mockReturnValue(stored);
@@ -505,14 +506,14 @@ describe('ProgressService', () => {
 
       service.addSession({
         date: '2025-01-06',
-        exercises: [
-          { exerciseId: 'e1', completed: true, actualMinutes: 10 },
-          { exerciseId: 'e2', completed: true, actualMinutes: 15 },
-        ],
+exercises: [
+            { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 },
+            { exerciseId: 'e2', completed: true, actualMinutes: 15, bonusMinutes: 0 },
+          ],
       });
       service.addSession({
         date: '2025-01-07',
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 20 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 20, bonusMinutes: 0 }],
       });
 
       const stats = service.getWeeklyStats(start);
@@ -524,15 +525,15 @@ describe('ProgressService', () => {
 
       service.addSession({
         date: '2025-01-06',
-        exercises: [{ exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 }],
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10, bonusMinutes: 0 }],
       });
       service.addSession({
         date: '2025-01-07',
-        exercises: [{ exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 20 }],
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 20, bonusMinutes: 0 }],
       });
       service.addSession({
         date: '2025-01-08',
-        exercises: [{ exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 5 }],
+        exercises: [{ exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 5, bonusMinutes: 0 }],
       });
 
       const stats = service.getWeeklyStats(start);
@@ -545,11 +546,11 @@ describe('ProgressService', () => {
 
       service.addSession({
         date: '2025-01-06',
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 }],
       });
       service.addSession({
         date: '2025-01-07',
-        exercises: [{ exerciseId: 'e2', completed: true, actualMinutes: 5 }],
+        exercises: [{ exerciseId: 'e2', completed: true, actualMinutes: 5, bonusMinutes: 0 }],
       });
 
       const stats = service.getWeeklyStats(start);
@@ -606,7 +607,7 @@ describe('ProgressService', () => {
 
       service.addSession({
         date: '2025-01-06',
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30 }],
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 0 }],
       });
 
       expect(stats().totalMinutes).toBe(30);
@@ -624,11 +625,11 @@ describe('ProgressService', () => {
 
       service.addSession({
         date: '2025-01-06',
-        exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 },
-          { exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 20 },
-          { exerciseId: 'e3', exerciseName: 'Accords', completed: false, actualMinutes: 5 },
-        ],
+exercises: [
+            { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10, bonusMinutes: 0 },
+            { exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 20, bonusMinutes: 0 },
+            { exerciseId: 'e3', exerciseName: 'Accords', completed: false, actualMinutes: 5, bonusMinutes: 0 },
+          ],
       });
 
       const stats = service.getWeeklyStats(start);

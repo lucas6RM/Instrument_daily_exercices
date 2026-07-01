@@ -71,6 +71,7 @@ export class DashboardComponent implements OnInit {
           exerciseName: ex.name,
           completed: false,
           actualMinutes: 0,
+          bonusMinutes: 0,
         })),
       };
       this.progressService.addSession(newSession);
@@ -105,6 +106,7 @@ export class DashboardComponent implements OnInit {
           exerciseName: exercise.name,
           completed: true,
           actualMinutes: exercise.durationSeconds,
+          bonusMinutes: 0,
         },
       ];
     }

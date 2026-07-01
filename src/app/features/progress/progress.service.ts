@@ -115,6 +115,7 @@ export class ProgressService {
           exerciseName,
           completed: false,
           actualMinutes: 0,
+          bonusMinutes: 0,
         },
       ],
     };
