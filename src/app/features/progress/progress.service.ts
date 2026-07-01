@@ -126,6 +126,35 @@ export class ProgressService {
     const stored = this.storageService.get<ProgressState>(STORAGE_KEYS.PROGRESS);
     if (stored) {
       this.dailySessions.set(stored.dailySessions);
+      this.migrateBonusMinutes();
+    }
+  }
+
+  /**
+   * Migration F8 : ajoute `bonusMinutes: 0` aux exercices qui ne l'ont pas.
+   * S'exécute au chargement des données depuis localStorage.
+   */
+  private migrateBonusMinutes(): void {
+    let hasChanges = false;
+
+    const migratedSessions = this.dailySessions().map((session) => {
+      const migratedExercises = session.exercises.map((exercise) => {
+        if (exercise.bonusMinutes === undefined) {
+          hasChanges = true;
+          return { ...exercise, bonusMinutes: 0 };
+        }
+        return exercise;
+      });
+
+      if (migratedExercises !== session.exercises) {
+        return { ...session, exercises: migratedExercises };
+      }
+      return session;
+    });
+
+    if (hasChanges) {
+      this.dailySessions.set(migratedSessions);
+      this.persist();
     }
   }
 

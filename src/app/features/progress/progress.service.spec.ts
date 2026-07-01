@@ -433,6 +433,145 @@ describe('ProgressService', () => {
   });
 
   /* ------------------------------------------------------------------ */
+  /* Migration bonusMinutes (F8)                                         */
+  /* ------------------------------------------------------------------ */
+
+  describe('migrateBonusMinutes()', () => {
+    it('should add bonusMinutes: 0 to exercises missing the field', () => {
+      // Simule des données legacy sans bonusMinutes
+      const stored = {
+        dailySessions: [
+          {
+            date: '2025-01-01',
+            exercises: [
+              { exerciseId: 'e1', completed: true, actualMinutes: 10 },
+              { exerciseId: 'e2', completed: false, actualMinutes: 0 },
+            ],
+          },
+        ],
+      } as unknown as ProgressState;
+      getSpy.mockReturnValue(stored);
+      setSpy.mockClear();
+
+      service.loadFromStorage();
+
+      const sessions = service.dailySessions();
+      expect(sessions[0].exercises[0].bonusMinutes).toBe(0);
+      expect(sessions[0].exercises[1].bonusMinutes).toBe(0);
+      expect(setSpy).toHaveBeenCalled();
+    });
+
+    it('should not persist when all exercises already have bonusMinutes', () => {
+      const stored: ProgressState = {
+        dailySessions: [
+          {
+            date: '2025-01-01',
+            exercises: [
+              { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 5 },
+            ],
+          },
+        ],
+      };
+      getSpy.mockReturnValue(stored);
+      setSpy.mockClear();
+
+      service.loadFromStorage();
+
+      expect(setSpy).not.toHaveBeenCalled();
+    });
+
+    it('should preserve existing bonusMinutes values', () => {
+      const stored = {
+        dailySessions: [
+          {
+            date: '2025-01-01',
+            exercises: [
+              { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 7 },
+              { exerciseId: 'e2', completed: false, actualMinutes: 0 },
+            ],
+          },
+        ],
+      } as unknown as ProgressState;
+      getSpy.mockReturnValue(stored);
+
+      service.loadFromStorage();
+
+      const sessions = service.dailySessions();
+      expect(sessions[0].exercises[0].bonusMinutes).toBe(7);
+      expect(sessions[0].exercises[1].bonusMinutes).toBe(0);
+    });
+
+    it('should handle sessions with empty exercises array', () => {
+      const stored: ProgressState = {
+        dailySessions: [
+          { date: '2025-01-01', exercises: [] },
+        ],
+      };
+      getSpy.mockReturnValue(stored);
+      setSpy.mockClear();
+
+      service.loadFromStorage();
+
+      expect(service.dailySessions()).toEqual(stored.dailySessions);
+      expect(setSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle multiple sessions with mixed state', () => {
+      const stored = {
+        dailySessions: [
+          {
+            date: '2025-01-01',
+            exercises: [
+              { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 3 },
+            ],
+          },
+          {
+            date: '2025-01-02',
+            exercises: [
+              { exerciseId: 'e2', completed: false, actualMinutes: 0 },
+            ],
+          },
+        ],
+      } as unknown as ProgressState;
+      getSpy.mockReturnValue(stored);
+
+      service.loadFromStorage();
+
+      const sessions = service.dailySessions();
+      expect(sessions[0].exercises[0].bonusMinutes).toBe(3);
+      expect(sessions[1].exercises[0].bonusMinutes).toBe(0);
+    });
+
+    it('should persist migrated data to storage', () => {
+      const stored = {
+        dailySessions: [
+          {
+            date: '2025-01-01',
+            exercises: [
+              { exerciseId: 'e1', completed: true, actualMinutes: 10 },
+            ],
+          },
+        ],
+      } as unknown as ProgressState;
+      getSpy.mockReturnValue(stored);
+      setSpy.mockClear();
+
+      service.loadFromStorage();
+
+      expect(setSpy).toHaveBeenCalledWith(STORAGE_KEYS.PROGRESS, {
+        dailySessions: [
+          {
+            date: '2025-01-01',
+            exercises: [
+              { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 },
+            ],
+          },
+        ],
+      });
+    });
+  });
+
+  /* ------------------------------------------------------------------ */
   /* getWeekSessions()                                                   */
   /* ------------------------------------------------------------------ */
 
