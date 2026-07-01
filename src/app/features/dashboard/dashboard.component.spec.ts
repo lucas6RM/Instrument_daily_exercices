@@ -285,4 +285,92 @@ describe('DashboardComponent', () => {
       expect(timerService.isRunning()).toBe(false);
     });
   });
+
+  describe('replay (F8) - bonusMinutes increment', () => {
+    it('should increment bonusMinutes when replaying a completed exercise', () => {
+      exerciseService.setExercises([
+        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+        { id: 'e2', name: 'Gammes', durationSeconds: 60, order: 2 },
+      ]);
+
+      const fixture = TestBed.createComponent(DashboardComponent);
+      const component = fixture.componentInstance;
+      component.ngOnInit();
+
+      // First completion
+      component.onTimerComplete('e1');
+
+      let session = progressService.getSession(component.today);
+      const firstEx = session!.exercises.find((e) => e.exerciseId === 'e1')!;
+      expect(firstEx.completed).toBe(true);
+      expect(firstEx.actualMinutes).toBe(30);
+      expect(firstEx.bonusMinutes).toBe(0);
+
+      // Replay (timer completes again on already completed exercise)
+      component.onTimerComplete('e1');
+
+      session = progressService.getSession(component.today);
+      const replayedEx = session!.exercises.find((e) => e.exerciseId === 'e1')!;
+      expect(replayedEx.completed).toBe(true);
+      expect(replayedEx.actualMinutes).toBe(30); // unchanged
+      expect(replayedEx.bonusMinutes).toBe(30); // incremented by durationSeconds
+
+      // Second replay
+      component.onTimerComplete('e1');
+
+      session = progressService.getSession(component.today);
+      const secondReplayedEx = session!.exercises.find((e) => e.exerciseId === 'e1')!;
+      expect(secondReplayedEx.bonusMinutes).toBe(60); // 30 + 30
+    });
+
+    it('should persist the session with updated bonusMinutes in ProgressService', () => {
+      exerciseService.setExercises([
+        { id: 'e1', name: 'Chromatique', durationSeconds: 45, order: 1 },
+      ]);
+
+      const fixture = TestBed.createComponent(DashboardComponent);
+      const component = fixture.componentInstance;
+      component.ngOnInit();
+
+      // Complete
+      component.onTimerComplete('e1');
+
+      // Replay
+      component.onTimerComplete('e1');
+
+      // The session stored in ProgressService must reflect the bonusMinutes
+      const storedSession = progressService.getSession(component.today);
+      expect(storedSession).not.toBeNull();
+      const storedEx = storedSession!.exercises.find((e) => e.exerciseId === 'e1')!;
+      expect(storedEx.bonusMinutes).toBe(45);
+      expect(storedEx.completed).toBe(true);
+      expect(storedEx.actualMinutes).toBe(45);
+    });
+
+    it('should not modify other exercises when replaying one', () => {
+      exerciseService.setExercises([
+        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+        { id: 'e2', name: 'Gammes', durationSeconds: 60, order: 2 },
+      ]);
+
+      const fixture = TestBed.createComponent(DashboardComponent);
+      const component = fixture.componentInstance;
+      component.ngOnInit();
+
+      // Complete both
+      component.onTimerComplete('e1');
+      component.onTimerComplete('e2');
+
+      // Replay e1 only
+      component.onTimerComplete('e1');
+
+      const session = progressService.getSession(component.today);
+      const e1 = session!.exercises.find((e) => e.exerciseId === 'e1')!;
+      const e2 = session!.exercises.find((e) => e.exerciseId === 'e2')!;
+
+      expect(e1.bonusMinutes).toBe(30);
+      expect(e2.bonusMinutes).toBe(0);
+      expect(e2.actualMinutes).toBe(60);
+    });
+  });
 });
