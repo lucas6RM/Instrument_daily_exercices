@@ -117,7 +117,7 @@ export interface WeeklyStats {
 ### Phase 4 — Intégration dans la vue History
 - [x] Tâche 14 : Rendre chaque jour de la semaine en cours cliquable dans `HistoryComponent`.
 - [x] Tâche 15 : Indicateur visuel sur `WeekDayCardComponent` pour les jours rattrapables.
-- [ ] Tâche 16 : Mettre à jour `WeeklySummaryComponent` avec le nouveau taux de complétion.
+- [x] Tâche 16 : Mettre à jour `WeeklySummaryComponent` avec le nouveau taux de complétion.
 - [ ] Tâche 17 : Navigation semaines passées → lecture seule (pas de modal).
 - [ ] Tâche 18 : Build + lint + test final.
 
