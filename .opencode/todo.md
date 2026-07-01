@@ -115,7 +115,7 @@ export interface WeeklyStats {
 - [x] Tâche 13 : Test unitaire du modal (ouverture, fermeture, complétion, replay, exercices supprimés).
 
 ### Phase 4 — Intégration dans la vue History
-- [ ] Tâche 14 : Rendre chaque jour de la semaine en cours cliquable dans `HistoryComponent`.
+- [x] Tâche 14 : Rendre chaque jour de la semaine en cours cliquable dans `HistoryComponent`.
 - [ ] Tâche 15 : Indicateur visuel sur `WeekDayCardComponent` pour les jours rattrapables.
 - [ ] Tâche 16 : Mettre à jour `WeeklySummaryComponent` avec le nouveau taux de complétion.
 - [ ] Tâche 17 : Navigation semaines passées → lecture seule (pas de modal).
