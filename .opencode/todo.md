@@ -119,7 +119,7 @@ export interface WeeklyStats {
 - [x] Tâche 15 : Indicateur visuel sur `WeekDayCardComponent` pour les jours rattrapables.
 - [x] Tâche 16 : Mettre à jour `WeeklySummaryComponent` avec le nouveau taux de complétion.
 - [x] Tâche 17 : Navigation semaines passées → lecture seule (pas de modal).
-- [ ] Tâche 18 : Build + lint + test final.
+- [x] Tâche 18 : Build + lint + test final.
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
