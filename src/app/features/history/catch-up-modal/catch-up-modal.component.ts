@@ -1,4 +1,4 @@
-import { ApplicationRef, ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { ApplicationRef, afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { DailySession, Exercise } from '../../../core/models';
@@ -19,11 +19,17 @@ export interface CatchUpExercise {
   playCount: number;
 }
 
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 @Component({
   selector: 'app-catch-up-modal',
   imports: [ExerciseTimeDisplayComponent],
   templateUrl: './catch-up-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:keydown)': 'onDocumentKeydown($event)',
+  },
 })
 export class CatchUpModalComponent {
   readonly date = input.required<string>();
@@ -39,6 +45,9 @@ export class CatchUpModalComponent {
 
   // Track which exercise timer is currently active
   readonly activeTimerExerciseId = signal<string | null>(null);
+
+  // Reference to the modal container for focus trap
+  private modalContainer: HTMLElement | null = null;
 
   constructor() {
     // On date change (or init), get or create the session from ProgressService
@@ -56,6 +65,104 @@ export class CatchUpModalComponent {
         this.timerService.reset();
         this.appRef.tick();
       });
+
+    // After first render, set up focus trap and focus the close button
+    afterNextRender(() => {
+      this.setupFocusTrap();
+      this.focusCloseButton();
+    });
+  }
+
+  /**
+   * Handle keyboard events at the document level.
+   * - Escape: close the modal
+   * - Tab / Shift+Tab: trap focus inside the modal
+   */
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      this.closeModal();
+      return;
+    }
+
+    if (event.key !== 'Tab') {
+      return;
+    }
+
+    this.trapFocus(event);
+  }
+
+  /**
+   * Set up the focus trap by storing a reference to the modal container.
+   */
+  private setupFocusTrap(): void {
+    // The modal container is the dialog element itself
+    this.modalContainer = document.querySelector('[role="dialog"]');
+  }
+
+  /**
+   * Trap focus within the modal container on Tab / Shift+Tab.
+   */
+  private trapFocus(event: KeyboardEvent): void {
+    if (!this.modalContainer) {
+      return;
+    }
+
+    const focusableElements = this.modalContainer.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    const elementsArray = Array.from(focusableElements);
+
+    if (elementsArray.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const firstFocusable = elementsArray[0];
+    const lastFocusable = elementsArray[elementsArray.length - 1];
+    const activeElement = document.activeElement;
+
+    if (event.shiftKey) {
+      // Shift+Tab: if focus is on the first element, wrap to the last
+      if (activeElement === firstFocusable) {
+        event.preventDefault();
+        lastFocusable.focus();
+      }
+    } else {
+      // Tab: if focus is on the last element, wrap to the first
+      if (activeElement === lastFocusable) {
+        event.preventDefault();
+        firstFocusable.focus();
+      }
+    }
+  }
+
+  /**
+   * Focus the close button when the modal opens.
+   */
+  private focusCloseButton(): void {
+    const closeButton = this.modalContainer?.querySelector<HTMLButtonElement>('[aria-label="Fermer le modal"]');
+    closeButton?.focus();
+  }
+
+  /**
+   * Handle click on the overlay to close the modal.
+   */
+  onOverlayClick(event: Event): void {
+    // Only close if the click is directly on the overlay (not on the modal content)
+    if (event.target === event.currentTarget) {
+      this.closeModal();
+    }
+  }
+
+  /**
+   * Handle keyboard on the overlay (Enter/Space to close).
+   * Required by the lint rule: click must be accompanied by keyup/keydown/keypress.
+   */
+  onOverlayKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.closeModal();
+    }
   }
 
   /**
