@@ -91,12 +91,22 @@ export class DashboardComponent implements OnInit {
 
     let updatedExercises;
     if (hasExercise) {
-      // S'il existe, on le met à jour classiquement
-      updatedExercises = current.exercises.map((se) =>
-        se.exerciseId === exerciseId
-          ? { ...se, completed: true, actualMinutes: exercise.durationSeconds }
-          : se,
-      );
+      const sessionExercise = current.exercises.find((se) => se.exerciseId === exerciseId)!;
+      if (sessionExercise.completed) {
+        // REPLAY (F8) : l'exercice est déjà complété → incrémenter bonusMinutes
+        updatedExercises = current.exercises.map((se) =>
+          se.exerciseId === exerciseId
+            ? { ...se, bonusMinutes: se.bonusMinutes + exercise.durationSeconds }
+            : se,
+        );
+      } else {
+        // Première complétion : marquer comme terminé
+        updatedExercises = current.exercises.map((se) =>
+          se.exerciseId === exerciseId
+            ? { ...se, completed: true, actualMinutes: exercise.durationSeconds }
+            : se,
+        );
+      }
     } else {
       // S'il n'existe pas (ajouté après la création de la séance), on l'injecte dynamiquement !
       updatedExercises = [

@@ -103,7 +103,7 @@ export interface WeeklyStats {
 - [x] Tâche 5 : Test unitaire de la migration et du nouveau calcul de `completionRate`.
 
 ### Phase 2 — Bonus minutes dans le Dashboard
-- [ ] Tâche 6 : Permettre le replay d'un exercice terminé dans `DashboardComponent` (PLAY sur exercice coché → incrémenter `bonusMinutes`).
+^- [x] Tâche 6 : Permettre le replay d'un exercice terminé dans `DashboardComponent` (PLAY sur exercice coché → incrémenter `bonusMinutes`).
 - [ ] Tâche 7 : Créer `ExerciseTimeDisplayComponent` avec affichage `"✅ {actualMinutes}min + {bonusMinutes}min bonus ({playCount}×)"`.
 - [ ] Tâche 8 : Test unitaire du replay et du calcul du temps affiché.
 
