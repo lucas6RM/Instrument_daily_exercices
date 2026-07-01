@@ -112,7 +112,7 @@ export interface WeeklyStats {
 - [x] Tâche 10 : Lier le modal au `ProgressService` avec la date du jour sélectionné (pas aujourd'hui).
 - [x] Tâche 11 : Gérer le timer pour le rattrapage : à l'expiration, marquer comme complété OU incrémenter `bonusMinutes`.
 - [x] Tâche 12 : Styler le modal avec Tailwind (accessible, focus trap, overlay, aria-modal).
-- [ ] Tâche 13 : Test unitaire du modal (ouverture, fermeture, complétion, replay, exercices supprimés).
+- [x] Tâche 13 : Test unitaire du modal (ouverture, fermeture, complétion, replay, exercices supprimés).
 
 ### Phase 4 — Intégration dans la vue History
 - [ ] Tâche 14 : Rendre chaque jour de la semaine en cours cliquable dans `HistoryComponent`.
