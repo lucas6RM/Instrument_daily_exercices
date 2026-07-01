@@ -34,20 +34,21 @@ export class ProgressService {
       return 0;
     }
 
-    const dates = sessions
-      .map((s) => s.date)
-      .sort()
-      .reverse();
+    // Check if today has a session
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    if (!sessions.some((s) => s.date === todayStr)) {
+      return 0;
+    }
+
+    const sessionDates = new Set(sessions.map((s) => s.date));
     let streak = 0;
 
-    for (const dateStr of dates) {
-      const currentDate = new Date(dateStr);
-      const expectedDate = new Date();
-      expectedDate.setDate(expectedDate.getDate() - streak);
-      expectedDate.setHours(0, 0, 0, 0);
-      currentDate.setHours(0, 0, 0, 0);
-
-      if (currentDate.getTime() === expectedDate.getTime()) {
+    while (true) {
+      const checkDate = new Date(today);
+      checkDate.setDate(checkDate.getDate() - streak);
+      const checkStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+      if (sessionDates.has(checkStr)) {
         streak++;
       } else {
         break;
@@ -84,6 +85,40 @@ export class ProgressService {
   setProgressState(state: ProgressState): void {
     this.dailySessions.set(state.dailySessions);
     this.persist();
+  }
+
+  /**
+   * Ajoute un nouvel exercice à la séance du jour si elle existe.
+   * Ne fait rien s'il n'y a pas de séance aujourd'hui ou si l'exercice est déjà présent.
+   */
+  addExerciseToTodaySession(exerciseId: string, exerciseName: string): void {
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    const session = this.getSession(todayStr);
+    if (!session) {
+      return;
+    }
+
+    // Évite les doublons
+    const alreadyExists = session.exercises.some((se) => se.exerciseId === exerciseId);
+    if (alreadyExists) {
+      return;
+    }
+
+    const updatedSession: DailySession = {
+      ...session,
+      exercises: [
+        ...session.exercises,
+        {
+          exerciseId,
+          exerciseName,
+          completed: false,
+          actualMinutes: 0,
+        },
+      ],
+    };
+    this.addSession(updatedSession);
   }
 
   loadFromStorage(): void {
@@ -152,12 +187,13 @@ export class ProgressService {
       // Total minutes for the week
       const totalMinutes = days.reduce((sum, day) => sum + day.totalMinutes, 0);
 
-      // Minutes by exercise
+      // Minutes by exercise (using exerciseName from snapshot)
       const minutesByExercise = new Map<string, number>();
       for (const session of weekSessions) {
         for (const ex of session.exercises) {
-          const current = minutesByExercise.get(ex.exerciseId) ?? 0;
-          minutesByExercise.set(ex.exerciseId, current + ex.actualMinutes);
+          const name = ex.exerciseName ?? '(nom inconnu)';
+          const current = minutesByExercise.get(name) ?? 0;
+          minutesByExercise.set(name, current + ex.actualMinutes);
         }
       }
 

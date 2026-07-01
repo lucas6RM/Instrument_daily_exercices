@@ -15,9 +15,16 @@ Un Exercice peut avoir une URL YouTube de référence et une description.
 L'ensemble ordonné des Exercices que le Musicien pratique quotidiennement.
 La Routine est la configuration persistante du Musicien.
 
+### Snapshot d'Exercice
+La copie figée du nom d'un Exercice capturée au moment de la création d'une Séance.
+Le Snapshot garantit que l'historique conserve le nom même si l'Exercice est supprimé ou renomé de la Routine.
+_Avoid_: Copie, clone, historique exercice
+
 ### Séance Quotidienne (Daily Session)
-La pratique d'un jour donné. Une Séance associe chaque Exercice de la Routine à son état
+La pratique d'un jour donné. Une Séance associe chaque Snapshot d'Exercice à son état
 (complété ou non) et au temps réellement passé (minutes effectives).
+La séance du jour est figée au premier lancement de la journée : les renommages et suppressions
+de la Routine ne la modifient pas. Les ajouts d'exercices en cours de jour s'y propagent.
 Une seule Séance existe par jour.
 
 ### Timer

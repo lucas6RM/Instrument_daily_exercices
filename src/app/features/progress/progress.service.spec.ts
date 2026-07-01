@@ -77,13 +77,20 @@ describe('ProgressService', () => {
   /* ------------------------------------------------------------------ */
 
   describe('streak()', () => {
+    const toLocalISOString = (date: Date): string => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+
     it('should return 0 when no sessions exist', () => {
       expect(service.streak()).toBe(0);
     });
 
     it('should return 1 when today has a session', () => {
       const today = new Date();
-      const dateStr = today.toISOString().slice(0, 10);
+      const dateStr = toLocalISOString(today);
       service.addSession({ date: dateStr, exercises: [] });
       expect(service.streak()).toBe(1);
     });
@@ -93,8 +100,8 @@ describe('ProgressService', () => {
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
 
-      service.addSession({ date: today.toISOString().slice(0, 10), exercises: [] });
-      service.addSession({ date: yesterday.toISOString().slice(0, 10), exercises: [] });
+      service.addSession({ date: toLocalISOString(today), exercises: [] });
+      service.addSession({ date: toLocalISOString(yesterday), exercises: [] });
 
       expect(service.streak()).toBe(2);
     });
@@ -104,8 +111,8 @@ describe('ProgressService', () => {
       const twoDaysAgo = new Date(today);
       twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
 
-      service.addSession({ date: today.toISOString().slice(0, 10), exercises: [] });
-      service.addSession({ date: twoDaysAgo.toISOString().slice(0, 10), exercises: [] });
+      service.addSession({ date: toLocalISOString(today), exercises: [] });
+      service.addSession({ date: toLocalISOString(twoDaysAgo), exercises: [] });
 
       expect(service.streak()).toBe(1);
     });
@@ -113,7 +120,7 @@ describe('ProgressService', () => {
     it('should return 0 when the most recent session is not today', () => {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      service.addSession({ date: yesterday.toISOString().slice(0, 10), exercises: [] });
+      service.addSession({ date: toLocalISOString(yesterday), exercises: [] });
       expect(service.streak()).toBe(0);
     });
   });
@@ -314,6 +321,79 @@ describe('ProgressService', () => {
   });
 
   /* ------------------------------------------------------------------ */
+  /* addExerciseToTodaySession()                                         */
+  /* ------------------------------------------------------------------ */
+
+  describe('addExerciseToTodaySession()', () => {
+    const toLocalISOString = (date: Date): string => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+
+    it('should add the exercise to today session if it exists', () => {
+      const today = new Date();
+      const todayStr = toLocalISOString(today);
+
+      service.addSession({
+        date: todayStr,
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Ex1', completed: false, actualMinutes: 0 }],
+      });
+
+      service.addExerciseToTodaySession('e2', 'NewExercise');
+
+      const session = service.getSession(todayStr)!;
+      expect(session.exercises).toHaveLength(2);
+      expect(session.exercises[1]).toEqual({
+        exerciseId: 'e2',
+        exerciseName: 'NewExercise',
+        completed: false,
+        actualMinutes: 0,
+      });
+    });
+
+    it('should do nothing when there is no session for today', () => {
+      service.addSession({ date: '2025-01-01', exercises: [] });
+
+      service.addExerciseToTodaySession('e1', 'Exercise');
+
+      expect(service.dailySessions()).toHaveLength(1);
+      expect(service.getSession('2025-01-01')?.exercises).toHaveLength(0);
+    });
+
+    it('should not add a duplicate exercise', () => {
+      const today = new Date();
+      const todayStr = toLocalISOString(today);
+
+      service.addSession({
+        date: todayStr,
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Ex1', completed: false, actualMinutes: 0 }],
+      });
+
+      service.addExerciseToTodaySession('e1', 'Ex1');
+
+      const session = service.getSession(todayStr)!;
+      expect(session.exercises).toHaveLength(1);
+    });
+
+    it('should persist after adding the exercise', () => {
+      const today = new Date();
+      const todayStr = toLocalISOString(today);
+
+      service.addSession({
+        date: todayStr,
+        exercises: [],
+      });
+      setSpy.mockClear();
+
+      service.addExerciseToTodaySession('e1', 'Exercise');
+
+      expect(setSpy).toHaveBeenCalled();
+    });
+  });
+
+  /* ------------------------------------------------------------------ */
   /* loadFromStorage()                                                   */
   /* ------------------------------------------------------------------ */
 
@@ -439,7 +519,28 @@ describe('ProgressService', () => {
       expect(stats().totalMinutes).toBe(45);
     });
 
-    it('should calculate minutesByExercise correctly', () => {
+    it('should calculate minutesByExercise correctly using exerciseName', () => {
+      const start = new Date('2025-01-06');
+
+      service.addSession({
+        date: '2025-01-06',
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 }],
+      });
+      service.addSession({
+        date: '2025-01-07',
+        exercises: [{ exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 20 }],
+      });
+      service.addSession({
+        date: '2025-01-08',
+        exercises: [{ exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 5 }],
+      });
+
+      const stats = service.getWeeklyStats(start);
+      expect(stats().minutesByExercise.get('Chromatique')).toBe(30);
+      expect(stats().minutesByExercise.get('Gammes')).toBe(5);
+    });
+
+    it('should use fallback "(nom inconnu)" when exerciseName is missing', () => {
       const start = new Date('2025-01-06');
 
       service.addSession({
@@ -448,16 +549,11 @@ describe('ProgressService', () => {
       });
       service.addSession({
         date: '2025-01-07',
-        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 20 }],
-      });
-      service.addSession({
-        date: '2025-01-08',
         exercises: [{ exerciseId: 'e2', completed: true, actualMinutes: 5 }],
       });
 
       const stats = service.getWeeklyStats(start);
-      expect(stats().minutesByExercise.get('e1')).toBe(30);
-      expect(stats().minutesByExercise.get('e2')).toBe(5);
+      expect(stats().minutesByExercise.get('(nom inconnu)')).toBe(15);
     });
 
     it('should calculate completionRate based on days with sessions', () => {
@@ -529,17 +625,17 @@ describe('ProgressService', () => {
       service.addSession({
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', completed: true, actualMinutes: 10 },
-          { exerciseId: 'e2', completed: true, actualMinutes: 20 },
-          { exerciseId: 'e3', completed: false, actualMinutes: 5 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 },
+          { exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 20 },
+          { exerciseId: 'e3', exerciseName: 'Accords', completed: false, actualMinutes: 5 },
         ],
       });
 
       const stats = service.getWeeklyStats(start);
       expect(stats().totalMinutes).toBe(35);
-      expect(stats().minutesByExercise.get('e1')).toBe(10);
-      expect(stats().minutesByExercise.get('e2')).toBe(20);
-      expect(stats().minutesByExercise.get('e3')).toBe(5);
+      expect(stats().minutesByExercise.get('Chromatique')).toBe(10);
+      expect(stats().minutesByExercise.get('Gammes')).toBe(20);
+      expect(stats().minutesByExercise.get('Accords')).toBe(5);
     });
   });
 

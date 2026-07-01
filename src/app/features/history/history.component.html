@@ -105,7 +105,7 @@
       @for (day of weeklyStats().days; track $index) {
         <app-week-day-card
           [dayStats]="day"
-          [scheduledExercises]="exercises()"
+          [scheduledExercises]="isToday(day.date) ? exercises() : []"
         />
       }
     </div>
@@ -115,7 +115,6 @@
   <section aria-label="Résumé hebdomadaire">
     <app-weekly-summary
       [weeklyStats]="weeklyStats()"
-      [exercises]="exercises()"
     />
   </section>
 </main>
