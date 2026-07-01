@@ -1,6 +1,6 @@
 @let totalMinutes = totalMinutesSignal();
-@let completionRate = completionRateSignal();
 @let formattedRate = formattedRateSignal();
+@let progressBarWidth = progressBarWidthSignal();
 @let exerciseEntries = exerciseEntriesSignal();
 
 <section
@@ -52,14 +52,14 @@
       <div
         class="h-3 w-full overflow-hidden rounded-full bg-gray-100"
         role="progressbar"
-        [attr.aria-valuenow]="completionRate"
+        [attr.aria-valuenow]="formattedRate"
         aria-valuemin="0"
         aria-valuemax="100"
         aria-label="Taux de complétion hebdomadaire"
       >
         <div
           class="h-full rounded-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-500 ease-out"
-          [style.width.%]="completionRate"
+          [style.width.%]="progressBarWidth"
         ></div>
       </div>
     </div>

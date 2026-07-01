@@ -1,10 +1,11 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { WeeklyStats } from '../../../core/models';
 
 @Component({
   selector: 'app-weekly-summary',
   templateUrl: './weekly-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WeeklySummaryComponent {
   readonly weeklyStats = input.required<WeeklyStats>();
@@ -16,6 +17,12 @@ export class WeeklySummaryComponent {
   readonly formattedRateSignal = computed(() => {
     const rate = this.weeklyStats().completionRate;
     return Math.round(rate);
+  });
+
+  /** Progress bar width capped at 100% (bonus minutes can push rate above 100) */
+  readonly progressBarWidthSignal = computed(() => {
+    const rate = this.weeklyStats().completionRate;
+    return Math.min(rate, 100);
   });
 
   readonly exerciseEntriesSignal = computed(() => {
