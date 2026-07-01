@@ -96,30 +96,30 @@ export interface WeeklyStats {
 ## Tableau d'Avancement (La Source de Vérité)
 
 ### Phase 1 — Modèle et migration
-- [ ] Tâche 1 : Ajouter `bonusMinutes: number` à `DailySession.exercises` dans `daily-session.ts`.
-- [ ] Tâche 2 : Implémenter la migration localStorage dans `ProgressService` (initialiser `bonusMinutes: 0` pour les sessions existantes).
-- [ ] Tâche 3 : Mettre à jour `WeeklyStats.completionRate` pour utiliser `temps réel / temps cible`.
-- [ ] Tâche 4 : Ajouter `getOrCreateSession(date)` dans `ProgressService`.
-- [ ] Tâche 5 : Test unitaire de la migration et du nouveau calcul de `completionRate`.
+- [x] Tâche 1 : Ajouter `bonusMinutes: number` à `DailySession.exercises` dans `daily-session.ts`.
+- [x] Tâche 2 : Implémenter la migration localStorage dans `ProgressService` (initialiser `bonusMinutes: 0` pour les sessions existantes).
+- [x] Tâche 3 : Mettre à jour `WeeklyStats.completionRate` pour utiliser `temps réel / temps cible`.
+- [x] Tâche 4 : Ajouter `getOrCreateSession(date)` dans `ProgressService`.
+- [x] Tâche 5 : Test unitaire de la migration et du nouveau calcul de `completionRate`.
 
 ### Phase 2 — Bonus minutes dans le Dashboard
-- [ ] Tâche 6 : Permettre le replay d'un exercice terminé dans `DashboardComponent` (PLAY sur exercice coché → incrémenter `bonusMinutes`).
-- [ ] Tâche 7 : Créer `ExerciseTimeDisplayComponent` avec affichage `"✅ {actualMinutes}min + {bonusMinutes}min bonus ({playCount}×)"`.
-- [ ] Tâche 8 : Test unitaire du replay et du calcul du temps affiché.
+^- [x] Tâche 6 : Permettre le replay d'un exercice terminé dans `DashboardComponent` (PLAY sur exercice coché → incrémenter `bonusMinutes`).
+^- [x] Tâche 7 : Créer `ExerciseTimeDisplayComponent` avec affichage `"✅ {actualMinutes}min + {bonusMinutes}min bonus ({playCount}×)"`.
+- [x] Tâche 8 : Test unitaire du replay et du calcul du temps affiché.
 
 ### Phase 3 — Modal de rattrapage
-- [ ] Tâche 9 : Créer `CatchUpModalComponent` avec liste d'exercices du jour, checkbox, PLAY, et gestion des exercices supprimés.
-- [ ] Tâche 10 : Lier le modal au `ProgressService` avec la date du jour sélectionné (pas aujourd'hui).
-- [ ] Tâche 11 : Gérer le timer pour le rattrapage : à l'expiration, marquer comme complété OU incrémenter `bonusMinutes`.
-- [ ] Tâche 12 : Styler le modal avec Tailwind (accessible, focus trap, overlay, aria-modal).
-- [ ] Tâche 13 : Test unitaire du modal (ouverture, fermeture, complétion, replay, exercices supprimés).
+- [x] Tâche 9 : Créer `CatchUpModalComponent` avec liste d'exercices du jour, checkbox, PLAY, et gestion des exercices supprimés.
+- [x] Tâche 10 : Lier le modal au `ProgressService` avec la date du jour sélectionné (pas aujourd'hui).
+- [x] Tâche 11 : Gérer le timer pour le rattrapage : à l'expiration, marquer comme complété OU incrémenter `bonusMinutes`.
+- [x] Tâche 12 : Styler le modal avec Tailwind (accessible, focus trap, overlay, aria-modal).
+- [x] Tâche 13 : Test unitaire du modal (ouverture, fermeture, complétion, replay, exercices supprimés).
 
 ### Phase 4 — Intégration dans la vue History
-- [ ] Tâche 14 : Rendre chaque jour de la semaine en cours cliquable dans `HistoryComponent`.
-- [ ] Tâche 15 : Indicateur visuel sur `WeekDayCardComponent` pour les jours rattrapables.
-- [ ] Tâche 16 : Mettre à jour `WeeklySummaryComponent` avec le nouveau taux de complétion.
-- [ ] Tâche 17 : Navigation semaines passées → lecture seule (pas de modal).
-- [ ] Tâche 18 : Build + lint + test final.
+- [x] Tâche 14 : Rendre chaque jour de la semaine en cours cliquable dans `HistoryComponent`.
+- [x] Tâche 15 : Indicateur visuel sur `WeekDayCardComponent` pour les jours rattrapables.
+- [x] Tâche 16 : Mettre à jour `WeeklySummaryComponent` avec le nouveau taux de complétion.
+- [x] Tâche 17 : Navigation semaines passées → lecture seule (pas de modal).
+- [x] Tâche 18 : Build + lint + test final.
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
@@ -129,7 +129,4 @@ export interface WeeklyStats {
 - 0 / 5
 
 ### Dernier retour de Review :
-- Aucun.
-
-### Blocage Actuel :
 - Aucun.
