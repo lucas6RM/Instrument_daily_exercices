@@ -220,12 +220,12 @@ provideIcons([
 - [x] Tâche 4 : Migration Formulaire Exercice
 - [x] Tâche 5 : Migration Routine
 - [x] Tâche 6 : Migration Historique
-- [ ] Tâche 7 : Migration Timer Overlay
+- [x] Tâche 7 : Migration Timer Overlay
 - [ ] Tâche 8 : Nettoyage Final
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Tâche 7 : Migration Timer Overlay
+- Tâche 8 : Nettoyage Final
 
 ### Compteur de rejets (tâche actuelle) :
 - 0 / 5
