@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCheck, lucidePlay } from '@ng-icons/lucide';
+import { NgIcon } from '@ng-icons/core';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { Exercise } from '../../../../core/models/exercise';
 import { ExerciseTimeDisplayComponent } from '../exercise-time-display/exercise-time-display.component';
@@ -8,7 +7,6 @@ import { ExerciseTimeDisplayComponent } from '../exercise-time-display/exercise-
 @Component({
   selector: 'app-exercise-row',
   imports: [ExerciseTimeDisplayComponent, NgIcon, HlmButtonImports],
-  providers: [provideIcons({ lucidePlay, lucideCheck })],
   templateUrl: './exercise-row.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

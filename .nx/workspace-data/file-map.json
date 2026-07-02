@@ -1,0 +1,1250 @@
+{
+  "version": "6.0",
+  "nxVersion": "23.0.1",
+  "pathMappings": {
+    "@spartan-ng/helm/button": [
+      "./libs/ui/button/src/index.ts"
+    ],
+    "@spartan-ng/helm/utils": [
+      "./libs/ui/utils/src/index.ts"
+    ],
+    "@spartan-ng/helm/input": [
+      "./libs/ui/input/src/index.ts"
+    ],
+    "@spartan-ng/helm/textarea": [
+      "./libs/ui/textarea/src/index.ts"
+    ],
+    "@spartan-ng/helm/label": [
+      "./libs/ui/label/src/index.ts"
+    ],
+    "@spartan-ng/helm/field": [
+      "./libs/ui/field/src/index.ts"
+    ],
+    "@spartan-ng/helm/separator": [
+      "./libs/ui/separator/src/index.ts"
+    ],
+    "@spartan-ng/helm/card": [
+      "./libs/ui/card/src/index.ts"
+    ],
+    "@spartan-ng/helm/badge": [
+      "./libs/ui/badge/src/index.ts"
+    ],
+    "@spartan-ng/helm/tabs": [
+      "./libs/ui/tabs/src/index.ts"
+    ],
+    "@spartan-ng/helm/dialog": [
+      "./libs/ui/dialog/src/index.ts"
+    ],
+    "@spartan-ng/helm/progress": [
+      "./libs/ui/progress/src/index.ts"
+    ],
+    "@spartan-ng/helm/tooltip": [
+      "./libs/ui/tooltip/src/index.ts"
+    ],
+    "@spartan-ng/helm/spinner": [
+      "./libs/ui/spinner/src/index.ts"
+    ],
+    "@spartan-ng/helm/empty": [
+      "./libs/ui/empty/src/index.ts"
+    ],
+    "@spartan-ng/helm/checkbox": [
+      "./libs/ui/checkbox/src/index.ts"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {
+      "instrument-daily-exercices": [
+        {
+          "file": ".agents/skills/domain-modeling/ADR-FORMAT.md",
+          "hash": "4717377177810130726"
+        },
+        {
+          "file": ".agents/skills/domain-modeling/CONTEXT-FORMAT.md",
+          "hash": "14025204398321015366"
+        },
+        {
+          "file": ".agents/skills/domain-modeling/SKILL.md",
+          "hash": "15567665125480569735"
+        },
+        {
+          "file": ".agents/skills/grill-me/SKILL.md",
+          "hash": "16894086348540481360"
+        },
+        {
+          "file": ".agents/skills/grilling/SKILL.md",
+          "hash": "14162437397529699185"
+        },
+        {
+          "file": ".agents/skills/handoff/SKILL.md",
+          "hash": "951563750908821189"
+        },
+        {
+          "file": ".agents/skills/setup-matt-pocock-skills/SKILL.md",
+          "hash": "13227948320460459515"
+        },
+        {
+          "file": ".agents/skills/setup-matt-pocock-skills/domain.md",
+          "hash": "7398771518026124076"
+        },
+        {
+          "file": ".agents/skills/setup-matt-pocock-skills/issue-tracker-github.md",
+          "hash": "9981261750740689996"
+        },
+        {
+          "file": ".agents/skills/setup-matt-pocock-skills/issue-tracker-gitlab.md",
+          "hash": "4286936676732751358"
+        },
+        {
+          "file": ".agents/skills/setup-matt-pocock-skills/issue-tracker-local.md",
+          "hash": "9115470983620774709"
+        },
+        {
+          "file": ".agents/skills/setup-matt-pocock-skills/triage-labels.md",
+          "hash": "4190477435115784830"
+        },
+        {
+          "file": ".agents/skills/spartan/SKILL.md",
+          "hash": "12303249410957216306"
+        },
+        {
+          "file": ".agents/skills/spartan/cli.md",
+          "hash": "7135584715170427453"
+        },
+        {
+          "file": ".agents/skills/spartan/customization.md",
+          "hash": "18192419933255709292"
+        },
+        {
+          "file": ".agents/skills/spartan/mcp.md",
+          "hash": "9783805748277990032"
+        },
+        {
+          "file": ".agents/skills/spartan/registry.md",
+          "hash": "6239855868114155149"
+        },
+        {
+          "file": ".agents/skills/spartan/rules/brain-vs-helm.md",
+          "hash": "8938007700780245566"
+        },
+        {
+          "file": ".agents/skills/spartan/rules/composition.md",
+          "hash": "11611986442752763585"
+        },
+        {
+          "file": ".agents/skills/spartan/rules/forms.md",
+          "hash": "17995217404453083378"
+        },
+        {
+          "file": ".agents/skills/spartan/rules/icons.md",
+          "hash": "11094263086426110156"
+        },
+        {
+          "file": ".agents/skills/spartan/rules/styling.md",
+          "hash": "4882081044793426281"
+        },
+        {
+          "file": ".agents/skills/tdd/SKILL.md",
+          "hash": "8330782875579226252"
+        },
+        {
+          "file": ".agents/skills/tdd/mocking.md",
+          "hash": "5395420652281098702"
+        },
+        {
+          "file": ".agents/skills/tdd/refactoring.md",
+          "hash": "11383144354357012896"
+        },
+        {
+          "file": ".agents/skills/tdd/tests.md",
+          "hash": "12012723662540935229"
+        },
+        {
+          "file": ".agents/skills/to-issues/SKILL.md",
+          "hash": "5484522645865868068"
+        },
+        {
+          "file": ".agents/skills/to-prd/SKILL.md",
+          "hash": "11931703520592504276"
+        },
+        {
+          "file": ".editorconfig",
+          "hash": "4165385352547808172"
+        },
+        {
+          "file": ".github/workflows/playwright.yml",
+          "hash": "3448367493040465706"
+        },
+        {
+          "file": ".gitignore",
+          "hash": "1618196398287671352"
+        },
+        {
+          "file": ".nvmrc",
+          "hash": "12401004584897058871"
+        },
+        {
+          "file": ".opencode/CONTEXT.md",
+          "hash": "15239756571177017016"
+        },
+        {
+          "file": ".opencode/agents/mastermind.md",
+          "hash": "14898919678261534090"
+        },
+        {
+          "file": ".opencode/agents/reviewer.md",
+          "hash": "12282400864491482780"
+        },
+        {
+          "file": ".opencode/agents/worker.md",
+          "hash": "7432688236942920210"
+        },
+        {
+          "file": ".opencode/todo.md",
+          "hash": "996682789905681062"
+        },
+        {
+          "file": ".postcssrc.json",
+          "hash": "1757434806578486340"
+        },
+        {
+          "file": ".prettierrc",
+          "hash": "11411277661116404690"
+        },
+        {
+          "file": ".tsbuildinfo",
+          "hash": "215680559288359334"
+        },
+        {
+          "file": ".vscode/extensions.json",
+          "hash": "5331566439708925252"
+        },
+        {
+          "file": ".vscode/launch.json",
+          "hash": "17038929134016848735"
+        },
+        {
+          "file": ".vscode/mcp.json",
+          "hash": "18312290508764663119"
+        },
+        {
+          "file": ".vscode/tasks.json",
+          "hash": "1370608409982315224"
+        },
+        {
+          "file": "AGENTS.md",
+          "hash": "15188523289588395997"
+        },
+        {
+          "file": "CONTEXT.md",
+          "hash": "8827157469052571722"
+        },
+        {
+          "file": "DESIGN.md",
+          "hash": "16747451465481255255"
+        },
+        {
+          "file": "README.md",
+          "hash": "13497013399049665650"
+        },
+        {
+          "file": "angular-compiler.db",
+          "hash": "1658070471810074429"
+        },
+        {
+          "file": "angular-compiler.db-lock",
+          "hash": "15950661425102587204"
+        },
+        {
+          "file": "angular.json",
+          "hash": "14027459440539016673"
+        },
+        {
+          "file": "components.json",
+          "hash": "3108857801643039828"
+        },
+        {
+          "file": "docs/Specification_du_besoin.md",
+          "hash": "5943126955208933070"
+        },
+        {
+          "file": "docs/adr/001-architecture.md",
+          "hash": "3530442506681586887"
+        },
+        {
+          "file": "docs/adr/006-exercise-snapshot-in-sessions.md",
+          "hash": "16138869580209507271"
+        },
+        {
+          "file": "docs/adr/007-refactor-ui-spartan-lucide.md",
+          "hash": "10801645464034340933"
+        },
+        {
+          "file": "docs/feat/F1-foundation-core.md",
+          "hash": "16199452841164962063"
+        },
+        {
+          "file": "docs/feat/F10-refactor-ui-spartan.md",
+          "hash": "5835904218506663419"
+        },
+        {
+          "file": "docs/feat/F2-timer-engine-overlay.md",
+          "hash": "4308737905820951679"
+        },
+        {
+          "file": "docs/feat/F3-exercise-crud.md",
+          "hash": "1354050406741276722"
+        },
+        {
+          "file": "docs/feat/F4-daily-dashboard.md",
+          "hash": "14067548368782196839"
+        },
+        {
+          "file": "docs/feat/F5-weekly-history.md",
+          "hash": "15693574112593345794"
+        },
+        {
+          "file": "docs/feat/F6-refactor-ngrx-to-native-signals.md",
+          "hash": "1728122701260573842"
+        },
+        {
+          "file": "docs/feat/F7-exercise-snapshot-in-sessions.md",
+          "hash": "15678090632129157693"
+        },
+        {
+          "file": "docs/feat/F8-weekly-catchup-bonus.md",
+          "hash": "9886466657447001180"
+        },
+        {
+          "file": "docs/feat/F9-improvements-round2.md",
+          "hash": "4343741608047670571"
+        },
+        {
+          "file": "docs/fix/B1-persistence-storage.md",
+          "hash": "11394545948498364533"
+        },
+        {
+          "file": "docs/fix/TEMPLATE-fix.md",
+          "hash": "4844477539721521978"
+        },
+        {
+          "file": "docs/glossary.md",
+          "hash": "9820310493171445974"
+        },
+        {
+          "file": "eslint.config.js",
+          "hash": "7205392803140828540",
+          "deps": [
+            "npm:@eslint/js",
+            "npm:eslint",
+            "npm:typescript-eslint",
+            "npm:angular-eslint"
+          ]
+        },
+        {
+          "file": "libs/ui/badge/src/index.ts",
+          "hash": "1546218413573681085"
+        },
+        {
+          "file": "libs/ui/badge/src/lib/hlm-badge.ts",
+          "hash": "861250712428503730",
+          "deps": [
+            "npm:@angular/core",
+            "npm:class-variance-authority"
+          ]
+        },
+        {
+          "file": "libs/ui/button/src/index.ts",
+          "hash": "5168917203269790378"
+        },
+        {
+          "file": "libs/ui/button/src/lib/hlm-button.token.ts",
+          "hash": "12913095847118528801",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/button/src/lib/hlm-button.ts",
+          "hash": "10677414142287463704",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain",
+            "npm:class-variance-authority",
+            "npm:clsx"
+          ]
+        },
+        {
+          "file": "libs/ui/card/src/index.ts",
+          "hash": "4802100430641801892"
+        },
+        {
+          "file": "libs/ui/card/src/lib/hlm-card-action.ts",
+          "hash": "1349668912576127203",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/card/src/lib/hlm-card-content.ts",
+          "hash": "1316310012403547216",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/card/src/lib/hlm-card-description.ts",
+          "hash": "3476899060928045965",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/card/src/lib/hlm-card-footer.ts",
+          "hash": "14785771182679241340",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/card/src/lib/hlm-card-header.ts",
+          "hash": "990006228429064898",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/card/src/lib/hlm-card-title.ts",
+          "hash": "14434404784408198228",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/card/src/lib/hlm-card.token.ts",
+          "hash": "7940876708771924237",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/card/src/lib/hlm-card.ts",
+          "hash": "1206467394420159201",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/checkbox/src/index.ts",
+          "hash": "9103481533973583639"
+        },
+        {
+          "file": "libs/ui/checkbox/src/lib/hlm-checkbox.ts",
+          "hash": "14542832635325123124",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@ng-icons/core",
+            "npm:@ng-icons/lucide",
+            "npm:@spartan-ng/brain",
+            "npm:clsx"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/index.ts",
+          "hash": "5622737699669046534"
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog-close.ts",
+          "hash": "11934976246173712896",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog-content.ts",
+          "hash": "5293648021902638991",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@ng-icons/core",
+            "npm:@ng-icons/lucide",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog-description.ts",
+          "hash": "14172072792262776857",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog-footer.ts",
+          "hash": "5906442613829026481",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog-header.ts",
+          "hash": "2553757559833977047",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog-overlay.ts",
+          "hash": "10601735844573157610",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain",
+            "npm:clsx"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog-portal.ts",
+          "hash": "14107659904846667199",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog-title.ts",
+          "hash": "6512422268106852173",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog-trigger.ts",
+          "hash": "7852573372491851648",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog.service.ts",
+          "hash": "4738117195396745867",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/dialog/src/lib/hlm-dialog.ts",
+          "hash": "9586351292602633119",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/empty/src/index.ts",
+          "hash": "5360518099183122999"
+        },
+        {
+          "file": "libs/ui/empty/src/lib/hlm-empty-content.ts",
+          "hash": "3655544241120254368",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/empty/src/lib/hlm-empty-description.ts",
+          "hash": "2511797583275442543",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/empty/src/lib/hlm-empty-header.ts",
+          "hash": "16474851113835703606",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/empty/src/lib/hlm-empty-media.ts",
+          "hash": "11258477245865579161",
+          "deps": [
+            "npm:@angular/core",
+            "npm:class-variance-authority"
+          ]
+        },
+        {
+          "file": "libs/ui/empty/src/lib/hlm-empty-title.ts",
+          "hash": "13740704537140124612",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/empty/src/lib/hlm-empty.ts",
+          "hash": "18067275086465414763",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/index.ts",
+          "hash": "1337299150300478801"
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field-content.ts",
+          "hash": "100208407766747936",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field-description.ts",
+          "hash": "5419695040482184004",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field-error.ts",
+          "hash": "2738729884192327284",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field-group.ts",
+          "hash": "2886390024966905767",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field-label.ts",
+          "hash": "5413444559087158661",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field-legend.ts",
+          "hash": "6294441481159110946",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field-separator.ts",
+          "hash": "1151692978045525803",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field-set.ts",
+          "hash": "3100423508668109781",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field-title.ts",
+          "hash": "2587689125452157820",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/field/src/lib/hlm-field.ts",
+          "hash": "4999439055414667993",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain",
+            "npm:class-variance-authority"
+          ]
+        },
+        {
+          "file": "libs/ui/input/src/index.ts",
+          "hash": "7356458584027653927"
+        },
+        {
+          "file": "libs/ui/input/src/lib/hlm-input.ts",
+          "hash": "12155612840179137752",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/label/src/index.ts",
+          "hash": "15789376508885056890"
+        },
+        {
+          "file": "libs/ui/label/src/lib/hlm-label.ts",
+          "hash": "494481167473422745",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/progress/src/index.ts",
+          "hash": "4203873862661701260"
+        },
+        {
+          "file": "libs/ui/progress/src/lib/hlm-progress-indicator.ts",
+          "hash": "17671825336688387057",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/progress/src/lib/hlm-progress.ts",
+          "hash": "17476467811842899033",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/separator/src/index.ts",
+          "hash": "5012659381478231670"
+        },
+        {
+          "file": "libs/ui/separator/src/lib/hlm-separator.ts",
+          "hash": "9686954093733290003",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/spinner/src/index.ts",
+          "hash": "6947715401017586293"
+        },
+        {
+          "file": "libs/ui/spinner/src/lib/hlm-spinner.ts",
+          "hash": "6809562590713087712",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core",
+            "npm:@ng-icons/lucide"
+          ]
+        },
+        {
+          "file": "libs/ui/tabs/src/index.ts",
+          "hash": "15348389985297663144"
+        },
+        {
+          "file": "libs/ui/tabs/src/lib/hlm-tabs-content-lazy.ts",
+          "hash": "5676614656466244806",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/tabs/src/lib/hlm-tabs-content.ts",
+          "hash": "13106124488164158706",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/tabs/src/lib/hlm-tabs-list.ts",
+          "hash": "11019026574577111691",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain",
+            "npm:class-variance-authority"
+          ]
+        },
+        {
+          "file": "libs/ui/tabs/src/lib/hlm-tabs-paginated-list.ts",
+          "hash": "7393434913248164346",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/core",
+            "npm:@ng-icons/core",
+            "npm:@ng-icons/lucide",
+            "npm:@spartan-ng/brain",
+            "npm:clsx",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ui/tabs/src/lib/hlm-tabs-trigger.ts",
+          "hash": "2091770303003569340",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/tabs/src/lib/hlm-tabs.ts",
+          "hash": "12643779110594297391",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/textarea/src/index.ts",
+          "hash": "18246224225285192967"
+        },
+        {
+          "file": "libs/ui/textarea/src/lib/hlm-textarea.ts",
+          "hash": "11683780102377170023",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain"
+          ]
+        },
+        {
+          "file": "libs/ui/tooltip/src/index.ts",
+          "hash": "5321506332116556735"
+        },
+        {
+          "file": "libs/ui/tooltip/src/lib/hlm-tooltip.ts",
+          "hash": "8171284502381231157",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@spartan-ng/brain",
+            "npm:class-variance-authority"
+          ]
+        },
+        {
+          "file": "libs/ui/utils/src/index.ts",
+          "hash": "12007391678651720588"
+        },
+        {
+          "file": "libs/ui/utils/src/lib/hlm.ts",
+          "hash": "3943643842782176706",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:clsx",
+            "npm:tailwind-merge"
+          ]
+        },
+        {
+          "file": "libs/ui/utils/src/lib/provide-spartan-hlm.ts",
+          "hash": "14818235350575591323",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "opencode.jsonc",
+          "hash": "4593538833971824639"
+        },
+        {
+          "file": "package.json",
+          "hash": "6565336724611310210"
+        },
+        {
+          "file": "playwright.config.ts",
+          "hash": "14135642629164151797",
+          "deps": [
+            "npm:@playwright/test",
+            "npm:dotenv"
+          ]
+        },
+        {
+          "file": "pnpm-lock.yaml",
+          "hash": "12400471105800651926"
+        },
+        {
+          "file": "pnpm-workspace.yaml",
+          "hash": "6683440197783931573"
+        },
+        {
+          "file": "public/favicon.ico",
+          "hash": "3988961587069885523"
+        },
+        {
+          "file": "skills-lock.json",
+          "hash": "12323556590473768938"
+        },
+        {
+          "file": "src/app/app.config.ts",
+          "hash": "11191716286696934346",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "npm:@ng-icons/core",
+            "npm:@ng-icons/lucide"
+          ]
+        },
+        {
+          "file": "src/app/app.html",
+          "hash": "9496333511739753206"
+        },
+        {
+          "file": "src/app/app.routes.ts",
+          "hash": "7003883457665632381",
+          "deps": [
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/app.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/app.ts",
+          "hash": "14511424270856938882",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/core/components/navigation/navigation.component.ts",
+          "hash": "1532110802832710932",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/core/models/daily-session.ts",
+          "hash": "7468877005520823968"
+        },
+        {
+          "file": "src/app/core/models/exercise.ts",
+          "hash": "1466161019182164173"
+        },
+        {
+          "file": "src/app/core/models/index.ts",
+          "hash": "3435035930148884496"
+        },
+        {
+          "file": "src/app/core/models/progress-state.ts",
+          "hash": "13556637827263460905"
+        },
+        {
+          "file": "src/app/core/models/weekly-stats.ts",
+          "hash": "6391457790176750775"
+        },
+        {
+          "file": "src/app/core/services/audio-alert.service.ts",
+          "hash": "4069801125244775160",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/core/services/storage-keys.ts",
+          "hash": "2847008766465765142"
+        },
+        {
+          "file": "src/app/core/services/storage.service.ts",
+          "hash": "4647955393473447397",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/dashboard/components/exercise-row/exercise-row.component.html",
+          "hash": "1272860460558481527"
+        },
+        {
+          "file": "src/app/features/dashboard/components/exercise-row/exercise-row.component.ts",
+          "hash": "2672904872140690683",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core"
+          ]
+        },
+        {
+          "file": "src/app/features/dashboard/components/exercise-time-display/exercise-time-display.component.spec.ts",
+          "hash": "3152597232774684115",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/dashboard/components/exercise-time-display/exercise-time-display.component.ts",
+          "hash": "10082269222757316217",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/dashboard/components/progress-bar/progress-bar.component.html",
+          "hash": "15601321594452872406"
+        },
+        {
+          "file": "src/app/features/dashboard/components/progress-bar/progress-bar.component.ts",
+          "hash": "13878265905819523375",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/dashboard/dashboard.component.html",
+          "hash": "11803750960433645961"
+        },
+        {
+          "file": "src/app/features/dashboard/dashboard.component.spec.ts",
+          "hash": "16309386099897195708",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/dashboard/dashboard.component.ts",
+          "hash": "1220914377360768981",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/dashboard/dashboard.routes.ts",
+          "hash": "9995394906638440360",
+          "deps": [
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/features/exercise/exercise-card.component.html",
+          "hash": "14156241368655594727"
+        },
+        {
+          "file": "src/app/features/exercise/exercise-card.component.ts",
+          "hash": "1480523607281993708",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core"
+          ]
+        },
+        {
+          "file": "src/app/features/exercise/exercise-form.component.html",
+          "hash": "12069433915649176368"
+        },
+        {
+          "file": "src/app/features/exercise/exercise-form.component.ts",
+          "hash": "12086467741794694660",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "src/app/features/exercise/exercise.service.spec.ts",
+          "hash": "3757065503976332571",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/exercise/exercise.service.ts",
+          "hash": "738626355574235786",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/history/catch-up-modal/catch-up-modal.component.html",
+          "hash": "3313535232540331249"
+        },
+        {
+          "file": "src/app/features/history/catch-up-modal/catch-up-modal.component.spec.ts",
+          "hash": "3328793085686769111",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs",
+            "npm:@spartan-ng/brain",
+            "npm:@ng-icons/core",
+            "npm:@ng-icons/lucide"
+          ]
+        },
+        {
+          "file": "src/app/features/history/catch-up-modal/catch-up-modal.component.ts",
+          "hash": "47827112770574126",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core"
+          ]
+        },
+        {
+          "file": "src/app/features/history/history.component.html",
+          "hash": "9566338900359989750"
+        },
+        {
+          "file": "src/app/features/history/history.component.spec.ts",
+          "hash": "15368927082716660086",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/history/history.component.ts",
+          "hash": "4797304213081916625",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core"
+          ]
+        },
+        {
+          "file": "src/app/features/history/history.routes.ts",
+          "hash": "14366191212606659703",
+          "deps": [
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/features/history/week-day-card/week-day-card.component.html",
+          "hash": "2082059991669438739"
+        },
+        {
+          "file": "src/app/features/history/week-day-card/week-day-card.component.spec.ts",
+          "hash": "3924172249205981966",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core",
+            "npm:@ng-icons/lucide"
+          ]
+        },
+        {
+          "file": "src/app/features/history/week-day-card/week-day-card.component.ts",
+          "hash": "13230966226562179678",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core"
+          ]
+        },
+        {
+          "file": "src/app/features/history/weekly-summary/weekly-summary.component.html",
+          "hash": "8632017806560344492"
+        },
+        {
+          "file": "src/app/features/history/weekly-summary/weekly-summary.component.spec.ts",
+          "hash": "8461458796054048067",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core",
+            "npm:@ng-icons/lucide"
+          ]
+        },
+        {
+          "file": "src/app/features/history/weekly-summary/weekly-summary.component.ts",
+          "hash": "13477668872944489567",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core"
+          ]
+        },
+        {
+          "file": "src/app/features/progress/progress.service.spec.ts",
+          "hash": "15109923762010107822",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/progress/progress.service.ts",
+          "hash": "11710631644933757499",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/routine/routine.component.html",
+          "hash": "5683801606798500656"
+        },
+        {
+          "file": "src/app/features/routine/routine.component.ts",
+          "hash": "4887520009794410186",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core"
+          ]
+        },
+        {
+          "file": "src/app/features/routine/routine.routes.ts",
+          "hash": "17408654732408472486",
+          "deps": [
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/features/timer/timer-overlay.component.html",
+          "hash": "14264707199524863018"
+        },
+        {
+          "file": "src/app/features/timer/timer-overlay.component.ts",
+          "hash": "1596123639416869219",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ng-icons/core"
+          ]
+        },
+        {
+          "file": "src/app/features/timer/timer.service.spec.ts",
+          "hash": "16450020500125664649",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/features/timer/timer.service.ts",
+          "hash": "11529429870496284041",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/index.html",
+          "hash": "16590871380699058601"
+        },
+        {
+          "file": "src/main.ts",
+          "hash": "7505019549357737457",
+          "deps": [
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "src/styles.scss",
+          "hash": "14461393552390939615"
+        },
+        {
+          "file": "src/tailwind.css",
+          "hash": "897496404694306763"
+        },
+        {
+          "file": "tsconfig.app.json",
+          "hash": "7807138824267858546"
+        },
+        {
+          "file": "tsconfig.json",
+          "hash": "9405869487045784009"
+        },
+        {
+          "file": "tsconfig.spec.json",
+          "hash": "8807315678366432410"
+        }
+      ]
+    },
+    "nonProjectFiles": []
+  },
+  "externalNodesHash": "3545703148878037499"
+}

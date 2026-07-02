@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucidePen, lucidePlus } from '@ng-icons/lucide';
+import { NgIcon } from '@ng-icons/core';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmEmptyImports } from '@spartan-ng/helm/empty';
 import { Exercise } from '../../core/models/exercise';
@@ -25,7 +24,6 @@ interface ExerciseFormValue {
     ...HlmEmptyImports,
     NgIcon,
   ],
-  providers: [provideIcons({ lucidePen, lucidePlus })],
   templateUrl: './routine.component.html',
 })
 export class RoutineComponent {

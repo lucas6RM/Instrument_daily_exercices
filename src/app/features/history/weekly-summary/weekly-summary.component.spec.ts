@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideIcons } from '@ng-icons/core';
+import { lucideBarChart3, lucideClock } from '@ng-icons/lucide';
 import { WeeklySummaryComponent } from './weekly-summary.component';
 import { WeeklyStats } from '../../../core/models';
 
@@ -32,6 +34,7 @@ describe('WeeklySummaryComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TestHostComponent],
+      providers: [provideIcons({ lucideBarChart3, lucideClock })],
     });
   });
 

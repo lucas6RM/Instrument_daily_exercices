@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, afterNextRender, effect, input, output, viewChild } from '@angular/core';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCircleAlert, lucidePen, lucidePlus } from '@ng-icons/lucide';
+import { NgIcon } from '@ng-icons/core';
 import {
   AbstractControl,
   FormControl,
@@ -45,7 +44,6 @@ function positiveNumberValidator(): (
     HlmButtonImports,
     NgIcon,
   ],
-  providers: [provideIcons({ lucideCircleAlert, lucidePlus, lucidePen })],
   templateUrl: './exercise-form.component.html',
 })
 export class ExerciseFormComponent {

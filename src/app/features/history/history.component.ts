@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCalendar, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
+import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialog } from '@spartan-ng/helm/dialog';
 
@@ -45,7 +44,6 @@ function formatDateRange(startDate: Date): string {
   imports: [WeekDayCardComponent, WeeklySummaryComponent, CatchUpModalComponent, HlmButton, HlmDialog, NgIcon],
   templateUrl: './history.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [provideIcons({ lucideChevronLeft, lucideChevronRight, lucideCalendar })],
 })
 export class HistoryComponent {
   private readonly progressService = inject(ProgressService);

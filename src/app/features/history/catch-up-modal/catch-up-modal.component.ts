@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucidePlay, lucideX } from '@ng-icons/lucide';
+import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { HlmDialogClose, HlmDialogContent, HlmDialogHeader, HlmDialogTitle } from '@spartan-ng/helm/dialog';
@@ -38,7 +37,6 @@ export interface CatchUpExercise {
   ],
   templateUrl: './catch-up-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [provideIcons({ lucidePlay, lucideX })],
 })
 export class CatchUpModalComponent {
   readonly date = input.required<string>();

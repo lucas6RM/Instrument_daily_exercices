@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucidePause, lucidePlay, lucideRotateCcw, lucideX } from '@ng-icons/lucide';
+import { NgIcon } from '@ng-icons/core';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmProgressImports } from '@spartan-ng/helm/progress';
 
@@ -10,7 +9,6 @@ import { TimerService } from './timer.service';
 @Component({
   selector: 'app-timer-overlay',
   imports: [NgIcon, HlmButtonImports, HlmProgressImports],
-  providers: [provideIcons({ lucidePause, lucidePlay, lucideRotateCcw, lucideX })],
   templateUrl: './timer-overlay.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
