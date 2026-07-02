@@ -78,8 +78,9 @@ export class ExerciseFormComponent {
     if (this.form.valid) {
       this.save.emit(this.form.value as ExerciseFormValue);
 
-      // After adding a new exercise, refocus the name input
+      // After adding a new exercise, reset the form and refocus the name input
       if (!this.exercise()) {
+        this.form.reset();
         const el = this.nameInput();
         if (el && typeof el.focus === 'function') {
           el.focus();
