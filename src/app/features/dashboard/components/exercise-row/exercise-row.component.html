@@ -33,6 +33,14 @@
       {{ ex.name }}
     </span>
     <span class="block truncate text-xs text-gray-500"> {{ ex.durationSeconds }} s </span>
+    @if (completed) {
+      <app-exercise-time-display
+        [actualMinutes]="actualMinutes()"
+        [bonusMinutes]="bonusMinutes()"
+        [completed]="true"
+        [playCount]="playCount()"
+      />
+    }
   </div>
 
   <p class="flex-1 w-full">{{ ex.description }}</p>

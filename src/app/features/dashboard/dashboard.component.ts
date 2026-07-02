@@ -46,9 +46,19 @@ export class DashboardComponent implements OnInit {
 
     return exercises.map((ex) => {
       const sessionExercise = session?.exercises.find((se) => se.exerciseId === ex.id);
+      const completed = sessionExercise?.completed ?? false;
+      const actualMinutes = sessionExercise?.actualMinutes ?? 0;
+      const bonusMinutes = sessionExercise?.bonusMinutes ?? 0;
+      const playCount = completed
+        ? 1 + Math.floor(bonusMinutes / (actualMinutes || ex.durationSeconds))
+        : 1;
+
       return {
         exercise: ex,
-        completed: sessionExercise?.completed ?? false,
+        completed,
+        actualMinutes,
+        bonusMinutes,
+        playCount,
       };
     });
   });

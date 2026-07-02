@@ -23,6 +23,9 @@
           role="listitem"
           [exercise]="item.exercise"
           [isCompleted]="item.completed"
+          [actualMinutes]="item.actualMinutes"
+          [bonusMinutes]="item.bonusMinutes"
+          [playCount]="item.playCount"
           (playExercise)="onPlayExercise(item.exercise.id)"
         />
       }
