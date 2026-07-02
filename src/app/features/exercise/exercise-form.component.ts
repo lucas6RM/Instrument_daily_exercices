@@ -1,4 +1,6 @@
-import { Component, afterNextRender, effect, input, output, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, afterNextRender, effect, input, output, viewChild } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCircleAlert, lucidePen, lucidePlus } from '@ng-icons/lucide';
 import {
   AbstractControl,
   FormControl,
@@ -7,6 +9,10 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmFieldImports } from '@spartan-ng/helm/field';
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
 import { Exercise } from '../../core/models/exercise';
 
 interface ExerciseFormValue {
@@ -30,7 +36,16 @@ function positiveNumberValidator(): (
 
 @Component({
   selector: 'app-exercise-form',
-  imports: [ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    ReactiveFormsModule,
+    HlmFieldImports,
+    HlmInputImports,
+    HlmTextareaImports,
+    HlmButtonImports,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucideCircleAlert, lucidePlus, lucidePen })],
   templateUrl: './exercise-form.component.html',
 })
 export class ExerciseFormComponent {

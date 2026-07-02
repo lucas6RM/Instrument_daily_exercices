@@ -217,7 +217,7 @@ provideIcons([
 - [x] Tâche 1 : Installation et Configuration
 - [x] Tâche 2 : Migration Navigation
 - [x] Tâche 3 : Migration Dashboard
-- [ ] Tâche 4 : Migration Formulaire Exercice
+- [x] Tâche 4 : Migration Formulaire Exercice
 - [ ] Tâche 5 : Migration Routine
 - [ ] Tâche 6 : Migration Historique
 - [ ] Tâche 7 : Migration Timer Overlay
@@ -225,7 +225,7 @@ provideIcons([
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Tâche 4 : Migration Formulaire Exercice
+- Tâche 5 : Migration Routine
 
 ### Compteur de rejets (tâche actuelle) :
 - 0 / 5
