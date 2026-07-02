@@ -216,7 +216,7 @@ provideIcons([
 ## Tableau d'Avancement (La Source de Vérité)
 - [x] Tâche 1 : Installation et Configuration
 - [x] Tâche 2 : Migration Navigation
-- [ ] Tâche 3 : Migration Dashboard
+- [x] Tâche 3 : Migration Dashboard
 - [ ] Tâche 4 : Migration Formulaire Exercice
 - [ ] Tâche 5 : Migration Routine
 - [ ] Tâche 6 : Migration Historique
@@ -225,7 +225,7 @@ provideIcons([
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Aucune
+- Tâche 4 : Migration Formulaire Exercice
 
 ### Compteur de rejets (tâche actuelle) :
 - 0 / 5

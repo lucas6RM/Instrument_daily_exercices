@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, OnInit, computed, inject } from '@angular/core';
+import { ApplicationRef, ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'; // Pour nettoyer proprement l'abonnement
 import { DailySession } from '../../core/models';
 import { ExerciseService } from '../exercise/exercise.service';
@@ -16,6 +16,7 @@ function getTodayIso(): string {
   selector: 'app-dashboard',
   imports: [ExerciseRowComponent, ProgressBarComponent],
   templateUrl: './dashboard.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
   private readonly progressService = inject(ProgressService);
