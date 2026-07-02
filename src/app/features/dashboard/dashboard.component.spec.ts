@@ -372,5 +372,32 @@ describe('DashboardComponent', () => {
       expect(e2.bonusMinutes).toBe(0);
       expect(e2.actualMinutes).toBe(60);
     });
+
+    it('should persist bonusMinutes via setSpy after replay (F9 - Tâche 3)', () => {
+      exerciseService.setExercises([
+        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+      ]);
+
+      const fixture = TestBed.createComponent(DashboardComponent);
+      const component = fixture.componentInstance;
+      component.ngOnInit();
+
+      // Complete
+      component.onTimerComplete('e1');
+
+      // Replay
+      setSpy.mockClear();
+      component.onTimerComplete('e1');
+
+      // Verify: setSpy was called with the correct data including bonusMinutes
+      const persistedData = setSpy.mock.calls[0]?.[1];
+      expect(persistedData).toBeDefined();
+      const persistedSession = persistedData.dailySessions.find((s: DailySession) => s.date === component.today);
+      expect(persistedSession).toBeDefined();
+      const persistedEx = persistedSession!.exercises.find((e: { exerciseId: string }) => e.exerciseId === 'e1')!;
+      expect(persistedEx.bonusMinutes).toBe(30);
+      expect(persistedEx.completed).toBe(true);
+      expect(persistedEx.actualMinutes).toBe(30);
+    });
   });
 });
