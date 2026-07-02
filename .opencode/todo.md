@@ -215,7 +215,7 @@ provideIcons([
 
 ## Tableau d'Avancement (La Source de Vérité)
 - [x] Tâche 1 : Installation et Configuration
-- [ ] Tâche 2 : Migration Navigation
+- [x] Tâche 2 : Migration Navigation
 - [ ] Tâche 3 : Migration Dashboard
 - [ ] Tâche 4 : Migration Formulaire Exercice
 - [ ] Tâche 5 : Migration Routine
