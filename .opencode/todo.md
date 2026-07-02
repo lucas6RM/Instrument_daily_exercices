@@ -88,7 +88,7 @@ Le badge "Rattrapable" alourdit l'UI. La bordure verte distinctive sur les jours
 - [x] Tâche 2 : Reset formulaire après ajout dans la Routine
 - [x] Tâche 3 : Bug persistance bonus minutes après reload
 - [x] Tâche 4 : Totaux incluent `actualMinutes + bonusMinutes`
-- [ ] Tâche 5 : Supprimer badge "Rattrapable" et bordure verte
+- [x] Tâche 5 : Supprimer badge "Rattrapable" et bordure verte
 
 ## Zone de Transit & Logs
 ### Tâche en cours :

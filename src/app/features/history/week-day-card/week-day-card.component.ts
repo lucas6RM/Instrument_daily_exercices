@@ -9,7 +9,6 @@ import { Exercise, WeekDayStats } from '../../../core/models';
 export class WeekDayCardComponent {
   readonly dayStats = input.required<WeekDayStats>();
   readonly scheduledExercises = input<Exercise[]>([]);
-  readonly isCatchUpAvailable = input(false);
 
   private readonly dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
