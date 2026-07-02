@@ -9,6 +9,7 @@ import { Exercise, WeekDayStats } from '../../../core/models';
 export class WeekDayCardComponent {
   readonly dayStats = input.required<WeekDayStats>();
   readonly scheduledExercises = input<Exercise[]>([]);
+  readonly isToday = input(false);
 
   private readonly dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
@@ -37,11 +38,11 @@ export class WeekDayCardComponent {
         if (ex.completed && ex.actualMinutes > 0) {
           const existing = completedMap.get(ex.exerciseId);
           if (existing) {
-            existing.minutes += ex.actualMinutes;
+            existing.minutes += ex.actualMinutes + (ex.bonusMinutes ?? 0);
           } else {
             completedMap.set(ex.exerciseId, {
               name: ex.exerciseName ?? '(nom inconnu)',
-              minutes: ex.actualMinutes,
+              minutes: ex.actualMinutes + (ex.bonusMinutes ?? 0),
             });
           }
         }

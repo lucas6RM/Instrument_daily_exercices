@@ -116,12 +116,14 @@
             <app-week-day-card
               [dayStats]="day"
               [scheduledExercises]="isToday(day.date) ? exercises() : []"
+              [isToday]="isToday(day.date)"
             />
           </div>
         } @else {
           <app-week-day-card
             [dayStats]="day"
             [scheduledExercises]="isToday(day.date) ? exercises() : []"
+            [isToday]="isToday(day.date)"
           />
         }
       }

@@ -62,11 +62,13 @@ Le temps total journalier et hebdomadaire n'inclut que `actualMinutes`, pas `bon
 ### Comportement attendu
 - `WeekDayCardComponent` affiche le total jour = `actualMinutes + bonusMinutes`
 - `WeeklySummaryComponent` affiche le total semaine = somme des `actualMinutes + bonusMinutes`
+- Chaque exercice affiché dans un jour de l'historique affiche `actualMinutes + bonusMinutes`
+- Le résumé hebdomadaire par exercice affiche `actualMinutes + bonusMinutes`
 
 ### Changements
-- `ProgressService.getWeeklyStats()` — ligne 218, modifier :
-  - Avant : `eSum + ex.actualMinutes`
-  - Après : `eSum + ex.actualMinutes + ex.bonusMinutes`
+- `ProgressService.getWeeklyStats()` — reduce du `totalMinutes` : `eSum + ex.actualMinutes + ex.bonusMinutes`
+- `ProgressService.getWeeklyStats()` — `minutesByExercise` : `current + ex.actualMinutes + (ex.bonusMinutes ?? 0)`
+- `WeekDayCardComponent.completedExercisesSignal` — `minutes` : `ex.actualMinutes + (ex.bonusMinutes ?? 0)`
 - La correction se propage automatiquement au total hebdomadaire (somme des totaux journaliers)
 
 ## Tâche 5 : Supprimer le badge "Rattrapable" et la bordure verte
@@ -76,12 +78,14 @@ Le badge "Rattrapable" alourdit l'UI. La bordure verte distinctive sur les jours
 
 ### Comportement attendu
 - Plus de badge "Rattrapable" dans `WeekDayCardComponent`
-- Bordure uniforme (`border-gray-100`) pour tous les jours
+- Bordure uniforme (`border-gray-100`) pour tous les jours sauf le jour actuel
+- Bordure verte (`border-green-300`) uniquement sur le jour actuel
 - Le fait que le jour soit cliquable reste l'unique indicateur de rattrapage disponible
 
 ### Changements
 - `WeekDayCardComponent` template — supprimer le bloc `@if (catchUp)` (badge)
-- `WeekDayCardComponent` template — uniformiser la bordure (toujours `border-gray-100`, supprimer la variante `border-green-300`)
+- `WeekDayCardComponent` — input `isToday` ajouté, bordure conditionnelle (`border-green-300` si aujourd'hui, `border-gray-100` sinon)
+- `HistoryComponent` template — passer `[isToday]="isToday(day.date)"` à chaque `<app-week-day-card>`
 
 ## Tableau d'Avancement (La Source de Vérité)
 - [x] Tâche 1 : Afficher temps bonus dans le Dashboard
@@ -99,5 +103,10 @@ Le badge "Rattrapable" alourdit l'UI. La bordure verte distinctive sur les jours
 
 ### Dernier retour de Review :
 - Aucun.
+
 ### Blocage Actuel :
 - Aucun.
+
+### Post-fixes
+- **Tâche 4** : `completedExercisesSignal` de `WeekDayCardComponent` et `minutesByExercise` de `ProgressService` mettent à jour leurs calculs pour inclure `bonusMinutes` (pas seulement les totaux journaliers)
+- **Tâche 5** : bordure verte (`border-green-300`) réappliquée uniquement sur le jour actuel via l'input `isToday` de `WeekDayCardComponent`

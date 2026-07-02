@@ -235,7 +235,7 @@ export class ProgressService {
         for (const ex of session.exercises) {
           const name = ex.exerciseName ?? '(nom inconnu)';
           const current = minutesByExercise.get(name) ?? 0;
-          minutesByExercise.set(name, current + ex.actualMinutes);
+          minutesByExercise.set(name, current + ex.actualMinutes + (ex.bonusMinutes ?? 0));
         }
       }
 
