@@ -29,7 +29,7 @@ describe('WeekDayCardComponent', () => {
       const session: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
@@ -53,7 +53,7 @@ describe('WeekDayCardComponent', () => {
       const session: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', completed: true, actualMinutes: 10 },
+          { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
@@ -75,13 +75,13 @@ describe('WeekDayCardComponent', () => {
       const session1: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10, bonusMinutes: 0 },
         ],
       };
       const session2: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 5 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 5, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
@@ -104,7 +104,7 @@ describe('WeekDayCardComponent', () => {
       const session: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: false, actualMinutes: 0 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: false, actualMinutes: 0, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
@@ -126,7 +126,7 @@ describe('WeekDayCardComponent', () => {
       const session: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 0 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 0, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
@@ -150,7 +150,7 @@ describe('WeekDayCardComponent', () => {
       const session: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: false, actualMinutes: 0 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: false, actualMinutes: 0, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
@@ -173,7 +173,7 @@ describe('WeekDayCardComponent', () => {
       const session: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', completed: false, actualMinutes: 0 },
+          { exerciseId: 'e1', completed: false, actualMinutes: 0, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
@@ -195,7 +195,7 @@ describe('WeekDayCardComponent', () => {
       const session: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
@@ -307,7 +307,7 @@ describe('WeekDayCardComponent', () => {
       const session: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10 },
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 10, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
@@ -328,7 +328,7 @@ describe('WeekDayCardComponent', () => {
       const session: DailySession = {
         date: '2025-01-06',
         exercises: [
-          { exerciseId: 'e1', completed: true, actualMinutes: 10 },
+          { exerciseId: 'e1', completed: true, actualMinutes: 10, bonusMinutes: 0 },
         ],
       };
       const dayStats: WeekDayStats = {
