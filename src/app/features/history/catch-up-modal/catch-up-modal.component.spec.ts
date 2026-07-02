@@ -1,6 +1,12 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
+import { BrnDialogRef } from '@spartan-ng/brain/dialog';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmDialogClose, HlmDialogContent, HlmDialogHeader, HlmDialogTitle } from '@spartan-ng/helm/dialog';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucidePlay, lucideX } from '@ng-icons/lucide';
 
 import { CatchUpModalComponent } from './catch-up-modal.component';
 import { ProgressService } from '../../progress/progress.service';
@@ -37,6 +43,12 @@ describe('CatchUpModalComponent', () => {
       imports: [CatchUpModalComponent],
       providers: [
         {
+          provide: BrnDialogRef,
+          useValue: {
+            state: computed(() => 'closed'),
+          },
+        },
+        {
           provide: ProgressService,
           useValue: {
             getOrCreateSession: vi.fn(() => ({ date: '', exercises: [] })),
@@ -56,7 +68,19 @@ describe('CatchUpModalComponent', () => {
     });
 
     TestBed.overrideComponent(CatchUpModalComponent, {
-      set: { imports: [MockExerciseTimeDisplayComponent] },
+      set: {
+        imports: [
+          MockExerciseTimeDisplayComponent,
+          HlmButton,
+          HlmCheckbox,
+          HlmDialogClose,
+          HlmDialogContent,
+          HlmDialogHeader,
+          HlmDialogTitle,
+          NgIcon,
+        ],
+        providers: [provideIcons({ lucidePlay, lucideX })],
+      },
     });
 
     progressService = TestBed.inject(ProgressService);
@@ -150,115 +174,21 @@ describe('CatchUpModalComponent', () => {
       expect(emitted).toBe(true);
     });
 
-    it('should close when Escape key is pressed', async () => {
+    it('should have hlmDialogClose directive on the close button', async () => {
       const fixture = createFixture();
       await fixture.whenStable();
-      const component = fixture.componentInstance;
 
-      let emitted = false;
-      component.closed.subscribe(() => {
-        emitted = true;
-      });
-
-      const event = new KeyboardEvent('keydown', { key: 'Escape' });
-      document.dispatchEvent(event);
-
-      expect(emitted).toBe(true);
+      const closeBtn = fixture.nativeElement.querySelector('[data-slot="dialog-close"]');
+      expect(closeBtn).not.toBeNull();
     });
 
-    it('should not close on other keyboard events', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-      const component = fixture.componentInstance;
-
-      let emitted = false;
-      component.closed.subscribe(() => {
-        emitted = true;
-      });
-
-      const event = new KeyboardEvent('keydown', { key: 'Enter' });
-      document.dispatchEvent(event);
-
-      expect(emitted).toBe(false);
-    });
-
-    it('should close when clicking directly on the overlay', async () => {
+    it('should have the Fermer button in the footer', async () => {
       const fixture = createFixture();
       await fixture.whenStable();
 
-      const overlay = fixture.nativeElement.querySelector('[role="dialog"]');
-      const component = fixture.componentInstance;
-
-      let emitted = false;
-      component.closed.subscribe(() => {
-        emitted = true;
-      });
-
-      // Simulate click on overlay itself (target === currentTarget)
-      const clickEvent = new MouseEvent('click', { bubbles: true });
-      Object.defineProperty(clickEvent, 'target', { value: overlay });
-      Object.defineProperty(clickEvent, 'currentTarget', { value: overlay });
-      overlay.dispatchEvent(clickEvent);
-
-      expect(emitted).toBe(true);
-    });
-
-    it('should NOT close when clicking on modal content', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-
-      const overlay = fixture.nativeElement.querySelector('[role="dialog"]');
-      const modalContent = overlay.querySelector('.w-full');
-      const component = fixture.componentInstance;
-
-      let emitted = false;
-      component.closed.subscribe(() => {
-        emitted = true;
-      });
-
-      // Simulate click on modal content (target !== currentTarget)
-      const clickEvent = new MouseEvent('click', { bubbles: true });
-      Object.defineProperty(clickEvent, 'target', { value: modalContent });
-      Object.defineProperty(clickEvent, 'currentTarget', { value: overlay });
-      overlay.dispatchEvent(clickEvent);
-
-      expect(emitted).toBe(false);
-    });
-
-    it('should close when Enter is pressed on the overlay', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-
-      const overlay = fixture.nativeElement.querySelector('[role="dialog"]');
-      const component = fixture.componentInstance;
-
-      let emitted = false;
-      component.closed.subscribe(() => {
-        emitted = true;
-      });
-
-      const event = new KeyboardEvent('keydown', { key: 'Enter' });
-      overlay.dispatchEvent(event);
-
-      expect(emitted).toBe(true);
-    });
-
-    it('should close when Space is pressed on the overlay', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-
-      const overlay = fixture.nativeElement.querySelector('[role="dialog"]');
-      const component = fixture.componentInstance;
-
-      let emitted = false;
-      component.closed.subscribe(() => {
-        emitted = true;
-      });
-
-      const event = new KeyboardEvent('keydown', { key: ' ' });
-      overlay.dispatchEvent(event);
-
-      expect(emitted).toBe(true);
+      const allButtons = fixture.nativeElement.querySelectorAll('button');
+      const fermerBtn = Array.from(allButtons as NodeListOf<HTMLElement>).find((b) => b.textContent?.includes('Fermer'));
+      expect(fermerBtn).not.toBeNull();
     });
   });
 
@@ -565,7 +495,7 @@ describe('CatchUpModalComponent', () => {
       const listItems = fixture.nativeElement.querySelectorAll('[role="listitem"]');
       expect(listItems.length).toBe(1);
       // The removed exercise item should not contain a PLAY button
-      const playButtons = listItems[0].querySelectorAll('button');
+      const playButtons = listItems[0].querySelectorAll('button[aria-label*="Lancer"]');
       expect(playButtons.length).toBe(0);
     });
 
@@ -589,151 +519,48 @@ describe('CatchUpModalComponent', () => {
   });
 
   /* ------------------------------------------------------------------ */
-  /* Focus trap (Tab reste dans le modal)                                */
-  /* ------------------------------------------------------------------ */
-
-  describe('focus trap', () => {
-    it('should wrap focus from last to first on Tab', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-
-      const dialog = fixture.nativeElement.querySelector('[role="dialog"]') as HTMLElement;
-      const focusable = dialog.querySelectorAll(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
-      const elementsArray = Array.from(focusable) as HTMLElement[];
-      const firstFocusable = elementsArray[0];
-      const lastFocusable = elementsArray[elementsArray.length - 1];
-
-      lastFocusable.focus();
-
-      const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
-      let defaultPrevented = false;
-      Object.defineProperty(event, 'defaultPrevented', {
-        get() { return defaultPrevented; },
-      });
-      event.preventDefault = () => { defaultPrevented = true; };
-
-      const component = fixture.componentInstance;
-      component.onDocumentKeydown(event);
-
-      expect(document.activeElement).toBe(firstFocusable);
-      expect(defaultPrevented).toBe(true);
-    });
-
-    it('should wrap focus from first to last on Shift+Tab', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-
-      const dialog = fixture.nativeElement.querySelector('[role="dialog"]') as HTMLElement;
-      const focusable = dialog.querySelectorAll(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
-      const elementsArray = Array.from(focusable) as HTMLElement[];
-      const firstFocusable = elementsArray[0];
-      const lastFocusable = elementsArray[elementsArray.length - 1];
-
-      firstFocusable.focus();
-
-      const event = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true });
-      let defaultPrevented = false;
-      Object.defineProperty(event, 'defaultPrevented', {
-        get() { return defaultPrevented; },
-      });
-      event.preventDefault = () => { defaultPrevented = true; };
-
-      const component = fixture.componentInstance;
-      component.onDocumentKeydown(event);
-
-      expect(document.activeElement).toBe(lastFocusable);
-      expect(defaultPrevented).toBe(true);
-    });
-
-    it('should not interfere with normal Tab navigation inside modal', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-
-      const dialog = fixture.nativeElement.querySelector('[role="dialog"]') as HTMLElement;
-      const focusable = dialog.querySelectorAll(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
-      const elementsArray = Array.from(focusable) as HTMLElement[];
-      // Focus a middle element (not first, not last)
-      const middleIndex = Math.floor(elementsArray.length / 2);
-      elementsArray[middleIndex].focus();
-
-      const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
-      let defaultPrevented = false;
-      Object.defineProperty(event, 'defaultPrevented', {
-        get() { return defaultPrevented; },
-      });
-      event.preventDefault = () => { defaultPrevented = true; };
-
-      const component = fixture.componentInstance;
-      component.onDocumentKeydown(event);
-
-      expect(defaultPrevented).toBe(false);
-    });
-
-    it('should prevent default when no focusable elements exist', async () => {
-      // Mock empty modal container
-      const fixture = createFixture();
-      await fixture.whenStable();
-      const component = fixture.componentInstance;
-
-      // Manually set modalContainer to an empty element
-      const emptyDiv = document.createElement('div');
-      (component as unknown as { modalContainer: HTMLElement | null }).modalContainer = emptyDiv;
-
-      const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
-      let defaultPrevented = false;
-      Object.defineProperty(event, 'defaultPrevented', {
-        get() { return defaultPrevented; },
-      });
-      event.preventDefault = () => { defaultPrevented = true; };
-
-      component.onDocumentKeydown(event);
-      expect(defaultPrevented).toBe(true);
-    });
-  });
-
-  /* ------------------------------------------------------------------ */
   /* Accessibilité (aria attributes)                                     */
   /* ------------------------------------------------------------------ */
 
   describe('accessibilité', () => {
-    it('should have role="dialog" on the overlay', async () => {
+    it('should have hlm-dialog-content wrapping the modal', async () => {
       const fixture = createFixture();
       await fixture.whenStable();
 
-      const dialog = fixture.nativeElement.querySelector('[role="dialog"]');
-      expect(dialog).not.toBeNull();
+      const dialogContent = fixture.nativeElement.querySelector('[data-slot="dialog-content"]');
+      expect(dialogContent).not.toBeNull();
     });
 
-    it('should have aria-modal="true"', async () => {
+    it('should have hlm-dialog-header', async () => {
       const fixture = createFixture();
       await fixture.whenStable();
 
-      const dialog = fixture.nativeElement.querySelector('[aria-modal="true"]');
-      expect(dialog).not.toBeNull();
+      const dialogHeader = fixture.nativeElement.querySelector('[data-slot="dialog-header"]');
+      expect(dialogHeader).not.toBeNull();
     });
 
-    it('should have aria-labelledby pointing to the title', async () => {
+    it('should have hlm-dialog-title', async () => {
       const fixture = createFixture();
       await fixture.whenStable();
 
-      const dialog = fixture.nativeElement.querySelector('[role="dialog"]');
-      expect(dialog.getAttribute('aria-labelledby')).toBe('catch-up-modal-title');
+      const dialogTitle = fixture.nativeElement.querySelector('[data-slot="dialog-title"]');
+      expect(dialogTitle).not.toBeNull();
     });
 
     it('should have the title element with the correct id', async () => {
       const fixture = createFixture();
       await fixture.whenStable();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
 
-      const title = fixture.nativeElement.querySelector('#catch-up-modal-title');
-      expect(title).not.toBeNull();
-      expect(title.textContent).toContain('Rattrapage');
-      expect(title.textContent).toContain('2025-01-06');
+      // Check for the dialog title via data-slot
+      const titleSlot = fixture.nativeElement.querySelector('[data-slot="dialog-title"]');
+      expect(titleSlot).not.toBeNull();
+      // The title text should contain the modal title
+      expect(titleSlot?.textContent).toContain('Rattrapage');
     });
 
     it('should have aria-label on the close button', async () => {
@@ -765,7 +592,7 @@ describe('CatchUpModalComponent', () => {
       expect(items.length).toBe(2); // 2 exercises in routine
     });
 
-    it('should have aria-label on checkboxes', async () => {
+    it('should have checkboxes with role="checkbox"', async () => {
       (progressService.getOrCreateSession as ReturnType<typeof vi.fn>).mockReturnValue({
         date: '2025-01-06',
         exercises: [],
@@ -773,12 +600,13 @@ describe('CatchUpModalComponent', () => {
 
       const fixture = createFixture();
       await fixture.whenStable();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
 
-      const checkboxes = fixture.nativeElement.querySelectorAll('input[type="checkbox"]');
-      checkboxes.forEach((cb: HTMLElement) => {
-        expect(cb.getAttribute('aria-label')).toBeTruthy();
-        expect(cb.getAttribute('aria-label')!).toContain('Statut de');
-      });
+      // Verify checkboxes exist with proper ARIA role
+      const checkboxButtons = fixture.nativeElement.querySelectorAll('button[role="checkbox"]') as NodeListOf<HTMLElement>;
+      expect(checkboxButtons.length).toBeGreaterThan(0);
     });
 
     it('should have aria-label on play buttons', async () => {

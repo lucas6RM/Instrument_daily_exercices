@@ -1,11 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideBarChart3, lucideClock } from '@ng-icons/lucide';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmProgressImports } from '@spartan-ng/helm/progress';
 
 import { WeeklyStats } from '../../../core/models';
 
 @Component({
   selector: 'app-weekly-summary',
+  imports: [HlmCardImports, HlmProgressImports, NgIcon],
   templateUrl: './weekly-summary.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideIcons({ lucideBarChart3, lucideClock })],
 })
 export class WeeklySummaryComponent {
   readonly weeklyStats = input.required<WeeklyStats>();
