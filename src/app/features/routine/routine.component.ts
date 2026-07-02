@@ -1,4 +1,8 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucidePen, lucidePlus } from '@ng-icons/lucide';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmEmptyImports } from '@spartan-ng/helm/empty';
 import { Exercise } from '../../core/models/exercise';
 import { ExerciseCardComponent } from '../exercise/exercise-card.component';
 import { ExerciseFormComponent } from '../exercise/exercise-form.component';
@@ -13,7 +17,15 @@ interface ExerciseFormValue {
 
 @Component({
   selector: 'app-routine',
-  imports: [ExerciseCardComponent, ExerciseFormComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    ExerciseCardComponent,
+    ExerciseFormComponent,
+    ...HlmCardImports,
+    ...HlmEmptyImports,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucidePen, lucidePlus })],
   templateUrl: './routine.component.html',
 })
 export class RoutineComponent {
