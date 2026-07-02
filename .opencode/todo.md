@@ -85,7 +85,7 @@ Le badge "Rattrapable" alourdit l'UI. La bordure verte distinctive sur les jours
 
 ## Tableau d'Avancement (La Source de Vérité)
 - [x] Tâche 1 : Afficher temps bonus dans le Dashboard
-- [ ] Tâche 2 : Reset formulaire après ajout dans la Routine
+- [x] Tâche 2 : Reset formulaire après ajout dans la Routine
 - [ ] Tâche 3 : Bug persistance bonus minutes après reload
 - [ ] Tâche 4 : Totaux incluent `actualMinutes + bonusMinutes`
 - [ ] Tâche 5 : Supprimer badge "Rattrapable" et bordure verte
@@ -99,6 +99,5 @@ Le badge "Rattrapable" alourdit l'UI. La bordure verte distinctive sur les jours
 
 ### Dernier retour de Review :
 - Aucun.
-
 ### Blocage Actuel :
 - Aucun.
