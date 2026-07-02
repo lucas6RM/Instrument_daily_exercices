@@ -175,6 +175,74 @@ describe('ProgressService', () => {
         ]),
       });
     });
+
+    it('should persist bonusMinutes correctly after replay (F9 - Tâche 3)', () => {
+      // Setup: session with completed exercise (bonusMinutes = 0)
+      const session1: DailySession = {
+        date: '2025-01-01',
+        exercises: [
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 30, bonusMinutes: 0 },
+        ],
+      };
+      service.addSession(session1);
+      setSpy.mockClear();
+
+      // Replay: simulate bonus accumulation (like DashboardComponent.onTimerComplete)
+      const current = service.getSession('2025-01-01')!;
+      const updatedExercises = current.exercises.map((se) =>
+        se.exerciseId === 'e1'
+          ? { ...se, bonusMinutes: se.bonusMinutes + 30 }
+          : se,
+      );
+      const session2: DailySession = { ...current, exercises: updatedExercises };
+      service.addSession(session2);
+
+      // Verify: the persisted data must include the updated bonusMinutes
+      expect(setSpy).toHaveBeenCalledWith(STORAGE_KEYS.PROGRESS, {
+        dailySessions: [
+          {
+            date: '2025-01-01',
+            exercises: [
+              { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 30, bonusMinutes: 30 },
+            ],
+          },
+        ],
+      });
+
+      // Verify: signal also reflects the update
+      const storedSession = service.getSession('2025-01-01')!;
+      expect(storedSession.exercises[0].bonusMinutes).toBe(30);
+    });
+
+    it('should survive full persistence cycle: add → persist → load → verify bonusMinutes (F9 - Tâche 3)', () => {
+      setSpy.mockClear();
+
+      // Phase 1: Add session with bonusMinutes
+      const sessionWithBonus: DailySession = {
+        date: '2025-01-01',
+        exercises: [
+          { exerciseId: 'e1', exerciseName: 'Chromatique', completed: true, actualMinutes: 30, bonusMinutes: 45 },
+        ],
+      };
+      service.addSession(sessionWithBonus);
+
+      // Capture what was persisted
+      const persistedData = setSpy.mock.calls[0]?.[1] as ProgressState | undefined;
+      expect(persistedData).toBeDefined();
+      expect(persistedData!.dailySessions[0].exercises[0].bonusMinutes).toBe(45);
+
+      // Phase 2: Simulate reload — getSpy returns the persisted data
+      getSpy.mockReturnValue(persistedData);
+      setSpy.mockClear();
+
+      // Reset signal and reload (simulates page reload)
+      service.dailySessions.set([]);
+      service.loadFromStorage();
+
+      // Phase 3: Verify bonusMinutes survived the reload
+      const loadedSession = service.getSession('2025-01-01')!;
+      expect(loadedSession.exercises[0].bonusMinutes).toBe(45);
+    });
   });
 
   /* ------------------------------------------------------------------ */

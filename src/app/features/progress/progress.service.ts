@@ -215,7 +215,7 @@ export class ProgressService {
         const daySessions = weekSessions.filter((s) => s.date === dayStr);
         const totalMinutes = daySessions.reduce(
           (sum, session) =>
-            sum + session.exercises.reduce((eSum, ex) => eSum + ex.actualMinutes, 0),
+            sum + session.exercises.reduce((eSum, ex) => eSum + ex.actualMinutes + ex.bonusMinutes, 0),
           0,
         );
 
@@ -235,7 +235,7 @@ export class ProgressService {
         for (const ex of session.exercises) {
           const name = ex.exerciseName ?? '(nom inconnu)';
           const current = minutesByExercise.get(name) ?? 0;
-          minutesByExercise.set(name, current + ex.actualMinutes);
+          minutesByExercise.set(name, current + ex.actualMinutes + (ex.bonusMinutes ?? 0));
         }
       }
 
