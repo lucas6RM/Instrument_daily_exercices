@@ -1,11 +1,16 @@
-import { Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmProgressImports } from '@spartan-ng/helm/progress';
 
 import { ExerciseService } from '../exercise/exercise.service';
 import { TimerService } from './timer.service';
 
 @Component({
   selector: 'app-timer-overlay',
+  imports: [NgIcon, HlmButtonImports, HlmProgressImports],
   templateUrl: './timer-overlay.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerOverlayComponent {
   private readonly timerService = inject(TimerService);
@@ -29,4 +34,13 @@ export class TimerOverlayComponent {
   protected readonly visible = computed(
     () => this.timerService.isRunning() || this.timerService.pausedRemainingMs() > 0,
   );
+
+  protected readonly progress = computed(() => {
+    const remaining = this.timerService.remainingMs();
+    const duration = this.timerService.durationMs();
+    if (duration <= 0) {
+      return 0;
+    }
+    return Math.round((remaining / duration) * 100);
+  });
 }

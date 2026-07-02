@@ -1,10 +1,14 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 
 import { Exercise, WeekDayStats } from '../../../core/models';
 
 @Component({
   selector: 'app-week-day-card',
+  imports: [HlmCardImports, NgIcon],
   templateUrl: './week-day-card.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WeekDayCardComponent {
   readonly dayStats = input.required<WeekDayStats>();

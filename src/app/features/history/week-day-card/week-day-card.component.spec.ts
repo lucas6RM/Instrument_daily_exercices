@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideIcons } from '@ng-icons/core';
+import { lucideCheck, lucideX } from '@ng-icons/lucide';
 import { WeekDayCardComponent } from './week-day-card.component';
 import { DailySession, Exercise, WeekDayStats } from '../../../core/models';
 
@@ -24,6 +26,13 @@ class TestHostComponent {
 }
 
 describe('WeekDayCardComponent', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [TestHostComponent],
+      providers: [provideIcons({ lucideCheck, lucideX })],
+    });
+  });
+
   describe('completedExercisesSignal', () => {
     it('should display exerciseName from snapshot for completed exercises', () => {
       const session: DailySession = {

@@ -1,4 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialog } from '@spartan-ng/helm/dialog';
 
 import { ExerciseService } from '../exercise/exercise.service';
 import { ProgressService } from '../progress/progress.service';
@@ -38,7 +41,7 @@ function formatDateRange(startDate: Date): string {
 
 @Component({
   selector: 'app-history',
-  imports: [WeekDayCardComponent, WeeklySummaryComponent, CatchUpModalComponent],
+  imports: [WeekDayCardComponent, WeeklySummaryComponent, CatchUpModalComponent, HlmButton, HlmDialog, NgIcon],
   templateUrl: './history.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

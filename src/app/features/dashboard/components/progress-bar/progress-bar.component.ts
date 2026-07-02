@@ -1,8 +1,12 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { HlmBadgeImports } from '@spartan-ng/helm/badge';
+import { HlmProgressImports } from '@spartan-ng/helm/progress';
 
 @Component({
   selector: 'app-progress-bar',
+  imports: [HlmProgressImports, HlmBadgeImports],
   templateUrl: './progress-bar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgressBarComponent {
   readonly completedCount = input<number>(0);

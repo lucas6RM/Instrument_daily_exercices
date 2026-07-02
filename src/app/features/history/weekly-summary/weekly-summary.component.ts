@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmProgressImports } from '@spartan-ng/helm/progress';
 
 import { WeeklyStats } from '../../../core/models';
 
 @Component({
   selector: 'app-weekly-summary',
+  imports: [HlmCardImports, HlmProgressImports, NgIcon],
   templateUrl: './weekly-summary.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

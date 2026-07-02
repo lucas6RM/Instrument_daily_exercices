@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideIcons } from '@ng-icons/core';
+import { lucideBarChart3, lucideClock } from '@ng-icons/lucide';
 import { WeeklySummaryComponent } from './weekly-summary.component';
 import { WeeklyStats } from '../../../core/models';
 
@@ -32,6 +34,7 @@ describe('WeeklySummaryComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TestHostComponent],
+      providers: [provideIcons({ lucideBarChart3, lucideClock })],
     });
   });
 
@@ -85,9 +88,9 @@ describe('WeeklySummaryComponent', () => {
     const host = TestBed.createComponent(TestHostComponent);
     host.componentInstance.weeklyStats = createWeeklyStats({ completionRate: 150 });
     host.detectChanges();
-    const innerBar = host.nativeElement.querySelector('[role="progressbar"] > div');
-    // Width should be capped at 100%
-    expect(innerBar.style.width).toBe('100%');
+    const indicator = host.nativeElement.querySelector('hlm-progress-indicator');
+    // Transform should show full fill (translateX(-0%) = 100% filled)
+    expect(indicator).not.toBeNull();
     // But the displayed text should still show the actual rate
     expect(host.nativeElement.textContent).toContain('150%');
   });

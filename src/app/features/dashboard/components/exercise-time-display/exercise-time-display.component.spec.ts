@@ -105,7 +105,8 @@ describe('ExerciseTimeDisplayComponent', () => {
       host.componentInstance.playCount = 2;
       host.detectChanges();
 
-      expect(host.nativeElement.textContent).toContain('✅ 20min + 10min bonus (2×)');
+      expect(host.nativeElement.textContent).toContain('✓ 20min');
+      expect(host.nativeElement.textContent).toContain('+10min bonus (2×)');
     });
 
     it('should set aria-label attribute on the span', () => {
@@ -139,7 +140,7 @@ describe('ExerciseTimeDisplayComponent', () => {
       host.componentInstance.playCount = 1;
       host.detectChanges();
 
-      expect(host.nativeElement.textContent).toContain('✅ 25min');
+      expect(host.nativeElement.textContent).toContain('✓ 25min');
     });
   });
 

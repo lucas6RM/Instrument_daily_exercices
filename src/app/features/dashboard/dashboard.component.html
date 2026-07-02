@@ -1,7 +1,7 @@
 <main class="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12">
   <header class="mb-6 sm:mb-8">
-    <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Séance du jour</h1>
-    <p class="mt-2 text-sm text-gray-500">Vos exercices quotidiens — restez régulier !</p>
+    <h1 class="text-[48px] font-semibold tracking-[-0.05em] text-foreground leading-tight">Séance du jour</h1>
+    <p class="mt-2 text-sm text-[#737373]">Vos exercices quotidiens — restez régulier !</p>
   </header>
 
   <section aria-label="Progression de la séance">
@@ -10,14 +10,14 @@
 
   @if (exercisesWithProgress().length === 0) {
     <div
-      class="mt-6 sm:mt-8 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 py-12 text-center"
+      class="mt-6 sm:mt-8 rounded-[14px] border-2 border-dashed border-[#e5e5e5] bg-muted/30 py-12 text-center"
     >
-      <p class="mt-4 text-sm text-gray-500">
+      <p class="mt-4 text-sm text-muted-foreground">
         Aucun exercice configuré. Ajoutez des exercices dans la rubrique Routine.
       </p>
     </div>
   } @else {
-    <div class="mt-6 sm:mt-8 space-y-3" role="list" aria-label="Liste des exercices">
+    <div class="mt-6 sm:mt-8 flex flex-col gap-3" role="list" aria-label="Liste des exercices">
       @for (item of exercisesWithProgress(); track item.exercise.id) {
         <app-exercise-row
           role="listitem"
