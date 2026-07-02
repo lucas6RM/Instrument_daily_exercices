@@ -1,5 +1,7 @@
 allowBuilds:
+  less: false
   lmdb: false
+  nx: false
   unrs-resolver: false
 minimumReleaseAgeExclude:
   - '@angular/animations@22.0.4'
