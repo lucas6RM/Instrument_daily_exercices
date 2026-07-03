@@ -140,7 +140,10 @@ export class CatchUpModalComponent {
    * Handle timer expiration: mark as completed or add bonus minutes.
    */
   private onTimerComplete(exerciseId: string): void {
-    const date = this.date();
+    const date = this.localSession().date;
+    if (!date) {
+      return;
+    }
     const catchUpExercise = this.catchUpExercises().find((e) => e.exerciseId === exerciseId);
 
     if (!catchUpExercise) {

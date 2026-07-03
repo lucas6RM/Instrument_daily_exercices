@@ -18,10 +18,10 @@ export class TimerOverlayComponent {
 
   protected readonly isRunning = this.timerService.isRunning;
   protected readonly formattedTime = this.timerService.formattedTime;
-  protected readonly pause = this.timerService.pause;
-  protected readonly resume = this.timerService.resume;
-  protected readonly resetToOriginal = this.timerService.resetToOriginal;
-  protected readonly close = this.timerService.close;
+  protected readonly pause = this.timerService.pause.bind(this.timerService);
+  protected readonly resume = this.timerService.resume.bind(this.timerService);
+  protected readonly resetToOriginal = this.timerService.resetToOriginal.bind(this.timerService);
+  protected readonly close = this.timerService.close.bind(this.timerService);
 
   protected readonly exerciseName = computed(() => {
     const exerciseId = this.timerService.currentExerciseId();

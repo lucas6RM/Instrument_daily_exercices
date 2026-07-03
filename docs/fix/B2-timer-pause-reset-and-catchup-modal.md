@@ -78,9 +78,9 @@ Trois regressions identifiées après la migration Spartan/ui (F10) :
 Quand `selectedDate()` est non-null, le dialogue se rend avec `state='open'`, déclenchant l'ouverture via l'effect de `BrnDialog`. Quand `onModalClosed()` set `selectedDate(null)`, le `@if` démonte le dialogue.
 
 ## Tableau d'Avancement (La Source de Vérité)
-- [ ] Tâche 1 : TimerService — `originalDurationMs`, `resetToOriginal()`, `close()`
-- [ ] Tâche 2 : TimerOverlayComponent — wire boutons réinitialiser / fermer
-- [ ] Tâche 3 : HistoryComponent — `[state]="'open'"` sur `hlm-dialog`
+- [x] Tâche 1 : TimerService — `originalDurationMs`, `resetToOriginal()`, `close()`
+- [x] Tâche 2 : TimerOverlayComponent — wire boutons réinitialiser / fermer
+- [x] Tâche 3 : HistoryComponent — `[state]="'open'"` sur `hlm-dialog`
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
