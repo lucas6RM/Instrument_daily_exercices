@@ -18,6 +18,7 @@ export class TimerService implements OnDestroy {
   readonly currentExerciseId = signal<string | null>(null);
   readonly endTime = signal<number | null>(null);
   readonly durationMs = signal(0);
+  readonly originalDurationMs = signal(0);
   readonly pausedRemainingMs = signal(0);
 
   // --- Tick réactif via interval + toSignal ---
@@ -56,6 +57,7 @@ export class TimerService implements OnDestroy {
     this.currentExerciseId.set(exerciseId);
     this.endTime.set(now + durationMs);
     this.durationMs.set(durationMs);
+    this.originalDurationMs.set(durationMs);
     this.pausedRemainingMs.set(0);
 
     // Expiration detection via setTimeout
@@ -94,14 +96,31 @@ export class TimerService implements OnDestroy {
     }, remaining);
   }
 
-  reset(): void {
+  close(): void {
     clearTimeout(this.expirationTimeoutId);
 
     this.isRunning.set(false);
     this.currentExerciseId.set(null);
     this.endTime.set(null);
     this.durationMs.set(0);
+    this.originalDurationMs.set(0);
     this.pausedRemainingMs.set(0);
+  }
+
+  resetToOriginal(): void {
+    clearTimeout(this.expirationTimeoutId);
+    const original = this.originalDurationMs();
+    if (original <= 0) {
+      return;
+    }
+    const now = Date.now();
+    this.isRunning.set(false);
+    this.endTime.set(now + original);
+    this.durationMs.set(original);
+    this.pausedRemainingMs.set(original);
+    this.expirationTimeoutId = setTimeout(() => {
+      this.onTimerExpired();
+    }, original);
   }
 
   // --- Expiration handler ---
@@ -120,7 +139,7 @@ export class TimerService implements OnDestroy {
 
   // --- Lifecycle ---
   ngOnDestroy(): void {
-    this.pause();
+    this.close();
     this.expiredSubject.complete();
     this.tick$.complete();
   }

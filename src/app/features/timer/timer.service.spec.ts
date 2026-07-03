@@ -44,6 +44,10 @@ describe('TimerService', () => {
     it('should have pausedRemainingMs set to 0', () => {
       expect(service.pausedRemainingMs()).toBe(0);
     });
+
+    it('should have originalDurationMs set to 0', () => {
+      expect(service.originalDurationMs()).toBe(0);
+    });
   });
 
   describe('computed properties', () => {
@@ -84,6 +88,11 @@ describe('TimerService', () => {
     it('should set durationMs', () => {
       service.start('exercise-1', 60000);
       expect(service.durationMs()).toBe(60000);
+    });
+
+    it('should set originalDurationMs', () => {
+      service.start('exercise-1', 60000);
+      expect(service.originalDurationMs()).toBe(60000);
     });
 
     it('should reset pausedRemainingMs to 0', () => {
@@ -164,48 +173,91 @@ describe('TimerService', () => {
     });
   });
 
-  describe('reset()', () => {
+  describe('close()', () => {
     it('should set isRunning to false', () => {
       service.start('exercise-1', 60000);
-      service.reset();
+      service.close();
       expect(service.isRunning()).toBe(false);
     });
 
     it('should set currentExerciseId to null', () => {
       service.start('exercise-1', 60000);
-      service.reset();
+      service.close();
       expect(service.currentExerciseId()).toBeNull();
     });
 
     it('should set endTime to null', () => {
       service.start('exercise-1', 60000);
-      service.reset();
+      service.close();
       expect(service.endTime()).toBeNull();
     });
 
     it('should set durationMs to 0', () => {
       service.start('exercise-1', 60000);
-      service.reset();
+      service.close();
       expect(service.durationMs()).toBe(0);
+    });
+
+    it('should set originalDurationMs to 0', () => {
+      service.start('exercise-1', 60000);
+      service.close();
+      expect(service.originalDurationMs()).toBe(0);
     });
 
     it('should set pausedRemainingMs to 0', () => {
       service.start('exercise-1', 60000);
       service.pause();
-      service.reset();
+      service.close();
       expect(service.pausedRemainingMs()).toBe(0);
     });
 
-    it('should return 0 for remainingMs after reset', () => {
+    it('should return 0 for remainingMs after close', () => {
       service.start('exercise-1', 60000);
-      service.reset();
+      service.close();
       expect(service.remainingMs()).toBe(0);
     });
 
-    it('should return "00:00" for formattedTime after reset', () => {
+    it('should return "00:00" for formattedTime after close', () => {
       service.start('exercise-1', 60000);
-      service.reset();
+      service.close();
       expect(service.formattedTime()).toBe('00:00');
+    });
+  });
+
+  describe('resetToOriginal()', () => {
+    it('should reset durationMs to the original value', () => {
+      service.start('exercise-1', 60000);
+      service.pause();
+      service.resetToOriginal();
+      expect(service.durationMs()).toBe(60000);
+    });
+
+    it('should set pausedRemainingMs to the original duration', () => {
+      service.start('exercise-1', 60000);
+      service.pause();
+      service.resetToOriginal();
+      expect(service.pausedRemainingMs()).toBe(60000);
+    });
+
+    it('should set isRunning to false', () => {
+      service.start('exercise-1', 60000);
+      service.pause();
+      service.resetToOriginal();
+      expect(service.isRunning()).toBe(false);
+    });
+
+    it('should keep currentExerciseId unchanged', () => {
+      service.start('exercise-1', 60000);
+      service.pause();
+      service.resetToOriginal();
+      expect(service.currentExerciseId()).toBe('exercise-1');
+    });
+
+    it('should do nothing when originalDurationMs is 0', () => {
+      service.resetToOriginal();
+      expect(service.isRunning()).toBe(false);
+      expect(service.durationMs()).toBe(0);
+      expect(service.pausedRemainingMs()).toBe(0);
     });
   });
 
@@ -257,14 +309,14 @@ describe('TimerService', () => {
       expect(service.pausedRemainingMs()).toBe(0);
     });
 
-    it('should not emit expired$ when timer is reset before expiration', () => {
+    it('should not emit expired$ when timer is closed before expiration', () => {
       let emitted = false;
       service.expired$.subscribe(() => {
         emitted = true;
       });
 
       service.start('exercise-1', 50);
-      service.reset();
+      service.close();
       vi.runAllTimers();
 
       expect(emitted).toBe(false);
@@ -285,10 +337,11 @@ describe('TimerService', () => {
   });
 
   describe('ngOnDestroy()', () => {
-    it('should pause the timer', () => {
+    it('should close the timer', () => {
       service.start('exercise-1', 60000);
       service.ngOnDestroy();
       expect(service.isRunning()).toBe(false);
+      expect(service.currentExerciseId()).toBeNull();
     });
 
     it('should complete the expired$ observable', () => {

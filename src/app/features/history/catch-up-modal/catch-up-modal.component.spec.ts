@@ -61,7 +61,7 @@ describe('CatchUpModalComponent', () => {
           useValue: {
             expired$: expiredSubject,
             start: vi.fn(),
-            reset: vi.fn(),
+            close: vi.fn(),
           },
         },
       ],
@@ -283,7 +283,7 @@ describe('CatchUpModalComponent', () => {
       expect(exercises[0].status).toBe('completed');
     });
 
-    it('should call timerService.reset after expiration', async () => {
+    it('should call timerService.close after expiration', async () => {
       const session = {
         date: '2025-01-06',
         exercises: [
@@ -296,7 +296,7 @@ describe('CatchUpModalComponent', () => {
       await fixture.whenStable();
 
       await triggerTimerComplete('e1');
-      expect(timerService.reset).toHaveBeenCalled();
+      expect(timerService.close).toHaveBeenCalled();
     });
 
     it('should not do anything for non-existent exercise on timer complete', async () => {

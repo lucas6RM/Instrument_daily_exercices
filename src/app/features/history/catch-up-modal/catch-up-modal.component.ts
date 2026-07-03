@@ -65,7 +65,7 @@ export class CatchUpModalComponent {
       .pipe(takeUntilDestroyed())
       .subscribe((event) => {
         this.onTimerComplete(event.exerciseId);
-        this.timerService.reset();
+        this.timerService.close();
       });
   }
 

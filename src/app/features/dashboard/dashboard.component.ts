@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
       .pipe(takeUntilDestroyed()) // Sécurité anti-fuite de mémoire si on change de page
       .subscribe((event) => {
         this.onTimerComplete(event.exerciseId);
-        this.timerService.reset();
+        this.timerService.close();
         this.appRef.tick();
       });
   }

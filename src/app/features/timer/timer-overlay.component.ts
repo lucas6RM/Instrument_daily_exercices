@@ -20,7 +20,8 @@ export class TimerOverlayComponent {
   protected readonly formattedTime = this.timerService.formattedTime;
   protected readonly pause = this.timerService.pause;
   protected readonly resume = this.timerService.resume;
-  protected readonly reset = this.timerService.reset;
+  protected readonly resetToOriginal = this.timerService.resetToOriginal;
+  protected readonly close = this.timerService.close;
 
   protected readonly exerciseName = computed(() => {
     const exerciseId = this.timerService.currentExerciseId();
