@@ -213,6 +213,44 @@ provideIcons([
 ])
 ```
 
+## Retouches UI Post-Migration
+
+### Routine - Aération et espacements
+- **Padding main** : `px-10 py-10 sm:px-16 sm:py-14 lg:px-24`
+- **Margin header** : `mb-10 sm:mb-12`
+- **Gap grid** : `gap-10 lg:gap-12`
+- **Titre formulaire** : `text-center pt-5 px-6`
+- **Formulaire** : `px-6 py-4` dans le card, card parent `pt-0`
+
+### Exercise Card - Padding interne
+- **Card padding** : `px-6 py-5 sm:px-8 sm:py-6`
+- **Gap interne** : `gap-5`
+- **Espacement vertical entre cards** : `mt-6` sur chaque article (nécessaire car `space-y` ne traverse pas l'encapsulation Angular)
+
+### Exercise Form - Textarea description
+- **Rows description** : `rows="10"`
+
+### Historique - Layout responsive
+- **Jours** : `flex flex-col sm:flex-row gap-4` (vertical mobile, horizontal sm+)
+- **Wrappers jours** : `w-full sm:flex-1`
+- **Navigation** : `flex flex-row w-full gap-2`, boutons `flex-1`
+- **Texte boutons** : toujours visible (suppression `hidden sm:inline`)
+- **Bouton "Aujourd'hui"** : `bg-pink-300 hover:bg-pink-400 text-foreground`
+
+### Week Day Card - Compact
+- **Card spacing** : `[--card-spacing:--spacing(3)]`
+- **Header** : `pb-2` (compact)
+- **Titre jour** : `text-base`
+- **Total** : `text-xl`
+- **Sections** : `mb-3`, titres `mb-1.5`
+- **Liste exercices** : `gap-1`, items `px-2.5 py-1.5`
+- **Message vide** : `py-2`, condition `completedExercises.length === 0 && uncompletedExercises.length === 0`
+- **Jour actuel** : `ring-pink-300 ring-2` (highlight rose)
+
+### Exercise Row - Checkbox Spartan
+- Remplacement `<input type="checkbox">` par `<hlm-checkbox>` Spartan
+- Import `HlmCheckboxImports` dans le composant
+
 ## Tableau d'Avancement (La Source de Vérité)
 - [x] Tâche 1 : Installation et Configuration
 - [x] Tâche 2 : Migration Navigation
@@ -222,6 +260,7 @@ provideIcons([
 - [x] Tâche 6 : Migration Historique
 - [x] Tâche 7 : Migration Timer Overlay
 - [x] Tâche 8 : Nettoyage Final
+- [x] Retouches UI post-migration
 
 ## Zone de Transit & Logs
 ### Tâche en cours :

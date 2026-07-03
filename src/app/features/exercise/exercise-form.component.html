@@ -1,5 +1,5 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" aria-label="Formulaire d'exercice">
-  <div class="space-y-4">
+  <div class="px-6 py-4 space-y-4">
     <!-- Name -->
     <div hlmField>
       <label hlmFieldLabel for="exercise-name">
@@ -72,31 +72,19 @@
         id="exercise-description"
         hlmTextarea
         formControlName="description"
-        rows="3"
+        rows="10"
       ></textarea>
     </div>
 
     <!-- Submit -->
     <div class="pt-2">
       @if (exercise()) {
-        <button
-          type="submit"
-          hlmBtn
-          variant="default"
-          [disabled]="form.invalid"
-          class="w-full"
-        >
+        <button type="submit" hlmBtn variant="default" [disabled]="form.invalid" class="w-full">
           <ng-icon name="lucidePen" />
           Modifier l'exercice
         </button>
       } @else {
-        <button
-          type="submit"
-          hlmBtn
-          variant="default"
-          [disabled]="form.invalid"
-          class="w-full"
-        >
+        <button type="submit" hlmBtn variant="default" [disabled]="form.invalid" class="w-full">
           <ng-icon name="lucidePlus" />
           Ajouter l'exercice
         </button>

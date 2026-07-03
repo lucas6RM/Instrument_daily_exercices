@@ -14,11 +14,6 @@
       [attr.aria-label]="'Marquer ' + ex.name + ' comme terminé'"
       class="h-5 w-5 rounded border border-border"
     />
-    @if (completed) {
-      <span class="text-foreground absolute inset-0 flex items-center justify-center pointer-events-none">
-        <ng-icon name="lucideCheck" class="text-[length:--spacing(3.5)]" />
-      </span>
-    }
   </div>
 
   <div class="min-w-0 flex-1">
@@ -60,7 +55,10 @@
       (click)="playExercise.emit()"
       aria-label="Lancer le timer pour {{ ex.name }}"
     >
-      <ng-icon name="lucidePlay" class="text-[length:--spacing(3.5)] sm:text-[length:--spacing(4)]" />
+      <ng-icon
+        name="lucidePlay"
+        class="text-[length:--spacing(3.5)] sm:text-[length:--spacing(4)]"
+      />
       Play
     </button>
   </div>
