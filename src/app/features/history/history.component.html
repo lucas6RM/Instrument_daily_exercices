@@ -104,7 +104,7 @@
 
   <!-- Catch-up modal -->
   @if (selectedDate()) {
-    <hlm-dialog #dialog>
+    <hlm-dialog #dialog [state]="'open'">
       <app-catch-up-modal
         [date]="selectedDate()!"
         [exercises]="exercises()"
