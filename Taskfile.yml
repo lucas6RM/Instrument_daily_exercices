@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+vars:
+  GREETING: Hello, world!
+
+tasks:
+  default:
+    desc: Print a greeting message
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
+
+  deploy:
+    desc: Deploiement
+    cmds:
+      # 1. On re-compile l'application proprement
+      - pnpm ng build --configuration production --base-href /Instrument_daily_exercices/
+      # 2. On envoie le dossier browser sur GitHub
+      - pnpm angular-cli-ghpages --dir=dist/instrument-daily-exercices/browser

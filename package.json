@@ -67,12 +67,5 @@
     "typescript-eslint": "8.60.1",
     "vitest": "^4.1.9",
     "zone.js": "^0.16.2"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "esbuild",
-      "msgpackr-extract"
-    ]
   }
 }
