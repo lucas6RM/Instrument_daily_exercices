@@ -140,7 +140,12 @@ export class HistoryComponent {
 
   /** Open the catch-up modal for the given date */
   openCatchUpModal(date: Date): void {
-    this.selectedDate.set(dateToString(date));
+    const dateStr = dateToString(date);
+    const session = this.progressService.getSession(dateStr);
+    if (!session || session.exercises.length === 0) {
+      return;
+    }
+    this.selectedDate.set(dateStr);
   }
 
   /** Close the catch-up modal */
