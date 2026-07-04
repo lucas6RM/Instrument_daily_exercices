@@ -82,6 +82,70 @@ export class ProgressService {
     this.persist();
   }
 
+  /**
+   * Remplit les jours manquants entre la dernière session enregistrée et aujourd'hui.
+   * Crée des sessions avec les exercices fournis, toutes marquées comme non complétées.
+   * Limité aux 7 derniers jours et ne crée que si aucune session n'existe déjà.
+   */
+  backfillMissingSessions(todayDate: string, exercises: { exerciseId: string; exerciseName?: string }[]): void {
+    if (exercises.length === 0) {
+      return;
+    }
+
+    const sessions = this.dailySessions();
+    const sessionDates = new Set(sessions.map((s) => s.date));
+
+    // Find the last recorded session date before today
+    const sortedDates = sessions
+      .map((s) => s.date)
+      .filter((date) => date < todayDate)
+      .sort((a, b) => b.localeCompare(a));
+
+    if (sortedDates.length === 0) {
+      return;
+    }
+
+    const lastSessionDate = sortedDates[0];
+    const lastDate = new Date(lastSessionDate);
+    const today = new Date(todayDate);
+
+    // Generate backfill sessions for each missing day between last session and today
+    const backfillSessions: DailySession[] = [];
+    const currentDate = new Date(lastDate);
+    currentDate.setDate(currentDate.getDate() + 1);
+
+    while (currentDate < today) {
+      // Check if we're within the 7-day limit from today
+      const daysFromToday = Math.floor((today.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+      if (daysFromToday > 7) {
+        currentDate.setDate(currentDate.getDate() + 1);
+        continue;
+      }
+
+      const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+
+      if (!sessionDates.has(dateStr)) {
+        backfillSessions.push({
+          date: dateStr,
+          exercises: exercises.map((ex) => ({
+            exerciseId: ex.exerciseId,
+            exerciseName: ex.exerciseName ?? '',
+            completed: false,
+            actualMinutes: 0,
+            bonusMinutes: 0,
+          })),
+        });
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    if (backfillSessions.length > 0) {
+      this.dailySessions.update((sessions) => [...sessions, ...backfillSessions]);
+      this.persist();
+    }
+  }
+
   updateSession(date: string, changes: Partial<DailySession>): void {
     this.dailySessions.update((sessions) =>
       sessions.map((s) => (s.date === date ? { ...s, ...changes } : s)),

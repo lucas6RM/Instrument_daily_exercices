@@ -15,7 +15,7 @@
 
     <nav
       aria-label="Navigation entre semaines"
-      class="flex flex-row gap-2 self-end sm:self-auto w-[40%]"
+      class="flex flex-row gap-2 w-full justify-center sm:w-auto sm:justify-start"
     >
       <button
         type="button"
@@ -110,7 +110,7 @@
       <button type="button" hlmDialogTrigger class="sr-only" aria-hidden="true" tabindex="-1">
         Ouvrir le rattrapage
       </button>
-      <hlm-dialog-content *hlmDialogPortal [showCloseButton]="false" class="min-w-[50vw]">
+        <hlm-dialog-content *hlmDialogPortal [showCloseButton]="false" class="fixed inset-0 z-50 h-dvh w-screen rounded-none bg-white sm:relative sm:h-auto sm:max-w-md sm:rounded-xl sm:bg-transparent">
         <app-catch-up-modal
           [date]="selectedDate()!"
           [exercises]="exercises()"
