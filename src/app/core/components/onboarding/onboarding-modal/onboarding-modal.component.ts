@@ -14,6 +14,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-title"
+      tabindex="-1"
     >
       <!-- Skip button (top-right) -->
       <button
@@ -29,12 +30,14 @@ import { OnboardingService } from '../../../services/onboarding.service';
       </button>
 
       <!-- Slide content -->
-      <div class="flex flex-col items-center text-center max-w-md">
-        <!-- Icon -->
+      <div class="flex flex-col items-center text-center max-w-md" aria-live="polite">
+        <!-- Icon (decorative) -->
         <ng-icon
           [name]="slide().iconName"
           size="3xl"
           class="text-[#0a0a0a] mb-6"
+          aria-hidden="true"
+          role="presentation"
         />
 
         <!-- Title -->
@@ -51,7 +54,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
         </p>
 
         <!-- Pagination -->
-        <span class="text-xs text-[#737373] mb-8">
+        <span class="text-xs text-[#737373] mb-8" aria-live="polite">
           {{ currentSlide() + 1 }} / {{ totalSlides() }}
         </span>
 

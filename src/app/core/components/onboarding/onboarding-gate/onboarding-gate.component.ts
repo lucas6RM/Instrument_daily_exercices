@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { Router, RouterOutlet } from '@angular/router';
 
@@ -16,7 +16,7 @@ import { OnboardingModalComponent } from '../onboarding-modal/onboarding-modal.c
     @if (onboardingService.isCompleted()) {
       <router-outlet />
     } @else {
-      <div cdkTrapFocus>
+      <div cdkTrapFocus cdkTrapFocusAutoFocus="true">
         <app-onboarding-modal
           [currentSlide]="currentSlide()"
           (next)="onNext()"
@@ -32,6 +32,8 @@ export class OnboardingGateComponent {
   readonly onboardingService = inject(OnboardingService);
 
   readonly currentSlide = signal<number>(0);
+
+  readonly isModalOpen = computed(() => !this.onboardingService.isCompleted());
 
   private readonly totalSlides = this.onboardingService.slides.length;
 
