@@ -1,103 +1,100 @@
-<hlm-dialog-content [showCloseButton]="false">
-  <!-- Header -->
-  <div hlmDialogHeader class="pb-4">
-    <h2 hlmDialogTitle id="catch-up-modal-title">
-      Rattrapage — {{ date() }}
-    </h2>
-    <button
-      type="button"
-      hlmBtn
-      variant="ghost"
-      size="icon-sm"
-      hlmDialogClose
-      (click)="closeModal()"
-      aria-label="Fermer le modal"
-      class="absolute end-4 top-4"
-    >
-      <span class="sr-only">Fermer</span>
-      <ng-icon name="lucideX" />
-    </button>
-  </div>
+<!-- Header -->
+<div class="pb-4">
+  <h2 id="catch-up-modal-title" class="text-lg font-semibold tracking-tight">
+    Rattrapage — {{ date() }}
+  </h2>
+  <button
+    type="button"
+    hlmBtn
+    variant="ghost"
+    size="icon-sm"
+    (click)="closeModal()"
+    aria-label="Fermer le modal"
+    class="absolute end-4 top-4"
+  >
+    <span class="sr-only">Fermer</span>
+    <ng-icon name="lucideX" />
+  </button>
+</div>
 
-  <!-- Exercise list: scrollable area -->
-  <div class="max-h-[60vh] overflow-y-auto">
-    <div class="flex flex-col gap-3" role="list" aria-label="Liste des exercices">
-      @for (ex of catchUpExercises(); track ex.exerciseId) {
-        <div
-          role="listitem"
-          class="flex items-center gap-3 rounded-lg border border-border px-3 py-2 transition-colors"
-          [class]="ex.status === 'completed'
-            ? 'bg-secondary'
-            : ex.status === 'removed'
-              ? 'bg-secondary opacity-60'
-              : 'bg-card'"
-        >
-          <!-- Checkbox -->
-          <hlm-checkbox
-            [checked]="ex.completed"
-            [disabled]="true"
-            [ariaLabel]="'Statut de ' + ex.name + ': ' + (ex.completed ? 'terminé' : 'non terminé')"
-          />
+<!-- Exercise list: scrollable area -->
+<div class="max-h-[60vh] overflow-y-auto">
+  <div class="flex flex-col gap-3" role="list" aria-label="Liste des exercices">
+    @for (ex of catchUpExercises(); track ex.exerciseId) {
+      <div
+        role="listitem"
+        class="flex items-center gap-3 rounded-lg border border-border px-3 py-2 transition-colors"
+        [class]="ex.status === 'completed'
+          ? 'bg-secondary'
+          : ex.status === 'removed'
+            ? 'bg-secondary opacity-60'
+            : 'bg-card'"
+      >
+        <!-- Checkbox -->
+        <hlm-checkbox
+          [checked]="ex.completed"
+          [disabled]="true"
+          [ariaLabel]="'Statut de ' + ex.name + ': ' + (ex.completed ? 'terminé' : 'non terminé')"
+        />
 
-          <!-- Exercise info -->
-          <div class="min-w-0 flex-1">
-            <span
-              class="block truncate text-sm font-medium"
-              [class]="ex.status === 'removed'
-                ? 'text-muted-foreground'
-                : ex.completed
-                  ? 'line-through text-muted-foreground'
-                  : 'text-foreground'"
-            >
-              {{ ex.name }}
-              @if (ex.status === 'removed') {
-                <span class="font-normal text-muted-foreground"> (supprimé)</span>
-              }
-            </span>
-            <span class="block text-xs text-muted-foreground">
-              {{ ex.durationSeconds }}s
-            </span>
-          </div>
-
-          <!-- Time display -->
-          @if (ex.completed) {
-            <app-exercise-time-display
-              [actualMinutes]="ex.actualMinutes"
-              [bonusMinutes]="ex.bonusMinutes"
-              [completed]="ex.completed"
-              [playCount]="ex.playCount"
-            />
-          }
-
-          <!-- Play button -->
-          @if (ex.status !== 'removed') {
-            <button
-              type="button"
-              hlmBtn
-              variant="default"
-              size="sm"
-              (click)="playExercise(ex.exerciseId)"
-              [disabled]="activeTimerExerciseId() !== null"
-              [attr.aria-label]="'Lancer le timer pour ' + ex.name"
-            >
-              <ng-icon name="lucidePlay" size="sm" />
-              PLAY
-            </button>
-          }
+        <!-- Exercise info -->
+        <div class="min-w-0 flex-1">
+          <span
+            class="block truncate text-sm font-medium"
+            [class]="ex.status === 'removed'
+              ? 'text-muted-foreground'
+              : ex.completed
+                ? 'line-through text-muted-foreground'
+                : 'text-foreground'"
+          >
+            {{ ex.name }}
+            @if (ex.status === 'removed') {
+              <span class="font-normal text-muted-foreground"> (supprimé)</span>
+            }
+          </span>
+          <span class="block text-xs text-muted-foreground">
+            {{ ex.durationSeconds }}s
+          </span>
         </div>
-      }
-    </div>
-  </div>
 
-  <!-- Footer -->
-  <div class="flex justify-end pt-4">
-    <button
-      type="button"
-      hlmBtn
-      variant="default"
-      (click)="closeModal()"
-    >
-      Fermer
-    </button>
+        <!-- Time display -->
+        @if (ex.completed) {
+          <app-exercise-time-display
+            [actualMinutes]="ex.actualMinutes"
+            [bonusMinutes]="ex.bonusMinutes"
+            [completed]="ex.completed"
+            [playCount]="ex.playCount"
+          />
+        }
+
+        <!-- Play button -->
+        @if (ex.status !== 'removed') {
+          <button
+            type="button"
+            hlmBtn
+            variant="default"
+            size="sm"
+            (click)="playExercise(ex.exerciseId)"
+            [disabled]="activeTimerExerciseId() !== null"
+            [attr.aria-label]="'Lancer le timer pour ' + ex.name"
+          >
+            <ng-icon name="lucidePlay" size="sm" />
+            PLAY
+          </button>
+        }
+      </div>
+    }
   </div>
-</hlm-dialog-content>
+</div>
+
+<!-- Footer -->
+<div class="flex justify-end pt-4">
+  <button
+    type="button"
+    hlmBtn
+    variant="default"
+    (click)="closeModal()"
+  >
+    Fermer
+  </button>
+</div>

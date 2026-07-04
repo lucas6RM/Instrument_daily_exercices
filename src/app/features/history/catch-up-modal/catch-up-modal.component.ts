@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
-import { HlmDialogClose, HlmDialogContent, HlmDialogHeader, HlmDialogTitle } from '@spartan-ng/helm/dialog';
 
 import { DailySession, Exercise } from '../../../core/models';
 import { ProgressService } from '../../progress/progress.service';
@@ -29,10 +28,6 @@ export interface CatchUpExercise {
     ExerciseTimeDisplayComponent,
     HlmButton,
     HlmCheckbox,
-    HlmDialogClose,
-    HlmDialogContent,
-    HlmDialogHeader,
-    HlmDialogTitle,
     NgIcon,
   ],
   templateUrl: './catch-up-modal.component.html',

@@ -1,10 +1,8 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
-import { BrnDialogRef } from '@spartan-ng/brain/dialog';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
-import { HlmDialogClose, HlmDialogContent, HlmDialogHeader, HlmDialogTitle } from '@spartan-ng/helm/dialog';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucidePlay, lucideX } from '@ng-icons/lucide';
 
@@ -43,12 +41,6 @@ describe('CatchUpModalComponent', () => {
       imports: [CatchUpModalComponent],
       providers: [
         {
-          provide: BrnDialogRef,
-          useValue: {
-            state: computed(() => 'closed'),
-          },
-        },
-        {
           provide: ProgressService,
           useValue: {
             getOrCreateSession: vi.fn(() => ({ date: '', exercises: [] })),
@@ -73,10 +65,6 @@ describe('CatchUpModalComponent', () => {
           MockExerciseTimeDisplayComponent,
           HlmButton,
           HlmCheckbox,
-          HlmDialogClose,
-          HlmDialogContent,
-          HlmDialogHeader,
-          HlmDialogTitle,
           NgIcon,
         ],
         providers: [provideIcons({ lucidePlay, lucideX })],
@@ -174,11 +162,11 @@ describe('CatchUpModalComponent', () => {
       expect(emitted).toBe(true);
     });
 
-    it('should have hlmDialogClose directive on the close button', async () => {
+    it('should have a close button with aria-label', async () => {
       const fixture = createFixture();
       await fixture.whenStable();
 
-      const closeBtn = fixture.nativeElement.querySelector('[data-slot="dialog-close"]');
+      const closeBtn = fixture.nativeElement.querySelector('[aria-label="Fermer le modal"]');
       expect(closeBtn).not.toBeNull();
     });
 
@@ -523,30 +511,6 @@ describe('CatchUpModalComponent', () => {
   /* ------------------------------------------------------------------ */
 
   describe('accessibilité', () => {
-    it('should have hlm-dialog-content wrapping the modal', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-
-      const dialogContent = fixture.nativeElement.querySelector('[data-slot="dialog-content"]');
-      expect(dialogContent).not.toBeNull();
-    });
-
-    it('should have hlm-dialog-header', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-
-      const dialogHeader = fixture.nativeElement.querySelector('[data-slot="dialog-header"]');
-      expect(dialogHeader).not.toBeNull();
-    });
-
-    it('should have hlm-dialog-title', async () => {
-      const fixture = createFixture();
-      await fixture.whenStable();
-
-      const dialogTitle = fixture.nativeElement.querySelector('[data-slot="dialog-title"]');
-      expect(dialogTitle).not.toBeNull();
-    });
-
     it('should have the title element with the correct id', async () => {
       const fixture = createFixture();
       await fixture.whenStable();
@@ -556,11 +520,9 @@ describe('CatchUpModalComponent', () => {
       await fixture.whenStable();
       fixture.detectChanges();
 
-      // Check for the dialog title via data-slot
-      const titleSlot = fixture.nativeElement.querySelector('[data-slot="dialog-title"]');
-      expect(titleSlot).not.toBeNull();
-      // The title text should contain the modal title
-      expect(titleSlot?.textContent).toContain('Rattrapage');
+      const titleElement = fixture.nativeElement.querySelector('#catch-up-modal-title');
+      expect(titleElement).not.toBeNull();
+      expect(titleElement?.textContent).toContain('Rattrapage');
     });
 
     it('should have aria-label on the close button', async () => {

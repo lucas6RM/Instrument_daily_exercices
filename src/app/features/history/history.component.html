@@ -68,9 +68,9 @@
             role="button"
             tabindex="0"
             class="w-full sm:flex-1 sm:min-w-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl"
-            (click)="openCatchUpModal(day.date)"
-            (keydown.enter)="openCatchUpModal(day.date)"
-            (keydown.space)="onSpaceKey($event, day.date)"
+            (click)="hasExercises(day.date) ? openCatchUpModal(day.date) : null"
+            (keydown.enter)="hasExercises(day.date) ? openCatchUpModal(day.date) : null"
+            (keydown.space)="hasExercises(day.date) ? onSpaceKey($event, day.date) : null"
             [attr.aria-label]="
               'Ouvrir le rattrapage pour le ' +
               day.date.getDate() +
@@ -104,12 +104,23 @@
 
   <!-- Catch-up modal -->
   @if (selectedDate()) {
-    <hlm-dialog #dialog [state]="'open'">
-      <app-catch-up-modal
-        [date]="selectedDate()!"
-        [exercises]="exercises()"
-        (closed)="onModalClosed(); dialog.close()"
-      />
+    <hlm-dialog [state]="'open'">
+      <button
+        type="button"
+        hlmDialogTrigger
+        class="sr-only"
+        aria-hidden="true"
+        tabindex="-1"
+      >
+        Ouvrir le rattrapage
+      </button>
+      <hlm-dialog-content *hlmDialogPortal [showCloseButton]="false">
+        <app-catch-up-modal
+          [date]="selectedDate()!"
+          [exercises]="exercises()"
+          (closed)="onModalClosed()"
+        />
+      </hlm-dialog-content>
     </hlm-dialog>
   }
 </main>

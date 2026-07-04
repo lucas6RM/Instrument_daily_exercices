@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmDialog } from '@spartan-ng/helm/dialog';
+import { HlmDialog, HlmDialogContent, HlmDialogPortal, HlmDialogTrigger } from '@spartan-ng/helm/dialog';
 
 import { ExerciseService } from '../exercise/exercise.service';
 import { ProgressService } from '../progress/progress.service';
@@ -41,7 +41,17 @@ function formatDateRange(startDate: Date): string {
 
 @Component({
   selector: 'app-history',
-  imports: [WeekDayCardComponent, WeeklySummaryComponent, CatchUpModalComponent, HlmButton, HlmDialog, NgIcon],
+  imports: [
+    WeekDayCardComponent,
+    WeeklySummaryComponent,
+    CatchUpModalComponent,
+    HlmButton,
+    HlmDialog,
+    HlmDialogContent,
+    HlmDialogTrigger,
+    HlmDialogPortal,
+    NgIcon,
+  ],
   templateUrl: './history.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -64,6 +74,17 @@ export class HistoryComponent {
     const todayMonday = getMondayOfCurrentWeek();
     return current.getTime() >= todayMonday.getTime();
   });
+
+  hasExercises(day: Date): boolean {
+    const dayStats = this.weeklyStats().days.find((d) => d.date.getTime() === day.getTime());
+    if (!dayStats) return false;
+    for (const session of dayStats.sessions) {
+      for (const ex of session.exercises) {
+        if (!ex.completed) return true;
+      }
+    }
+    return false;
+  }
 
   // Signal tracking the date selected for the catch-up modal
   readonly selectedDate = signal<string | null>(null);
