@@ -107,11 +107,11 @@ lucideBarChart3,
 - [x] Tâche 5 : Enregistrer les icônes Lucide manquantes dans `app.config.ts`
 - [x] Tâche 6 : Styler avec Spartan/ui et le design system monochrome (DESIGN.md)
 - [x] Tâche 7 : Vérifier accessibilité WCAG AA (focus trap, clavier, contrastes, aria)
-- [ ] Tâche 8 : Tests unitaires (service, gate, modal, navigation slides)
+- [x] Tâche 8 : Tests unitaires (service, gate, modal, navigation slides)
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Tâche 7
+- Tâche 8
 
 ### Compteur de rejets (tâche actuelle) :
 - 0 / 5
