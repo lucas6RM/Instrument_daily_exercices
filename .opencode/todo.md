@@ -1,35 +1,18 @@
-# Fix B2 — Regressions post-F10 : Timer & Modal Rattrapage
+# Feature F11 : Onboarding Premier Usage
 
-## Description du Bug
+## Spécification Technique Globale
+Onboarding modal affiché uniquement lors de la première visite (localStorage vide). 4 slides explicatives du flow de l'app. À la fin, l'utilisateur est redirigé vers `/routine` pour configurer sa routine. Implémentation via un composant gate dans `app.html` et un service `OnboardingService`.
 
-Trois regressions identifiées après la migration Spartan/ui (F10) :
+> 📋 Décisions architecturales : voir [`docs/adr/`](docs/adr/)
+> 📋 Spécification du besoin global : voir [`docs/Specification_du_besoin.md`](docs/Specification_du_besoin.md)
+> 📋 Dépend : F1 (StorageService), F10 (Spartan/ui)
 
-1. **Timer — Pause sans effet** : lors d'un pause, le `durationMs` n'est pas préservé. Après un cycle pause/resume, `reset()` ne peut plus remettre le timer à sa valeur initiale car `durationMs` contient le temps restant.
-2. **Timer — Réinitialiser ferme l'overlay** : les boutons "Réinitialiser" et "Fermer" (X) appellent tous deux `reset()`, qui remet tous les signals à zéro, faisant disparaître l'overlay au lieu de simplement remettre le compteur à sa durée initiale.
-3. **Historique — Modal rattrapage invisible** : cliquer sur un jour dans la semaine en cours ne fait plus apparaître la modal de rattrapage. Le `<hlm-dialog>` Spartan est rendu dans le DOM mais jamais ouvert car il manque l'input `[state]`.
+## Skills à Charger
 
-## Reproduction
+Les agents qui exécutent cette feature DOIVENT charger ces skills avant de commencer :
 
-### Timer
-1. Aller sur la page Dashboard
-2. Appuyer sur "Play" pour un exercice
-3. Appuyer sur "Pause" → le timer se pause correctement
-4. Appuyer sur "Réinitialiser" → l'overlay se ferme au lieu de remettre le compteur à la durée initiale
-
-### Modal Rattrapage
-1. Aller sur la page Historique
-2. Cliquer sur un jour de la semaine en cours
-3. La modal de rattrapage ne s'affiche pas
-
-## Causes Identifiées
-
-### Timer
-- `timer.service.ts:97-105` — `reset()` remet `isRunning`, `durationMs`, `pausedRemainingMs` à 0/null → `visible()` retourne `false`
-- `timer.service.ts:88` — `resume()` écrase `durationMs` avec le temps restant, perdant la durée originale
-- `timer-overlay.component.html:61-81` — les boutons "Réinitialiser" et "Fermer" partagent la même action `reset()`
-
-### Modal
-- `history.component.html:107` — `<hlm-dialog>` sans input `[state]` → `BrnDialog` ne déclenche jamais son `open()` interne
+- **`angular-developer`** — standards Angular, signals, standalone components, accessibilité
+- **`spartan`** — composants Spartan/ui (dialog, button, icon)
 
 ## Standards du Projet & Commandes
 - Build : `pnpm run build`
@@ -37,60 +20,105 @@ Trois regressions identifiées après la migration Spartan/ui (F10) :
 - Lint : `pnpm run lint`
 - Serve : `pnpm run serve`
 
-## Corrections
+## Décisions de Design
 
-### Tâche 1 — `TimerService` : préserver la durée originale et séparer reset / close
+| Décision | Choix |
+|----------|-------|
+| Détection première visite | Clé `ONBOARDING_COMPLETED` dédiée dans `STORAGE_KEYS` |
+| Format | Modal overlay plein écran centré, pagination, bouton skip |
+| Déclenchement | Au chargement de l'app via composant gate dans `app.html` |
+| Visuels | Titre + texte descriptif + icône Lucide |
+| Fin onboarding | Bouton "Commencer" → set flag + redirect `/routine` |
+| Skip | Bouton "Passer" en haut à droite + touche `Échap` |
+| Focus trap | Oui — flèches gauche/droite = navigation slides, `Échap` = skip, `Entrée` = action bouton |
+| Placement | `src/app/core/components/onboarding/` |
+| State | `OnboardingService` avec signals + persistance via `StorageService` |
 
-**Fichier** : `src/app/features/timer/timer.service.ts`
+## Modèle de Domaine
 
-1. Ajouter le signal `originalDurationMs = signal(0)` pour conserver la durée initiale
-2. Dans `start()`, setter `originalDurationMs.set(durationMs)`
-3. Renommer `reset()` en `close()` — ferme l'overlay (reset total)
-4. Ajouter `resetToOriginal()` — remet `remainingMs` à `originalDurationMs()` sans fermer l'overlay :
-   - `isRunning.set(false)`
-   - `endTime.set(Date.now() + originalDurationMs())`
-   - `durationMs.set(originalDurationMs())`
-   - `pausedRemainingMs.set(originalDurationMs())`
-   - Reconfigurer le `setTimeout` d'expiration
-5. Dans `close()`, aussi reset `originalDurationMs.set(0)`
-
-### Tâche 2 — `TimerOverlayComponent` : wire les boutons correctement
-
-**Fichier** : `src/app/features/timer/timer-overlay.component.html`
-
-1. Bouton "Réinitialiser" (ligne 61-70) : changer `(click)="reset()"` → `(click)="resetToOriginal()"`
-2. Bouton "Fermer" (ligne 72-81) : changer `(click)="reset()"` → `(click)="close()"`
-
-**Fichier** : `src/app/features/timer/timer-overlay.component.ts`
-
-1. Exposer `resetToOriginal` et `close` depuis `TimerService` à la place du `reset` actuel
-
-### Tâche 3 — `HistoryComponent` : ouvrir le dialogue Spartan
-
-**Fichier** : `src/app/features/history/history.component.html`
-
-1. Ligne 107 : ajouter `[state]="'open'"` sur `<hlm-dialog #dialog>`
-
-```html
-<hlm-dialog #dialog [state]="'open'">
+```typescript
+interface OnboardingSlide {
+  title: string;
+  description: string;
+  iconName: string; // nom Lucide
+}
 ```
 
-Quand `selectedDate()` est non-null, le dialogue se rend avec `state='open'`, déclenchant l'ouverture via l'effect de `BrnDialog`. Quand `onModalClosed()` set `selectedDate(null)`, le `@if` démonte le dialogue.
+## Slides
+
+| Slide | Titre | Description | Icône |
+|-------|-------|-------------|-------|
+| 0 | Bienvenue | Organisez votre pratique musicale quotidienne en quelques clics. Voici comment ça marche. | `lucideMusic` |
+| 1 | Configurez votre routine | Définissez vos exercices avec nom, durée et un lien YouTube pour votre backing track. | `lucideListTodo` |
+| 2 | Jouez vos exercices | Chaque jour, accédez à votre séance pour timer et cocher vos exercices au fur et à mesure. | `lucidePlay` |
+| 3 | Suivez votre progression | Consultez votre historique hebdomadaire et rattrapez les jours manqués. | `lucideBarChart3` |
+
+## Services Attendus
+
+### `onboarding.service.ts`
+- `isCompleted()` — signal booléen, lit `STORAGE_KEYS.ONBOARDING_COMPLETED` depuis `StorageService`
+- `complete()` — set `ONBOARDING_COMPLETED = true` dans le localStorage
+- `slides` — tableau constant des 4 slides
+
+## Composants Attendus
+
+### `OnboardingGateComponent`
+- Placement : `app.html`, englobe `<router-outlet>`
+- Si `isCompleted()` → affiche `<router-outlet>`
+- Sinon → affiche `OnboardingModalComponent`
+- Focus trap sur le modal
+- Navigation clavier : `Flèche droite` = suivant, `Flèche gauche` = précédent, `Échap` = skip
+
+### `OnboardingModalComponent`
+- Overlay plein écran, fond blanc `#ffffff`
+- Slide courante affichée avec icône Lucide, titre et description
+- Pagination : numéros de slide (1/4, 2/4, etc.)
+- Boutons :
+  - "Passer" (top-right, `hlmBtn` variant `ghost`) → skip
+  - "Précédent" (slide > 0, `hlmBtn` variant `outline`)
+  - "Suivant" (slide < 3, `hlmBtn` variant `default`)
+  - "Commencer" (slide = 3, `hlmBtn` variant `default`) → complete + redirect `/routine`
+- Icônes Lucide à enregistrer : `lucideMusic`, `lucideListTodo`, `lucidePlay`, `lucideBarChart3`
+
+## Icônes Lucide à Ajouter
+
+```typescript
+// Dans app.config.ts, provideIcons()
+lucideMusic,
+lucideListTodo,
+lucidePlay,      // déjà présent
+lucideBarChart3,
+```
+
+## Modifications Attendues
+
+1. `storage-keys.ts` — ajouter `ONBOARDING_COMPLETED: 'instrument_daily_onboarding_completed'`
+2. `app.config.ts` — ajouter les nouvelles icônes Lucide
+3. `app.html` — wrapper `<router-outlet>` avec `<app-onboarding-gate>`
+4. `onboarding.service.ts` — nouveau service
+5. `onboarding-gate.component.ts` — nouveau composant
+6. `onboarding-modal.component.ts` — nouveau composant
 
 ## Tableau d'Avancement (La Source de Vérité)
-- [x] Tâche 1 : TimerService — `originalDurationMs`, `resetToOriginal()`, `close()`
-- [x] Tâche 2 : TimerOverlayComponent — wire boutons réinitialiser / fermer
-- [x] Tâche 3 : HistoryComponent — `[state]="'open'"` sur `hlm-dialog`
+- [ ] Tâche 1 : Ajouter `ONBOARDING_COMPLETED` à `STORAGE_KEYS` et créer `OnboardingService`
+- [ ] Tâche 2 : Créer `OnboardingModalComponent` avec les 4 slides, pagination et boutons
+- [ ] Tâche 3 : Créer `OnboardingGateComponent` avec focus trap et navigation clavier
+- [ ] Tâche 4 : Intégrer le gate dans `app.html` autour de `<router-outlet>`
+- [ ] Tâche 5 : Enregistrer les icônes Lucide manquantes dans `app.config.ts`
+- [ ] Tâche 6 : Styler avec Spartan/ui et le design system monochrome (DESIGN.md)
+- [ ] Tâche 7 : Vérifier accessibilité WCAG AA (focus trap, clavier, contrastes, aria)
+- [ ] Tâche 8 : Tests unitaires (service, gate, modal, navigation slides)
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Aucune
+- Tâche 1
 
 ### Compteur de rejets (tâche actuelle) :
-- 0 / 5
+- 1 / 5
 
 ### Dernier retour de Review :
-- Aucun.
+- `isCompleted` n'est PAS un signal. La spec demande "signal booléen". Actuellement exposé comme `readonly isCompleted = (): boolean => this._isCompleted()` (méthode). Il faut exposer un `computed()` ou un `signal` en lecture seule pour que l'OnboardingGateComponent réagisse réactivement quand `complete()` est appelé (surtout avec OnPush).
+- L'initialisation dans le `constructor()` n'est pas idiomatique Angular avec les signals. Remplacer par un `effect()` pour la lecture initiale depuis le StorageService.
 
 ### Blocage Actuel :
 - Aucun.
