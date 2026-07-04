@@ -9,6 +9,8 @@ import {
   lucideChevronRight,
   lucideCircleAlert,
   lucideClock,
+  lucideListTodo,
+  lucideMusic,
   lucidePen,
   lucidePause,
   lucidePlay,
@@ -46,6 +48,9 @@ export const appConfig: ApplicationConfig = {
       lucideYoutube,
       lucideBarChart3,
       lucideClock,
+      // Onboarding
+      lucideMusic,
+      lucideListTodo,
     }),
   ],
 };
