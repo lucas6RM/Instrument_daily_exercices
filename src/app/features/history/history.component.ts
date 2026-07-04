@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ApplicationRef, ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialog, HlmDialogContent, HlmDialogPortal, HlmDialogTrigger } from '@spartan-ng/helm/dialog';
 
+import { DailySession } from '../../core/models';
 import { ExerciseService } from '../exercise/exercise.service';
 import { ProgressService } from '../progress/progress.service';
-import { CatchUpModalComponent } from './catch-up-modal/catch-up-modal.component';
+import { TimerService } from '../timer/timer.service';
+import { CatchUpModalComponent, PlayExerciseEvent } from './catch-up-modal/catch-up-modal.component';
 import { WeekDayCardComponent } from './week-day-card/week-day-card.component';
 import { WeeklySummaryComponent } from './weekly-summary/weekly-summary.component';
 
@@ -58,6 +61,8 @@ function formatDateRange(startDate: Date): string {
 export class HistoryComponent {
   private readonly progressService = inject(ProgressService);
   private readonly exerciseService = inject(ExerciseService);
+  private readonly timerService = inject(TimerService);
+  private readonly appRef = inject(ApplicationRef);
 
   readonly currentWeekStart = signal<Date>(getMondayOfCurrentWeek());
 
@@ -75,19 +80,25 @@ export class HistoryComponent {
     return current.getTime() >= todayMonday.getTime();
   });
 
-  hasExercises(day: Date): boolean {
-    const dayStats = this.weeklyStats().days.find((d) => d.date.getTime() === day.getTime());
-    if (!dayStats) return false;
-    for (const session of dayStats.sessions) {
-      for (const ex of session.exercises) {
-        if (!ex.completed) return true;
-      }
-    }
-    return false;
+  hasExercises(): boolean {
+    return this.exercises().length > 0;
   }
 
   // Signal tracking the date selected for the catch-up modal
   readonly selectedDate = signal<string | null>(null);
+
+  // Track the date for which the timer was started (to complete exercise on the right date)
+  private readonly timerDate = signal<string | null>(null);
+
+  constructor() {
+    this.timerService.expired$
+      .pipe(takeUntilDestroyed())
+      .subscribe((event) => {
+        this.onTimerComplete(event.exerciseId);
+        this.timerService.close();
+        this.appRef.tick();
+      });
+  }
 
   previousWeek(): void {
     this.currentWeekStart.update((date) => {
@@ -135,6 +146,64 @@ export class HistoryComponent {
   /** Close the catch-up modal */
   onModalClosed(): void {
     this.selectedDate.set(null);
+  }
+
+  /** Handle play exercise from catch-up modal: close modal and start timer */
+  onPlayExercise(event: PlayExerciseEvent): void {
+    this.timerDate.set(this.selectedDate());
+    this.selectedDate.set(null);
+    this.timerService.start(event.exerciseId, event.durationSeconds * 1000);
+  }
+
+  /** Handle timer expiration: mark exercise as completed or add bonus minutes */
+  private onTimerComplete(exerciseId: string): void {
+    const date = this.timerDate();
+    if (!date) {
+      return;
+    }
+
+    const exercise = this.exercises().find((ex) => ex.id === exerciseId);
+    const current = this.progressService.getSession(date);
+
+    if (!exercise || !current) {
+      this.timerDate.set(null);
+      return;
+    }
+
+    const hasExercise = current.exercises.some((se) => se.exerciseId === exerciseId);
+    let updatedExercises: DailySession['exercises'];
+
+    if (hasExercise) {
+      const sessionExercise = current.exercises.find((se) => se.exerciseId === exerciseId)!;
+      if (sessionExercise.completed) {
+        updatedExercises = current.exercises.map((se) =>
+          se.exerciseId === exerciseId
+            ? { ...se, bonusMinutes: se.bonusMinutes + exercise.durationSeconds }
+            : se,
+        );
+      } else {
+        updatedExercises = current.exercises.map((se) =>
+          se.exerciseId === exerciseId
+            ? { ...se, completed: true, actualMinutes: exercise.durationSeconds }
+            : se,
+        );
+      }
+    } else {
+      updatedExercises = [
+        ...current.exercises,
+        {
+          exerciseId,
+          exerciseName: exercise.name,
+          completed: true,
+          actualMinutes: exercise.durationSeconds,
+          bonusMinutes: 0,
+        },
+      ];
+    }
+
+    const updated = { ...current, exercises: updatedExercises };
+    this.progressService.addSession(updated);
+    this.timerDate.set(null);
   }
 
   /** Prevent page scroll on Space keypress for clickable elements */

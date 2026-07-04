@@ -74,8 +74,7 @@
             hlmBtn
             variant="default"
             size="sm"
-            (click)="playExercise(ex.exerciseId)"
-            [disabled]="activeTimerExerciseId() !== null"
+            (click)="onPlay(ex.exerciseId)"
             [attr.aria-label]="'Lancer le timer pour ' + ex.name"
           >
             <ng-icon name="lucidePlay" size="sm" />

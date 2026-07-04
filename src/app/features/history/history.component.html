@@ -61,16 +61,16 @@
 
   <!-- Week days grid -->
   <section aria-label="Statistiques par jour de la semaine" class="mb-10">
-    <div class="flex flex-col sm:flex-row gap-4">
+    <div class="p-10 flex flex-col sm:flex-row gap-4 overflow-x-scroll sm:scroll-smooth">
       @for (day of weeklyStats().days; track $index) {
         @if (isInCurrentWeek(day.date)) {
           <div
             role="button"
             tabindex="0"
-            class="w-full sm:flex-1 sm:min-w-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl"
-            (click)="hasExercises(day.date) ? openCatchUpModal(day.date) : null"
-            (keydown.enter)="hasExercises(day.date) ? openCatchUpModal(day.date) : null"
-            (keydown.space)="hasExercises(day.date) ? onSpaceKey($event, day.date) : null"
+            class="w-full sm:min-w-[170px] cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl"
+            (click)="hasExercises() ? openCatchUpModal(day.date) : null"
+            (keydown.enter)="hasExercises() ? openCatchUpModal(day.date) : null"
+            (keydown.space)="hasExercises() ? onSpaceKey($event, day.date) : null"
             [attr.aria-label]="
               'Ouvrir le rattrapage pour le ' +
               day.date.getDate() +
@@ -87,11 +87,13 @@
             />
           </div>
         } @else {
-          <app-week-day-card
-            [dayStats]="day"
-            [scheduledExercises]="isToday(day.date) ? exercises() : []"
-            [isToday]="isToday(day.date)"
-          />
+          <div class="w-full sm:min-w-[170px]">
+            <app-week-day-card
+              [dayStats]="day"
+              [scheduledExercises]="isToday(day.date) ? exercises() : []"
+              [isToday]="isToday(day.date)"
+            />
+          </div>
         }
       }
     </div>
@@ -105,20 +107,15 @@
   <!-- Catch-up modal -->
   @if (selectedDate()) {
     <hlm-dialog [state]="'open'">
-      <button
-        type="button"
-        hlmDialogTrigger
-        class="sr-only"
-        aria-hidden="true"
-        tabindex="-1"
-      >
+      <button type="button" hlmDialogTrigger class="sr-only" aria-hidden="true" tabindex="-1">
         Ouvrir le rattrapage
       </button>
-      <hlm-dialog-content *hlmDialogPortal [showCloseButton]="false">
+      <hlm-dialog-content *hlmDialogPortal [showCloseButton]="false" class="min-w-[50vw]">
         <app-catch-up-modal
           [date]="selectedDate()!"
           [exercises]="exercises()"
           (closed)="onModalClosed()"
+          (playExercise)="onPlayExercise($event)"
         />
       </hlm-dialog-content>
     </hlm-dialog>
