@@ -103,7 +103,7 @@ lucideBarChart3,
 - [x] Tâche 1 : Ajouter `ONBOARDING_COMPLETED` à `STORAGE_KEYS` et créer `OnboardingService`
 - [x] Tâche 2 : Créer `OnboardingModalComponent` avec les 4 slides, pagination et boutons
 - [x] Tâche 3 : Créer `OnboardingGateComponent` avec focus trap et navigation clavier
-- [ ] Tâche 4 : Intégrer le gate dans `app.html` autour de `<router-outlet>`
+- [x] Tâche 4 : Intégrer le gate dans `app.html` autour de `<router-outlet>`
 - [ ] Tâche 5 : Enregistrer les icônes Lucide manquantes dans `app.config.ts`
 - [ ] Tâche 6 : Styler avec Spartan/ui et le design system monochrome (DESIGN.md)
 - [ ] Tâche 7 : Vérifier accessibilité WCAG AA (focus trap, clavier, contrastes, aria)
@@ -111,7 +111,7 @@ lucideBarChart3,
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Tâche 3
+- Tâche 4
 
 ### Compteur de rejets (tâche actuelle) :
 - 0 / 5
