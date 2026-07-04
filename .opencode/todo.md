@@ -100,7 +100,7 @@ lucideBarChart3,
 6. `onboarding-modal.component.ts` — nouveau composant
 
 ## Tableau d'Avancement (La Source de Vérité)
-- [ ] Tâche 1 : Ajouter `ONBOARDING_COMPLETED` à `STORAGE_KEYS` et créer `OnboardingService`
+- [x] Tâche 1 : Ajouter `ONBOARDING_COMPLETED` à `STORAGE_KEYS` et créer `OnboardingService`
 - [ ] Tâche 2 : Créer `OnboardingModalComponent` avec les 4 slides, pagination et boutons
 - [ ] Tâche 3 : Créer `OnboardingGateComponent` avec focus trap et navigation clavier
 - [ ] Tâche 4 : Intégrer le gate dans `app.html` autour de `<router-outlet>`
@@ -111,14 +111,13 @@ lucideBarChart3,
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
-- Tâche 1
+- Tâche 2
 
 ### Compteur de rejets (tâche actuelle) :
-- 1 / 5
+- 0 / 5
 
 ### Dernier retour de Review :
-- `isCompleted` n'est PAS un signal. La spec demande "signal booléen". Actuellement exposé comme `readonly isCompleted = (): boolean => this._isCompleted()` (méthode). Il faut exposer un `computed()` ou un `signal` en lecture seule pour que l'OnboardingGateComponent réagisse réactivement quand `complete()` est appelé (surtout avec OnPush).
-- L'initialisation dans le `constructor()` n'est pas idiomatique Angular avec les signals. Remplacer par un `effect()` pour la lecture initiale depuis le StorageService.
+- Aucun.
 
 ### Blocage Actuel :
 - Aucun.
