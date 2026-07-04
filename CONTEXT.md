@@ -38,6 +38,13 @@ L'historique cumulées des Séances Quotidiennes du Musicien.
 ### Série (Streak)
 Le nombre consécutif de jours avec au moins une Séance, compté à rebours depuis aujourd'hui.
 La Série est brisée dès qu'un jour intermédiaire est manquant.
+Une Séance de Backfill compte pour la Série mais pénalise le taux de complétion.
+
+### Séance de Backfill
+Une Séance Quotidienne créée automatiquement pour combler un jour manqué entre la dernière
+Séance enregistrée et aujourd'hui. Elle reprend les exercices de la session d'aujourd'hui
+tous marqués comme non complétés. Seule les 7 derniers jours sont concernés.
+_Avoid_: Rattrapage, session fantôme, session automatique
 
 ### Statistiques Hebdomadaires
 Le résumé de la pratique sur une fenêtre de 7 jours : minutes totales, minutes par Exercice,

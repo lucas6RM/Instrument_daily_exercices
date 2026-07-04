@@ -70,7 +70,6 @@ export class DashboardComponent implements OnInit {
   readonly totalCount = computed(() => this.exercisesWithProgress().length);
 
   ngOnInit(): void {
-    // On s'assure simplement qu'une session existe dans le store global pour aujourd'hui
     const sessionExists = this.progressService.getSession(this.today);
 
     if (!sessionExists) {
@@ -86,6 +85,11 @@ export class DashboardComponent implements OnInit {
         })),
       };
       this.progressService.addSession(newSession);
+
+      // Backfill des jours manquants si la session n'est pas vide
+      if (exercises.length > 0) {
+        this.progressService.backfillMissingSessions(this.today, newSession.exercises);
+      }
     }
   }
 
