@@ -10,7 +10,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-white p-6"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-[#ffffff] p-6"
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-title"
@@ -34,7 +34,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
         <ng-icon
           [name]="slide().iconName"
           size="3xl"
-          class="text-foreground mb-8"
+          class="text-[#0a0a0a] mb-6"
         />
 
         <!-- Title -->
@@ -46,17 +46,17 @@ import { OnboardingService } from '../../../services/onboarding.service';
         </h2>
 
         <!-- Description -->
-        <p class="text-base text-[#737373] mb-10">
+        <p class="text-base text-[#737373] leading-relaxed mb-12">
           {{ slide().description }}
         </p>
 
         <!-- Pagination -->
-        <span class="text-sm text-[#737373] mb-8">
+        <span class="text-xs text-[#737373] mb-8">
           {{ currentSlide() + 1 }} / {{ totalSlides() }}
         </span>
 
         <!-- Navigation buttons -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           @if (currentSlide() > 0) {
             <button
               type="button"
