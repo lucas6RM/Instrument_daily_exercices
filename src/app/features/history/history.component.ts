@@ -157,7 +157,7 @@ export class HistoryComponent {
   onPlayExercise(event: PlayExerciseEvent): void {
     this.timerDate.set(this.selectedDate());
     this.selectedDate.set(null);
-    this.timerService.start(event.exerciseId, event.durationSeconds * 1000);
+    this.timerService.start(event.exerciseId, event.durationMinutes * 60000);
   }
 
   /** Handle timer expiration: mark exercise as completed or add bonus minutes */
@@ -183,13 +183,13 @@ export class HistoryComponent {
       if (sessionExercise.completed) {
         updatedExercises = current.exercises.map((se) =>
           se.exerciseId === exerciseId
-            ? { ...se, bonusMinutes: se.bonusMinutes + exercise.durationSeconds }
+            ? { ...se, bonusMinutes: se.bonusMinutes + exercise.durationMinutes }
             : se,
         );
       } else {
         updatedExercises = current.exercises.map((se) =>
           se.exerciseId === exerciseId
-            ? { ...se, completed: true, actualMinutes: exercise.durationSeconds }
+            ? { ...se, completed: true, actualMinutes: exercise.durationMinutes }
             : se,
         );
       }
@@ -200,7 +200,7 @@ export class HistoryComponent {
           exerciseId,
           exerciseName: exercise.name,
           completed: true,
-          actualMinutes: exercise.durationSeconds,
+          actualMinutes: exercise.durationMinutes,
           bonusMinutes: 0,
         },
       ];

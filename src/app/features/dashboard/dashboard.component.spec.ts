@@ -70,8 +70,8 @@ describe('DashboardComponent', () => {
     it('should create a session with exerciseName snapshot when no session exists', () => {
       // Set up exercises in the exercise service
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
-        { id: 'e2', name: 'Gammes', durationSeconds: 60, order: 2 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+        { id: 'e2', name: 'Gammes', durationMinutes: 60, order: 2 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -100,8 +100,8 @@ describe('DashboardComponent', () => {
 
       // Even if exercises have changed, the session should NOT be recreated
       exerciseService.setExercises([
-        { id: 'e1', name: 'NouveauNom', durationSeconds: 30, order: 1 },
-        { id: 'e2', name: 'NouvelExercice', durationSeconds: 60, order: 2 },
+        { id: 'e1', name: 'NouveauNom', durationMinutes: 30, order: 1 },
+        { id: 'e2', name: 'NouvelExercice', durationMinutes: 60, order: 2 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -131,7 +131,7 @@ describe('DashboardComponent', () => {
   describe('onTimerComplete', () => {
     it('should mark exercise as completed with exerciseName from exercise service', () => {
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -161,8 +161,8 @@ describe('DashboardComponent', () => {
       });
 
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
-        { id: 'e2', name: 'Gammes', durationSeconds: 60, order: 2 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+        { id: 'e2', name: 'Gammes', durationMinutes: 60, order: 2 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -203,7 +203,7 @@ describe('DashboardComponent', () => {
       progressService.setProgressState({ dailySessions: [] });
 
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -218,8 +218,8 @@ describe('DashboardComponent', () => {
   describe('exercisesWithProgress', () => {
     it('should combine exercises with session progress', () => {
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
-        { id: 'e2', name: 'Gammes', durationSeconds: 60, order: 2 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+        { id: 'e2', name: 'Gammes', durationMinutes: 60, order: 2 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -239,9 +239,9 @@ describe('DashboardComponent', () => {
   describe('completedCount and totalCount', () => {
     it('should return correct counts', () => {
       exerciseService.setExercises([
-        { id: 'e1', name: 'A', durationSeconds: 30, order: 1 },
-        { id: 'e2', name: 'B', durationSeconds: 30, order: 2 },
-        { id: 'e3', name: 'C', durationSeconds: 30, order: 3 },
+        { id: 'e1', name: 'A', durationMinutes: 30, order: 1 },
+        { id: 'e2', name: 'B', durationMinutes: 30, order: 2 },
+        { id: 'e3', name: 'C', durationMinutes: 30, order: 3 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -260,7 +260,7 @@ describe('DashboardComponent', () => {
   describe('onPlayExercise', () => {
     it('should start the timer with the correct exercise', () => {
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -289,8 +289,8 @@ describe('DashboardComponent', () => {
   describe('replay (F8) - bonusMinutes increment', () => {
     it('should increment bonusMinutes when replaying a completed exercise', () => {
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
-        { id: 'e2', name: 'Gammes', durationSeconds: 60, order: 2 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+        { id: 'e2', name: 'Gammes', durationMinutes: 60, order: 2 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -313,7 +313,7 @@ describe('DashboardComponent', () => {
       const replayedEx = session!.exercises.find((e) => e.exerciseId === 'e1')!;
       expect(replayedEx.completed).toBe(true);
       expect(replayedEx.actualMinutes).toBe(30); // unchanged
-      expect(replayedEx.bonusMinutes).toBe(30); // incremented by durationSeconds
+      expect(replayedEx.bonusMinutes).toBe(30); // incremented by durationMinutes
 
       // Second replay
       component.onTimerComplete('e1');
@@ -325,7 +325,7 @@ describe('DashboardComponent', () => {
 
     it('should persist the session with updated bonusMinutes in ProgressService', () => {
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 45, order: 1 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 45, order: 1 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -349,8 +349,8 @@ describe('DashboardComponent', () => {
 
     it('should not modify other exercises when replaying one', () => {
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
-        { id: 'e2', name: 'Gammes', durationSeconds: 60, order: 2 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+        { id: 'e2', name: 'Gammes', durationMinutes: 60, order: 2 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);
@@ -375,7 +375,7 @@ describe('DashboardComponent', () => {
 
     it('should persist bonusMinutes via setSpy after replay (F9 - Tâche 3)', () => {
       exerciseService.setExercises([
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
       ]);
 
       const fixture = TestBed.createComponent(DashboardComponent);

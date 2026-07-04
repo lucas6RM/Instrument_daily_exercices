@@ -51,7 +51,7 @@ export class DashboardComponent implements OnInit {
       const actualMinutes = sessionExercise?.actualMinutes ?? 0;
       const bonusMinutes = sessionExercise?.bonusMinutes ?? 0;
       const playCount = completed
-        ? 1 + Math.floor(bonusMinutes / (actualMinutes || ex.durationSeconds))
+        ? 1 + Math.floor(bonusMinutes / (actualMinutes || ex.durationMinutes))
         : 1;
 
       return {
@@ -111,14 +111,14 @@ export class DashboardComponent implements OnInit {
         // REPLAY (F8) : l'exercice est déjà complété → incrémenter bonusMinutes
         updatedExercises = current.exercises.map((se) =>
           se.exerciseId === exerciseId
-            ? { ...se, bonusMinutes: se.bonusMinutes + exercise.durationSeconds }
+            ? { ...se, bonusMinutes: se.bonusMinutes + exercise.durationMinutes }
             : se,
         );
       } else {
         // Première complétion : marquer comme terminé
         updatedExercises = current.exercises.map((se) =>
           se.exerciseId === exerciseId
-            ? { ...se, completed: true, actualMinutes: exercise.durationSeconds }
+            ? { ...se, completed: true, actualMinutes: exercise.durationMinutes }
             : se,
         );
       }
@@ -130,7 +130,7 @@ export class DashboardComponent implements OnInit {
           exerciseId: exerciseId,
           exerciseName: exercise.name,
           completed: true,
-          actualMinutes: exercise.durationSeconds,
+          actualMinutes: exercise.durationMinutes,
           bonusMinutes: 0,
         },
       ];
@@ -143,7 +143,7 @@ export class DashboardComponent implements OnInit {
   onPlayExercise(exerciseId: string): void {
     const exercise = this.exerciseService.sortedExercises().find((ex) => ex.id === exerciseId);
     if (exercise) {
-      this.timerService.start(exerciseId, exercise.durationSeconds * 1000);
+      this.timerService.start(exerciseId, exercise.durationMinutes * 60000);
     }
   }
 }

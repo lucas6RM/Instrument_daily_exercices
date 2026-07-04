@@ -24,7 +24,7 @@
     >
       {{ ex.name }}
     </span>
-    <span class="block truncate text-xs text-muted-foreground"> {{ ex.durationSeconds }} s </span>
+    <span class="block truncate text-xs text-muted-foreground"> {{ ex.durationMinutes }} min </span>
     @if (completed) {
       <app-exercise-time-display
         [actualMinutes]="actualMinutes()"

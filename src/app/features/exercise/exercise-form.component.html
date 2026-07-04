@@ -26,7 +26,7 @@
     <!-- Duration -->
     <div hlmField>
       <label hlmFieldLabel for="exercise-duration">
-        Durée (secondes)
+        Durée (minutes)
         <span class="text-destructive" aria-hidden="true">*</span>
       </label>
       <input
@@ -34,17 +34,17 @@
         type="number"
         min="1"
         hlmInput
-        formControlName="durationSeconds"
+        formControlName="durationMinutes"
         required
         aria-required="true"
       />
-      @if (form.get('durationSeconds')?.invalid && form.get('durationSeconds')?.touched) {
-        @if (form.get('durationSeconds')?.errors?.['required']) {
+      @if (form.get('durationMinutes')?.invalid && form.get('durationMinutes')?.touched) {
+        @if (form.get('durationMinutes')?.errors?.['required']) {
           <hlm-field-error forceShow validator="required">
             <ng-icon name="lucideCircleAlert" />
             La durée est requise.
           </hlm-field-error>
-        } @else if (form.get('durationSeconds')?.errors?.['positive']) {
+        } @else if (form.get('durationMinutes')?.errors?.['positive']) {
           <hlm-field-error forceShow validator="positive">
             <ng-icon name="lucideCircleAlert" />
             La durée doit être supérieure à 0.

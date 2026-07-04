@@ -16,7 +16,7 @@ import { Exercise } from '../../core/models/exercise';
 
 interface ExerciseFormValue {
   name: string;
-  durationSeconds: number;
+  durationMinutes: number;
   youtubeUrl: string;
   description: string;
 }
@@ -54,7 +54,7 @@ export class ExerciseFormComponent {
 
   readonly form = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    durationSeconds: new FormControl(0, [Validators.required, positiveNumberValidator()]),
+    durationMinutes: new FormControl(0, [Validators.required, positiveNumberValidator()]),
     youtubeUrl: new FormControl(''),
     description: new FormControl(''),
   });
@@ -65,14 +65,14 @@ export class ExerciseFormComponent {
       if (ex) {
         this.form.patchValue({
           name: ex.name,
-          durationSeconds: ex.durationSeconds,
+          durationMinutes: ex.durationMinutes,
           youtubeUrl: ex.youtubeUrl ?? '',
           description: ex.description ?? '',
         });
       } else {
         this.form.reset({
           name: '',
-          durationSeconds: 0,
+          durationMinutes: 0,
           youtubeUrl: '',
           description: '',
         });

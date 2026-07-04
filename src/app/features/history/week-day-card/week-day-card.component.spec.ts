@@ -232,7 +232,7 @@ describe('WeekDayCardComponent', () => {
       const host = TestBed.createComponent(TestHostComponent);
       host.componentInstance.dayStats = dayStats;
       host.componentInstance.scheduledExercises = [
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
       ];
       host.detectChanges();
 
@@ -240,7 +240,7 @@ describe('WeekDayCardComponent', () => {
       const uncompleted = card.uncompletedExercisesSignal();
       expect(uncompleted).toHaveLength(1);
       expect(uncompleted[0].name).toBe('Chromatique');
-      expect(uncompleted[0].durationSeconds).toBe(30);
+      expect(uncompleted[0].durationMinutes).toBe(30);
     });
   });
 

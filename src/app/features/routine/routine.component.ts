@@ -9,7 +9,7 @@ import { ExerciseService } from '../exercise/exercise.service';
 
 interface ExerciseFormValue {
   name: string;
-  durationSeconds: number;
+  durationMinutes: number;
   youtubeUrl: string;
   description: string;
 }

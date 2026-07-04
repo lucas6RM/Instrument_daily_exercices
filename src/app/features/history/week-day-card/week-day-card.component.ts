@@ -91,7 +91,7 @@ export class WeekDayCardComponent {
       }
     }
 
-    // Build scheduled lookup for durationSeconds fallback
+    // Build scheduled lookup for durationMinutes fallback
     const scheduledMap = new Map(scheduled.map((e) => [e.id, e]));
 
     return Array.from(uncompletedMap.entries()).map(([id, name]) => {
@@ -99,7 +99,7 @@ export class WeekDayCardComponent {
       return {
         id,
         name,
-        durationSeconds: scheduledEx?.durationSeconds,
+        durationMinutes: scheduledEx?.durationMinutes,
       };
     });
   });

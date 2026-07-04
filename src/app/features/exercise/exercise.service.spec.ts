@@ -61,9 +61,9 @@ describe('ExerciseService', () => {
   describe('sortedExercises', () => {
     it('should return exercises sorted by order ascending', () => {
       const exercises: Exercise[] = [
-        { id: '3', name: 'C', durationSeconds: 5, order: 3 },
-        { id: '1', name: 'A', durationSeconds: 5, order: 1 },
-        { id: '2', name: 'B', durationSeconds: 5, order: 2 },
+        { id: '3', name: 'C', durationMinutes: 5, order: 3 },
+        { id: '1', name: 'A', durationMinutes: 5, order: 1 },
+        { id: '2', name: 'B', durationMinutes: 5, order: 2 },
       ];
       service.setExercises(exercises);
 
@@ -73,8 +73,8 @@ describe('ExerciseService', () => {
 
     it('should not mutate the original array', () => {
       const exercises: Exercise[] = [
-        { id: '2', name: 'B', durationSeconds: 5, order: 2 },
-        { id: '1', name: 'A', durationSeconds: 5, order: 1 },
+        { id: '2', name: 'B', durationMinutes: 5, order: 2 },
+        { id: '1', name: 'A', durationMinutes: 5, order: 1 },
       ];
       service.setExercises(exercises);
 
@@ -89,17 +89,17 @@ describe('ExerciseService', () => {
 
   describe('addExercise()', () => {
     it('should add a new exercise to the list', () => {
-      const exercise = { name: 'Scales', durationSeconds: 10, order: 1 };
+      const exercise = { name: 'Scales', durationMinutes: 10, order: 1 };
       service.addExercise(exercise);
 
       expect(service.exercises()).toHaveLength(1);
       expect(service.exercises()[0].name).toBe('Scales');
-      expect(service.exercises()[0].durationSeconds).toBe(10);
+      expect(service.exercises()[0].durationMinutes).toBe(10);
       expect(service.exercises()[0].order).toBe(1);
     });
 
     it('should generate a unique id for the new exercise', () => {
-      const exercise = { name: 'Scales', durationSeconds: 10, order: 1 };
+      const exercise = { name: 'Scales', durationMinutes: 10, order: 1 };
       service.addExercise(exercise);
 
       const id = service.exercises()[0].id;
@@ -109,14 +109,14 @@ describe('ExerciseService', () => {
     });
 
     it('should add multiple exercises', () => {
-      service.addExercise({ name: 'A', durationSeconds: 5, order: 1 });
-      service.addExercise({ name: 'B', durationSeconds: 10, order: 2 });
+      service.addExercise({ name: 'A', durationMinutes: 5, order: 1 });
+      service.addExercise({ name: 'B', durationMinutes: 10, order: 2 });
 
       expect(service.exercises()).toHaveLength(2);
     });
 
     it('should not include id in the input', () => {
-      const exercise = { name: 'Scales', durationSeconds: 10, order: 1 };
+      const exercise = { name: 'Scales', durationMinutes: 10, order: 1 };
       service.addExercise(exercise);
 
       expect(service.exercises()[0]).not.toHaveProperty('id', undefined);
@@ -124,7 +124,7 @@ describe('ExerciseService', () => {
 
     it('should trigger persistence via effect', () => {
       setSpy.mockClear();
-      const exercise = { name: 'Scales', durationSeconds: 10, order: 1 };
+      const exercise = { name: 'Scales', durationMinutes: 10, order: 1 };
       service.addExercise(exercise);
       tick();
 
@@ -138,7 +138,7 @@ describe('ExerciseService', () => {
 
     it('should propagate the new exercise to today session via ProgressService', () => {
       progressServiceMock.addExerciseToTodaySession.mockClear();
-      const exercise = { name: 'Scales', durationSeconds: 10, order: 1 };
+      const exercise = { name: 'Scales', durationMinutes: 10, order: 1 };
       service.addExercise(exercise);
 
       const addedExercise = service.exercises()[0];
@@ -152,8 +152,8 @@ describe('ExerciseService', () => {
   describe('updateExercise()', () => {
     beforeEach(() => {
       service.setExercises([
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
-        { id: '2', name: 'Arpeggios', durationSeconds: 15, order: 2 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
+        { id: '2', name: 'Arpeggios', durationMinutes: 15, order: 2 },
       ]);
       tick();
       setSpy.mockClear();
@@ -170,7 +170,7 @@ describe('ExerciseService', () => {
       service.updateExercise('1', { name: 'New Scales' });
 
       const updated = service.exercises().find((e) => e.id === '1');
-      expect(updated?.durationSeconds).toBe(10);
+      expect(updated?.durationMinutes).toBe(10);
       expect(updated?.order).toBe(1);
     });
 
@@ -206,9 +206,9 @@ describe('ExerciseService', () => {
   describe('deleteExercise()', () => {
     beforeEach(() => {
       service.setExercises([
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
-        { id: '2', name: 'Arpeggios', durationSeconds: 15, order: 2 },
-        { id: '3', name: 'Chords', durationSeconds: 20, order: 3 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
+        { id: '2', name: 'Arpeggios', durationMinutes: 15, order: 2 },
+        { id: '3', name: 'Chords', durationMinutes: 20, order: 3 },
       ]);
       tick();
       setSpy.mockClear();
@@ -254,7 +254,7 @@ describe('ExerciseService', () => {
   describe('setExercises()', () => {
     it('should replace the entire exercises array', () => {
       const newExercises: Exercise[] = [
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
       ];
       service.setExercises(newExercises);
 
@@ -263,10 +263,10 @@ describe('ExerciseService', () => {
 
     it('should overwrite previous exercises', () => {
       service.setExercises([
-        { id: '1', name: 'Old', durationSeconds: 5, order: 1 },
+        { id: '1', name: 'Old', durationMinutes: 5, order: 1 },
       ]);
       service.setExercises([
-        { id: '2', name: 'New', durationSeconds: 10, order: 1 },
+        { id: '2', name: 'New', durationMinutes: 10, order: 1 },
       ]);
 
       expect(service.exercises()).toHaveLength(1);
@@ -276,7 +276,7 @@ describe('ExerciseService', () => {
     it('should trigger persistence via effect', () => {
       setSpy.mockClear();
       service.setExercises([
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
       ]);
       tick();
 
@@ -285,7 +285,7 @@ describe('ExerciseService', () => {
 
     it('should accept an empty array', () => {
       service.setExercises([
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
       ]);
       service.setExercises([]);
 
@@ -296,8 +296,8 @@ describe('ExerciseService', () => {
   describe('loadFromStorage()', () => {
     it('should load exercises from storage when data exists', () => {
       const stored: Exercise[] = [
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
-        { id: '2', name: 'Arpeggios', durationSeconds: 15, order: 2 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
+        { id: '2', name: 'Arpeggios', durationMinutes: 15, order: 2 },
       ];
       getSpy.mockReturnValue(stored);
 
@@ -325,7 +325,7 @@ describe('ExerciseService', () => {
     it('should trigger persistence via effect after loading', () => {
       setSpy.mockClear();
       const stored: Exercise[] = [
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
       ];
       getSpy.mockReturnValue(stored);
 
@@ -344,7 +344,7 @@ describe('ExerciseService', () => {
 
     it('should call StorageService.set after addExercise', () => {
       setSpy.mockClear();
-      service.addExercise({ name: 'Scales', durationSeconds: 10, order: 1 });
+      service.addExercise({ name: 'Scales', durationMinutes: 10, order: 1 });
       tick();
 
       expect(setSpy).toHaveBeenCalled();
@@ -352,7 +352,7 @@ describe('ExerciseService', () => {
 
     it('should call StorageService.set after updateExercise', () => {
       service.setExercises([
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
       ]);
       tick();
       setSpy.mockClear();
@@ -365,7 +365,7 @@ describe('ExerciseService', () => {
 
     it('should call StorageService.set after deleteExercise', () => {
       service.setExercises([
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
       ]);
       tick();
       setSpy.mockClear();
@@ -379,7 +379,7 @@ describe('ExerciseService', () => {
     it('should call StorageService.set after setExercises', () => {
       setSpy.mockClear();
       const exercises: Exercise[] = [
-        { id: '1', name: 'Scales', durationSeconds: 10, order: 1 },
+        { id: '1', name: 'Scales', durationMinutes: 10, order: 1 },
       ];
       service.setExercises(exercises);
       tick();
@@ -393,7 +393,7 @@ describe('ExerciseService', () => {
       const ex1: Exercise = {
         id: '1',
         name: 'Scales',
-        durationSeconds: 10,
+        durationMinutes: 10,
         order: 1,
       };
       service.setExercises([ex1]);

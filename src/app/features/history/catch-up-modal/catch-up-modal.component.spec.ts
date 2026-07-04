@@ -26,8 +26,8 @@ describe('CatchUpModalComponent', () => {
   let progressService: ProgressService;
 
   const testExercises: Exercise[] = [
-    { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
-    { id: 'e2', name: 'Gammes', durationSeconds: 60, order: 2 },
+    { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+    { id: 'e2', name: 'Gammes', durationMinutes: 60, order: 2 },
   ];
 
   beforeEach(() => {
@@ -176,7 +176,7 @@ describe('CatchUpModalComponent', () => {
         emitted = true;
         expect(event.exerciseId).toBe('e1');
         expect(event.name).toBe('Chromatique');
-        expect(event.durationSeconds).toBe(30);
+        expect(event.durationMinutes).toBe(30);
       });
 
       component.onPlay('e1');

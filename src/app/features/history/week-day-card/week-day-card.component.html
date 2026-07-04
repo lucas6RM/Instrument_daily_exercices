@@ -76,8 +76,8 @@
               <span class="font-medium text-muted-foreground line-through">
                 {{ ex.name }}
               </span>
-              @if (ex.durationSeconds !== null) {
-                <span class="text-xs text-muted-foreground"> {{ ex.durationSeconds }} s </span>
+              @if (ex.durationMinutes !== null) {
+                <span class="text-xs text-muted-foreground"> {{ ex.durationMinutes }} min </span>
               }
             </li>
           }

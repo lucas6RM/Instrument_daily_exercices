@@ -12,7 +12,7 @@ export type ExerciseStatus = 'completed' | 'incomplete' | 'removed';
 export interface CatchUpExercise {
   exerciseId: string;
   name: string;
-  durationSeconds: number;
+  durationMinutes: number;
   status: ExerciseStatus;
   completed: boolean;
   actualMinutes: number;
@@ -23,7 +23,7 @@ export interface CatchUpExercise {
 export interface PlayExerciseEvent {
   exerciseId: string;
   name: string;
-  durationSeconds: number;
+  durationMinutes: number;
 }
 
 @Component({
@@ -76,12 +76,12 @@ export class CatchUpModalComponent {
       const completed = sessionExercise?.completed ?? false;
       const actualMinutes = sessionExercise?.actualMinutes ?? 0;
       const bonusMinutes = sessionExercise?.bonusMinutes ?? 0;
-      const playCount = completed ? 1 + Math.floor(bonusMinutes / ex.durationSeconds) : 0;
+      const playCount = completed ? 1 + Math.floor(bonusMinutes / ex.durationMinutes) : 0;
 
       exercises.push({
         exerciseId: ex.id,
         name: ex.name,
-        durationSeconds: ex.durationSeconds,
+        durationMinutes: ex.durationMinutes,
         status: completed ? 'completed' : 'incomplete',
         completed,
         actualMinutes,
@@ -96,7 +96,7 @@ export class CatchUpModalComponent {
         exercises.push({
           exerciseId: se.exerciseId,
           name: se.exerciseName ?? '(nom inconnu)',
-          durationSeconds: se.actualMinutes,
+          durationMinutes: se.actualMinutes,
           status: 'removed',
           completed: se.completed,
           actualMinutes: se.actualMinutes,
@@ -122,7 +122,7 @@ export class CatchUpModalComponent {
     this.playExercise.emit({
       exerciseId: exercise.exerciseId,
       name: exercise.name,
-      durationSeconds: exercise.durationSeconds,
+      durationMinutes: exercise.durationMinutes,
     });
     this.closed.emit();
   }

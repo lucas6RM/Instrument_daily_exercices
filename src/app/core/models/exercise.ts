@@ -1,7 +1,7 @@
 export interface Exercise {
   id: string;
   name: string;
-  durationSeconds: number;
+  durationMinutes: number;
   youtubeUrl?: string;
   description?: string;
   order: number;

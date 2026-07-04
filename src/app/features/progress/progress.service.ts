@@ -305,15 +305,15 @@ export class ProgressService {
 
       // Completion rate: (actual time + bonus time) / (target time for the week) * 100
       // Target time = sum of current routine exercise durations × 7 days
-      const totalTargetSeconds = exercises.reduce((sum, ex) => sum + ex.durationSeconds, 0) * 7;
+      const totalTargetMinutes = exercises.reduce((sum, ex) => sum + ex.durationMinutes, 0) * 7;
 
-      const totalActualSeconds = weekSessions.reduce(
+      const totalActualMinutes = weekSessions.reduce(
         (sum, session) =>
           sum + session.exercises.reduce((eSum, ex) => eSum + ex.actualMinutes + ex.bonusMinutes, 0),
         0,
       );
 
-      const completionRate = totalTargetSeconds > 0 ? (totalActualSeconds / totalTargetSeconds) * 100 : 0;
+      const completionRate = totalTargetMinutes > 0 ? (totalActualMinutes / totalTargetMinutes) * 100 : 0;
 
       return {
         days,

@@ -762,8 +762,8 @@ describe('ProgressService', () => {
 
   describe('getWeeklyStats()', () => {
     const routine: Exercise[] = [
-      { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
-      { id: 'e2', name: 'Gammes', durationSeconds: 30, order: 2 },
+      { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+      { id: 'e2', name: 'Gammes', durationMinutes: 30, order: 2 },
     ];
 
     it('should return a Signal', () => {
@@ -837,9 +837,9 @@ describe('ProgressService', () => {
     it('should calculate completionRate as actual time / target time', () => {
       const start = new Date('2025-01-06');
 
-      // Routine: 2 exercises × 30s = 60s/day → 420s/week target
+      // Routine: 2 exercises × 30min = 60min/day → 420min/week target
 
-      // Day 1: 10 + 15 = 25s actual
+      // Day 1: 10 + 15 = 25min actual
       service.addSession({
         date: '2025-01-06',
         exercises: [
@@ -847,7 +847,7 @@ describe('ProgressService', () => {
           { exerciseId: 'e2', completed: true, actualMinutes: 15, bonusMinutes: 0 },
         ],
       });
-      // Day 2: 20s actual
+      // Day 2: 20min actual
       service.addSession({
         date: '2025-01-07',
         exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 20, bonusMinutes: 0 }],
@@ -861,10 +861,10 @@ describe('ProgressService', () => {
     it('should include bonusMinutes in completionRate', () => {
       const start = new Date('2025-01-06');
       const singleRoutine: Exercise[] = [
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
       ];
 
-      // 30s actual + 10s bonus = 40s, target = 30 * 7 = 210
+      // 30min actual + 10min bonus = 40min, target = 30 * 7 = 210
       service.addSession({
         date: '2025-01-06',
         exercises: [
@@ -900,7 +900,7 @@ describe('ProgressService', () => {
     it('should return 100 completionRate when actual equals target', () => {
       const start = new Date('2025-01-06');
       const singleRoutine: Exercise[] = [
-        { id: 'e1', name: 'Chromatique', durationSeconds: 30, order: 1 },
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
       ];
 
       // Fill all 7 days with 30s each = 210s = target
