@@ -1,7 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideIcons } from '@ng-icons/core';
-import { lucideBarChart3, lucideListTodo, lucideMusic, lucidePlay } from '@ng-icons/lucide';
+import {
+  lucideBarChart3,
+  lucideListTodo,
+  lucideMusic,
+  lucidePlay,
+  lucideRotateCcw,
+} from '@ng-icons/lucide';
 
 import { OnboardingService } from '../../../services/onboarding.service';
 import { StorageService } from '../../../services/storage.service';
@@ -50,6 +56,7 @@ describe('OnboardingModalComponent', () => {
           lucideListTodo,
           lucidePlay,
           lucideBarChart3,
+          lucideRotateCcw,
         }),
       ],
     });
@@ -129,7 +136,7 @@ describe('OnboardingModalComponent', () => {
   it('should show "Commencer" button on the last slide', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    host.currentSlide.set(3);
+    host.currentSlide.set(4);
     fixture.detectChanges();
 
     const commencerBtn = fixture.nativeElement.querySelector('button[aria-label="Commencer"]');
@@ -139,7 +146,7 @@ describe('OnboardingModalComponent', () => {
   it('should emit next when clicking "Commencer" button', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    host.currentSlide.set(3);
+    host.currentSlide.set(4);
     fixture.detectChanges();
 
     const commencerBtn = fixture.nativeElement.querySelector('button[aria-label="Commencer"]');
@@ -152,7 +159,7 @@ describe('OnboardingModalComponent', () => {
   it('should not show "Suivant" button on the last slide', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    host.currentSlide.set(3);
+    host.currentSlide.set(4);
     fixture.detectChanges();
 
     const suivantBtn = fixture.nativeElement.querySelector('button[aria-label="Slide suivante"]');
@@ -162,7 +169,13 @@ describe('OnboardingModalComponent', () => {
   it('should display correct slide title for each slide', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
-    const titles = ['Bienvenue', 'Configurez votre routine', 'Jouez vos exercices', 'Suivez votre progression'];
+    const titles = [
+      'Bienvenue',
+      'Configurez votre routine',
+      'Jouez vos exercices',
+      'Suivez votre progression',
+      'Rattrapez les jours manqués',
+    ];
 
     for (let i = 0; i < titles.length; i++) {
       host.currentSlide.set(i);
@@ -177,21 +190,21 @@ describe('OnboardingModalComponent', () => {
       const fixture = TestBed.createComponent(TestHostComponent);
       const host = fixture.componentInstance;
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         host.currentSlide.set(i);
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.textContent).toContain(`${i + 1} / 4`);
+        expect(fixture.nativeElement.textContent).toContain(`${i + 1} / 5`);
       }
     });
 
-    it('should display screenshot placeholder with aria-label', () => {
+    it('should display screenshot img with alt', () => {
       const fixture = TestBed.createComponent(TestHostComponent);
       fixture.detectChanges();
 
-      const placeholder = fixture.nativeElement.querySelector('[role="img"]');
-      expect(placeholder).toBeTruthy();
-      expect(placeholder.getAttribute('aria-label')).toBeTruthy();
+      const img = fixture.nativeElement.querySelector('img[alt]');
+      expect(img).toBeTruthy();
+      expect(img.getAttribute('alt')).toBeTruthy();
     });
 
   it('should have role="dialog" and aria-modal="true" on the overlay', () => {

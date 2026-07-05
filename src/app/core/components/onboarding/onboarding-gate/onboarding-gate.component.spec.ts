@@ -2,7 +2,13 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { provideIcons } from '@ng-icons/core';
-import { lucideBarChart3, lucideListTodo, lucideMusic, lucidePlay } from '@ng-icons/lucide';
+import {
+  lucideBarChart3,
+  lucideListTodo,
+  lucideMusic,
+  lucidePlay,
+  lucideRotateCcw,
+} from '@ng-icons/lucide';
 import { vi } from 'vitest';
 
 import { OnboardingService } from '../../../services/onboarding.service';
@@ -30,6 +36,7 @@ describe('OnboardingGateComponent', () => {
           lucideListTodo,
           lucidePlay,
           lucideBarChart3,
+          lucideRotateCcw,
         }),
         {
           provide: StorageService,
@@ -113,7 +120,7 @@ describe('OnboardingGateComponent', () => {
     ).componentInstance as OnboardingGateComponent;
 
     // Go to last slide
-    gateComponent.currentSlide.set(3);
+    gateComponent.currentSlide.set(4);
 
     vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
@@ -262,13 +269,13 @@ describe('OnboardingGateComponent', () => {
       (el) => el.componentInstance instanceof OnboardingGateComponent
     ).componentInstance as OnboardingGateComponent;
 
-    gateComponent.currentSlide.set(3);
+    gateComponent.currentSlide.set(4);
 
     const event = new KeyboardEvent('keydown', { key: 'ArrowRight' });
 
     gateComponent.onKeyDown(event);
 
-    expect(gateComponent.currentSlide()).toBe(3);
+    expect(gateComponent.currentSlide()).toBe(4);
   });
 
   it('should not respond to keyboard when onboarding is completed', () => {

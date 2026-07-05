@@ -65,8 +65,8 @@ describe('OnboardingService', () => {
       service = TestBed.inject(OnboardingService);
     });
 
-    it('should contain exactly 4 slides', () => {
-      expect(service.slides.length).toBe(4);
+    it('should contain exactly 5 slides', () => {
+      expect(service.slides.length).toBe(5);
     });
 
     it('should have the correct slide 0 (Bienvenue)', () => {
@@ -76,7 +76,7 @@ describe('OnboardingService', () => {
         'Organisez votre pratique musicale quotidienne en quelques clics. Voici comment ça marche.',
       );
       expect(slide.iconName).toBe('lucideMusic');
-      expect(slide.screenshotAlt).toBeDefined();
+      expect(slide.screenshotUrl).toBeDefined();
     });
 
     it('should have the correct slide 1 (Configurez votre routine)', () => {
@@ -86,7 +86,7 @@ describe('OnboardingService', () => {
         'Définissez vos exercices avec nom, durée et un lien YouTube pour votre backing track.',
       );
       expect(slide.iconName).toBe('lucideListTodo');
-      expect(slide.screenshotAlt).toBeDefined();
+      expect(slide.screenshotUrl).toBeDefined();
     });
 
     it('should have the correct slide 2 (Jouez vos exercices)', () => {
@@ -96,17 +96,29 @@ describe('OnboardingService', () => {
         'Chaque jour, accédez à votre séance pour timer et cocher vos exercices au fur et à mesure.',
       );
       expect(slide.iconName).toBe('lucidePlay');
-      expect(slide.screenshotAlt).toBeDefined();
+      expect(slide.screenshotUrl).toBeDefined();
     });
 
     it('should have the correct slide 3 (Suivez votre progression)', () => {
       const slide: OnboardingSlide = service.slides[3];
       expect(slide.title).toBe('Suivez votre progression');
       expect(slide.description).toBe(
-        'Consultez votre historique hebdomadaire et rattrapez les jours manqués.',
+        'Consultez votre historique hebdomadaire avec le résumé de vos temps de pratique.',
       );
       expect(slide.iconName).toBe('lucideBarChart3');
       expect(slide.screenshotAlt).toBeDefined();
+      expect(slide.screenshotUrl).toBeDefined();
+    });
+
+    it('should have the correct slide 4 (Rattrapez les jours manqués)', () => {
+      const slide: OnboardingSlide = service.slides[4];
+      expect(slide.title).toBe('Rattrapez les jours manqués');
+      expect(slide.description).toBe(
+        'Vous avez raté un jour ? Rattrapez vos exercices en retard directement depuis l\'historique.',
+      );
+      expect(slide.iconName).toBe('lucideRotateCcw');
+      expect(slide.screenshotAlt).toBeDefined();
+      expect(slide.screenshotUrl).toBeDefined();
     });
   });
 

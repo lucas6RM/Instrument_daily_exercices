@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 
@@ -6,7 +7,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
 
 @Component({
   selector: 'app-onboarding-modal',
-  imports: [NgIcon, HlmButton],
+  imports: [NgOptimizedImage, NgIcon, HlmButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -16,7 +17,6 @@ import { OnboardingService } from '../../../services/onboarding.service';
       aria-labelledby="onboarding-title"
       tabindex="-1"
     >
-      <!-- Skip button (top-right) -->
       <button
         type="button"
         hlmBtn
@@ -29,9 +29,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
         Passer
       </button>
 
-      <!-- Slide content -->
       <div class="flex flex-col items-center text-center max-w-md" aria-live="polite">
-        <!-- Icon (decorative) -->
         <ng-icon
           [name]="slide().iconName"
           size="3xl"
@@ -40,7 +38,6 @@ import { OnboardingService } from '../../../services/onboarding.service';
           role="presentation"
         />
 
-        <!-- Title -->
         <h2
           id="onboarding-title"
           class="text-2xl font-semibold tracking-tight text-[#0a0a0a] mb-4"
@@ -48,26 +45,23 @@ import { OnboardingService } from '../../../services/onboarding.service';
           {{ slide().title }}
         </h2>
 
-        <!-- Description -->
         <p class="text-base text-[#737373] leading-relaxed mb-8">
           {{ slide().description }}
         </p>
 
-        <!-- Screenshot placeholder -->
-        <div
-          class="w-full max-w-sm aspect-[16/10] rounded-[14px] border border-dashed border-[#e5e5e5] flex items-center justify-center mb-12"
-          role="img"
-          [attr.aria-label]="slide().screenshotAlt"
-        >
-          <span class="text-xs text-[#737373]">Screenshot — {{ slide().screenshotAlt }}</span>
-        </div>
+        <img
+          [ngSrc]="slide().screenshotUrl"
+          width="640"
+          height="400"
+          [alt]="slide().screenshotAlt"
+          class="w-full max-w-sm rounded-[14px] mb-12"
+          decoding="async"
+        />
 
-        <!-- Pagination -->
         <span class="text-xs text-[#737373] mb-8" aria-live="polite">
           {{ currentSlide() + 1 }} / {{ totalSlides() }}
         </span>
 
-        <!-- Navigation buttons -->
         <div class="flex items-center gap-2">
           @if (currentSlide() > 0) {
             <button
@@ -81,7 +75,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
             </button>
           }
 
-          @if (currentSlide() < 3) {
+          @if (currentSlide() < totalSlides() - 1) {
             <button
               type="button"
               hlmBtn
