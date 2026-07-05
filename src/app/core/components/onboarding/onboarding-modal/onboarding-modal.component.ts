@@ -11,7 +11,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="fixed inset-0 z-50 flex flex-col h-screen bg-[#ffffff]"
+      class="fixed inset-0 z-50 flex flex-col h-[100dvh] bg-[#ffffff]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-title"
@@ -59,7 +59,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
             width="800"
             height="500"
             [alt]="slide().screenshotAlt"
-            class="w-full max-w-lg max-h-[50vh] object-contain rounded-[14px]"
+            class="w-full max-w-lg max-h-[50dvh] object-contain rounded-[14px]"
             decoding="async"
           />
         </div>
