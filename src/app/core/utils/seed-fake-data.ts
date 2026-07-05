@@ -59,16 +59,16 @@ export const seedFakeData = (): void => {
     12: [true, true, true],
     11: [true, false, false],
     10: [true, true, true],
-    9:  [true, true, true],
-    8:  [true, true, false],
-    7:  [true, true, true],
-    6:  [true, true, true, true],
-    5:  [true, true, true, false],
-    4:  [true, true, true, true],
-    3:  [true, false, true, true],
-    2:  [true, true, true, true],
-    1:  [true, true, false, false],
-    0:  [false, false, false, false],
+    9: [true, true, true],
+    8: [true, true, false],
+    7: [true, true, true],
+    6: [true, true, true, true],
+    5: [true, true, true, false],
+    4: [true, true, true, true],
+    3: [true, false, true, true],
+    2: [true, true, true, true],
+    1: [true, true, false, false],
+    0: [true, false, false, false],
   };
 
   const bonusPattern: Record<number, number[]> = {
@@ -77,16 +77,16 @@ export const seedFakeData = (): void => {
     12: [0, 0, 15],
     11: [0, 0, 0],
     10: [15, 15, 0],
-    9:  [0, 0, 0],
-    8:  [0, 15, 0],
-    7:  [15, 0, 15],
-    6:  [0, 15, 0, 15],
-    5:  [15, 0, 15, 0],
-    4:  [0, 0, 0, 0],
-    3:  [0, 0, 15, 0],
-    2:  [15, 15, 0, 15],
-    1:  [0, 0, 0, 0],
-    0:  [0, 0, 0, 0],
+    9: [0, 0, 0],
+    8: [0, 15, 0],
+    7: [15, 0, 15],
+    6: [0, 15, 0, 15],
+    5: [15, 0, 15, 0],
+    4: [0, 0, 0, 0],
+    3: [0, 0, 15, 0],
+    2: [15, 15, 0, 15],
+    1: [0, 0, 0, 0],
+    0: [0, 0, 0, 0],
   };
 
   const dailySessions: DailySession[] = [];
@@ -110,10 +110,7 @@ export const seedFakeData = (): void => {
   }
 
   localStorage.setItem(STORAGE_KEYS.EXERCISES, JSON.stringify(exercises));
-  localStorage.setItem(
-    STORAGE_KEYS.PROGRESS,
-    JSON.stringify({ dailySessions } as ProgressState),
-  );
+  localStorage.setItem(STORAGE_KEYS.PROGRESS, JSON.stringify({ dailySessions } as ProgressState));
   localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
 
   console.log(`✅ Fake data seeded: ${exercises.length} exercises, ${dailySessions.length} days`);

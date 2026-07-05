@@ -38,11 +38,25 @@ describe('WeeklySummaryComponent', () => {
     });
   });
 
-  it('should display the total minutes', () => {
+  it('should display the total time as hours and minutes', () => {
+    const host = TestBed.createComponent(TestHostComponent);
+    host.componentInstance.weeklyStats = createWeeklyStats({ totalMinutes: 135 });
+    host.detectChanges();
+    expect(host.nativeElement.textContent).toContain('2h 15min');
+  });
+
+  it('should display only hours when minutes are 0', () => {
     const host = TestBed.createComponent(TestHostComponent);
     host.componentInstance.weeklyStats = createWeeklyStats({ totalMinutes: 120 });
     host.detectChanges();
-    expect(host.nativeElement.textContent).toContain('120');
+    expect(host.nativeElement.textContent).toContain('2h');
+  });
+
+  it('should display only minutes when hours are 0', () => {
+    const host = TestBed.createComponent(TestHostComponent);
+    host.componentInstance.weeklyStats = createWeeklyStats({ totalMinutes: 45 });
+    host.detectChanges();
+    expect(host.nativeElement.textContent).toContain('45 min');
   });
 
   it('should display the completion rate as a rounded percentage', () => {
