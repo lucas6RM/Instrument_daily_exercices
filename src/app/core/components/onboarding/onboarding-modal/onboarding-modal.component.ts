@@ -49,9 +49,18 @@ import { OnboardingService } from '../../../services/onboarding.service';
         </h2>
 
         <!-- Description -->
-        <p class="text-base text-[#737373] leading-relaxed mb-12">
+        <p class="text-base text-[#737373] leading-relaxed mb-8">
           {{ slide().description }}
         </p>
+
+        <!-- Screenshot placeholder -->
+        <div
+          class="w-full max-w-sm aspect-[16/10] rounded-[14px] border border-dashed border-[#e5e5e5] flex items-center justify-center mb-12"
+          role="img"
+          [attr.aria-label]="slide().screenshotAlt"
+        >
+          <span class="text-xs text-[#737373]">Screenshot — {{ slide().screenshotAlt }}</span>
+        </div>
 
         <!-- Pagination -->
         <span class="text-xs text-[#737373] mb-8" aria-live="polite">

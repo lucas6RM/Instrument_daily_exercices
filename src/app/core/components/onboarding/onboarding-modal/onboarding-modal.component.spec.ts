@@ -173,17 +173,26 @@ describe('OnboardingModalComponent', () => {
     }
   });
 
-  it('should display correct pagination for each slide', () => {
-    const fixture = TestBed.createComponent(TestHostComponent);
-    const host = fixture.componentInstance;
+    it('should display correct pagination for each slide', () => {
+      const fixture = TestBed.createComponent(TestHostComponent);
+      const host = fixture.componentInstance;
 
-    for (let i = 0; i < 4; i++) {
-      host.currentSlide.set(i);
+      for (let i = 0; i < 4; i++) {
+        host.currentSlide.set(i);
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain(`${i + 1} / 4`);
+      }
+    });
+
+    it('should display screenshot placeholder with aria-label', () => {
+      const fixture = TestBed.createComponent(TestHostComponent);
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.textContent).toContain(`${i + 1} / 4`);
-    }
-  });
+      const placeholder = fixture.nativeElement.querySelector('[role="img"]');
+      expect(placeholder).toBeTruthy();
+      expect(placeholder.getAttribute('aria-label')).toBeTruthy();
+    });
 
   it('should have role="dialog" and aria-modal="true" on the overlay', () => {
     const fixture = TestBed.createComponent(TestHostComponent);

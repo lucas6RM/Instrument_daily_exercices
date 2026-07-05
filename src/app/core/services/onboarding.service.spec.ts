@@ -76,6 +76,7 @@ describe('OnboardingService', () => {
         'Organisez votre pratique musicale quotidienne en quelques clics. Voici comment ça marche.',
       );
       expect(slide.iconName).toBe('lucideMusic');
+      expect(slide.screenshotAlt).toBeDefined();
     });
 
     it('should have the correct slide 1 (Configurez votre routine)', () => {
@@ -85,6 +86,7 @@ describe('OnboardingService', () => {
         'Définissez vos exercices avec nom, durée et un lien YouTube pour votre backing track.',
       );
       expect(slide.iconName).toBe('lucideListTodo');
+      expect(slide.screenshotAlt).toBeDefined();
     });
 
     it('should have the correct slide 2 (Jouez vos exercices)', () => {
@@ -94,6 +96,7 @@ describe('OnboardingService', () => {
         'Chaque jour, accédez à votre séance pour timer et cocher vos exercices au fur et à mesure.',
       );
       expect(slide.iconName).toBe('lucidePlay');
+      expect(slide.screenshotAlt).toBeDefined();
     });
 
     it('should have the correct slide 3 (Suivez votre progression)', () => {
@@ -103,6 +106,7 @@ describe('OnboardingService', () => {
         'Consultez votre historique hebdomadaire et rattrapez les jours manqués.',
       );
       expect(slide.iconName).toBe('lucideBarChart3');
+      expect(slide.screenshotAlt).toBeDefined();
     });
   });
 
