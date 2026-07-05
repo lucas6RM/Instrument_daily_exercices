@@ -29,7 +29,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
         Passer
       </button>
 
-      <div class="flex flex-col items-center text-center max-w-md" aria-live="polite">
+      <div class="flex flex-col items-center text-center max-w-2xl" aria-live="polite">
         <ng-icon
           [name]="slide().iconName"
           size="3xl"
