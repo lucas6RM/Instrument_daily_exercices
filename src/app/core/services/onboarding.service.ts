@@ -14,42 +14,40 @@ export const SLIDES: readonly OnboardingSlide[] = [
   {
     title: 'Bienvenue',
     description:
-      'Organisez votre pratique musicale quotidienne en quelques clics. Voici comment ça marche.',
+      'Organisez et suivez votre pratique musicale quotidienne en quelques clics. Voici comment ça marche.',
     iconName: 'lucideMusic',
     screenshotUrl: '/onboarding-bienvenue-step1.jpg',
-    screenshotAlt: 'Vue d\'ensemble de l\'application',
+    screenshotAlt: "Vue d'ensemble de l'application",
   },
   {
     title: 'Configurez votre routine',
     description:
-      'Définissez vos exercices avec nom, durée et un lien YouTube pour votre backing track.',
+      'Définissez vos exercices avec nom, durée, lien YouTube (pour votre backing track par exemple) et description.',
     iconName: 'lucideListTodo',
     screenshotUrl: '/onboarding-routine-step2.jpg',
     screenshotAlt: 'Page de configuration de la routine',
   },
   {
     title: 'Jouez vos exercices',
-    description:
-      'Chaque jour, accédez à votre séance pour timer et cocher vos exercices au fur et à mesure.',
+    description: 'Chaque jour, accédez à votre séance pour jouer vos exercices avec un timer.',
     iconName: 'lucidePlay',
     screenshotUrl: '/onboarding-session-step3.jpg',
     screenshotAlt: 'Page de séance du jour',
   },
   {
     title: 'Suivez votre progression',
-    description:
-      'Consultez votre historique hebdomadaire avec le résumé de vos temps de pratique.',
+    description: 'Consultez votre historique hebdomadaire avec le résumé de vos temps de pratique.',
     iconName: 'lucideBarChart3',
     screenshotUrl: '/onboarding-history-step4.jpg',
-    screenshotAlt: 'Page d\'historique et de progression hebdomadaire',
+    screenshotAlt: "Page d'historique et de progression hebdomadaire",
   },
   {
     title: 'Rattrapez les jours manqués',
     description:
-      'Vous avez raté un jour ? Rattrapez vos exercices en retard directement depuis l\'historique.',
+      "Vous avez raté un jour ? Rattrapez vos exercices en retard directement depuis l'historique.",
     iconName: 'lucideRotateCcw',
     screenshotUrl: '/onboarding-rattrapage-step5.jpg',
-    screenshotAlt: 'Modal de rattrapage d\'un exercice manqué',
+    screenshotAlt: "Modal de rattrapage d'un exercice manqué",
   },
 ] as const;
 
