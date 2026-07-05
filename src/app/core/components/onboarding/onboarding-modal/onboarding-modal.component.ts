@@ -51,8 +51,8 @@ import { OnboardingService } from '../../../services/onboarding.service';
 
         <img
           [ngSrc]="slide().screenshotUrl"
-          width="640"
-          height="400"
+          width="800"
+          height="500"
           [alt]="slide().screenshotAlt"
           class="w-full max-w-sm rounded-[14px] mb-12"
           decoding="async"
