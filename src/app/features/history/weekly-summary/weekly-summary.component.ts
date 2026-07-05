@@ -16,6 +16,19 @@ export class WeeklySummaryComponent {
 
   readonly totalMinutesSignal = computed(() => this.weeklyStats().totalMinutes);
 
+  readonly formattedTotalTimeSignal = computed(() => {
+    const total = this.weeklyStats().totalMinutes;
+    const hours = Math.floor(total / 60);
+    const minutes = total % 60;
+    if (hours === 0) {
+      return `${minutes} min`;
+    }
+    if (minutes === 0) {
+      return `${hours}h`;
+    }
+    return `${hours}h ${minutes}min`;
+  });
+
   readonly completionRateSignal = computed(() => this.weeklyStats().completionRate);
 
   readonly formattedRateSignal = computed(() => {
@@ -33,12 +46,24 @@ export class WeeklySummaryComponent {
     const stats = this.weeklyStats();
     const minutesByExercise = stats.minutesByExercise;
 
-    const entries: { exerciseName: string; minutes: number }[] = [];
+    const entries: { exerciseName: string; minutes: number; formattedTime: string }[] = [];
 
     for (const [exerciseName, minutes] of minutesByExercise) {
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      let formattedTime: string;
+      if (hours === 0) {
+        formattedTime = `${mins} min`;
+      } else if (mins === 0) {
+        formattedTime = `${hours}h`;
+      } else {
+        formattedTime = `${hours}h ${mins}min`;
+      }
+
       entries.push({
         exerciseName,
         minutes,
+        formattedTime,
       });
     }
 

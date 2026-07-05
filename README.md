@@ -77,3 +77,18 @@ docs/
 │   ├── F4-daily-dashboard.md    # Checklist, PLAY→Timer, progression %
 │   └── F5-weekly-history.md     # Vue semaine, temps/jour, temps/exercice
 └── glossary.md                  # Vocabulaire domaine
+
+
+## fake datas
+
+Pour utiliser :
+1. Lance l'app : pnpm ng serve
+2. Ouvre http://localhost:4200?seed=fake
+3. Les données sont injectées dans le localStorage au démarrage :
+- 4 exercices : Gamme blues, 2-5-1 mineur, Some Other Time, Improvisation libre
+- 15 jours de sessions (jusqu'à aujourd'hui)
+- Changement de routine au milieu : jours 14–7 = 3 exercices, jours 6–0 = 4 exercices
+- Mélange de complétés/non complétés avec des bonus minutes (replays)
+- Onboarding marqué comme complété
+4. Une fois les screenshots faits, supprime ?seed=fake et rafraîchis pour retrouver l'état normal
+5. Quand tu as fini, on supprime seed-fake-data.ts et son appel dans app.config.ts

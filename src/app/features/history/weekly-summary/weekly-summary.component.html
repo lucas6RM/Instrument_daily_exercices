@@ -1,4 +1,4 @@
-@let totalMinutes = totalMinutesSignal();
+@let formattedTotalTime = formattedTotalTimeSignal();
 @let formattedRate = formattedRateSignal();
 @let progressBarWidth = progressBarWidthSignal();
 @let exerciseEntries = exerciseEntriesSignal();
@@ -21,10 +21,7 @@
       <div>
         <dl class="flex items-center gap-3">
           <dt class="text-sm font-medium text-muted-foreground">Temps total</dt>
-          <dd class="text-3xl font-semibold text-foreground sm:text-4xl">
-            {{ totalMinutes }}
-            <span class="ml-1 text-base font-medium text-muted-foreground">min</span>
-          </dd>
+          <dd class="text-3xl font-semibold text-foreground sm:text-4xl">{{ formattedTotalTime }}</dd>
         </dl>
       </div>
 
@@ -60,7 +57,7 @@
               <span
                 class="inline-flex items-center rounded-full bg-card px-2.5 py-0.5 text-sm font-semibold text-foreground ring-1 ring-border"
               >
-                {{ entry.minutes }} min
+                {{ entry.formattedTime }}
               </span>
             </li>
           }

@@ -1,5 +1,5 @@
-<app-navigation />
+<app-navigation [attr.aria-hidden]="isOnboardingModalOpen() ? 'true' : null" />
 
-<router-outlet />
+<app-onboarding-gate />
 
-<app-timer-overlay />
+<app-timer-overlay [attr.aria-hidden]="isOnboardingModalOpen() ? 'true' : null" />
