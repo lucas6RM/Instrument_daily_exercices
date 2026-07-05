@@ -54,7 +54,7 @@ import { OnboardingService } from '../../../services/onboarding.service';
           width="800"
           height="500"
           [alt]="slide().screenshotAlt"
-          class="w-full max-w-md rounded-[14px] mb-12"
+          class="w-full max-w-lg rounded-[14px] mb-12"
           decoding="async"
         />
 
