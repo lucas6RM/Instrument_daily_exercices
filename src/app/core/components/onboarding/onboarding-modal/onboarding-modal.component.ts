@@ -11,55 +11,62 @@ import { OnboardingService } from '../../../services/onboarding.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-[#ffffff] p-6"
+      class="fixed inset-0 z-50 flex flex-col h-screen bg-[#ffffff]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-title"
       tabindex="-1"
     >
-      <div class="flex flex-col items-center text-center max-w-2xl w-full" aria-live="polite">
-        <div class="self-end mb-6">
-          <button
-            type="button"
-            hlmBtn
-            variant="ghost"
-            size="sm"
-            (click)="onSkip()"
-            aria-label="Passer l'onboarding"
-          >
-            Passer
-          </button>
-        </div>
-
-        <ng-icon
-          [name]="slide().iconName"
-          size="3xl"
-          class="text-[#0a0a0a] mb-6"
-          aria-hidden="true"
-          role="presentation"
-        />
-
-        <h2
-          id="onboarding-title"
-          class="text-2xl font-semibold tracking-tight text-[#0a0a0a] mb-4"
+      <div class="self-end flex-shrink-0 p-6">
+        <button
+          type="button"
+          hlmBtn
+          variant="ghost"
+          size="sm"
+          (click)="onSkip()"
+          aria-label="Passer l'onboarding"
         >
-          {{ slide().title }}
-        </h2>
+          Passer
+        </button>
+      </div>
 
-        <p class="text-base text-[#737373] leading-relaxed mb-8">
-          {{ slide().description }}
-        </p>
+      <div
+        class="flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-6"
+        aria-live="polite"
+      >
+        <div class="flex flex-col items-center text-center max-w-2xl w-full py-8">
+          <ng-icon
+            [name]="slide().iconName"
+            size="3xl"
+            class="text-[#0a0a0a] mb-6"
+            aria-hidden="true"
+            role="presentation"
+          />
 
-        <img
-          [ngSrc]="slide().screenshotUrl"
-          width="800"
-          height="500"
-          [alt]="slide().screenshotAlt"
-          class="w-full max-w-lg rounded-[14px] mb-12"
-          decoding="async"
-        />
+          <h2
+            id="onboarding-title"
+            class="text-2xl font-semibold tracking-tight text-[#0a0a0a] mb-4"
+          >
+            {{ slide().title }}
+          </h2>
 
-        <span class="text-xs text-[#737373] mb-8" aria-live="polite">
+          <p class="text-base text-[#737373] leading-relaxed mb-8">
+            {{ slide().description }}
+          </p>
+
+          <img
+            [ngSrc]="slide().screenshotUrl"
+            width="800"
+            height="500"
+            [alt]="slide().screenshotAlt"
+            class="w-full max-w-lg max-h-[50vh] object-contain rounded-[14px]"
+            decoding="async"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col items-center flex-shrink-0 pb-8 pt-4">
+        <span class="text-xs text-[#737373] mb-4" aria-live="polite">
           {{ currentSlide() + 1 }} / {{ totalSlides() }}
         </span>
 

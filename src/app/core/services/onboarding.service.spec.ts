@@ -73,7 +73,7 @@ describe('OnboardingService', () => {
       const slide: OnboardingSlide = service.slides[0];
       expect(slide.title).toBe('Bienvenue');
       expect(slide.description).toBe(
-        'Organisez votre pratique musicale quotidienne en quelques clics. Voici comment ça marche.',
+        'Organisez et suivez votre pratique musicale quotidienne en quelques clics. Voici comment ça marche.',
       );
       expect(slide.iconName).toBe('lucideMusic');
       expect(slide.screenshotUrl).toBeDefined();
@@ -83,7 +83,7 @@ describe('OnboardingService', () => {
       const slide: OnboardingSlide = service.slides[1];
       expect(slide.title).toBe('Configurez votre routine');
       expect(slide.description).toBe(
-        'Définissez vos exercices avec nom, durée et un lien YouTube pour votre backing track.',
+        'Définissez vos exercices avec nom, durée, lien YouTube (pour votre backing track par exemple) et description.',
       );
       expect(slide.iconName).toBe('lucideListTodo');
       expect(slide.screenshotUrl).toBeDefined();
@@ -93,7 +93,7 @@ describe('OnboardingService', () => {
       const slide: OnboardingSlide = service.slides[2];
       expect(slide.title).toBe('Jouez vos exercices');
       expect(slide.description).toBe(
-        'Chaque jour, accédez à votre séance pour timer et cocher vos exercices au fur et à mesure.',
+        'Chaque jour, accédez à votre séance pour jouer vos exercices avec un timer.',
       );
       expect(slide.iconName).toBe('lucidePlay');
       expect(slide.screenshotUrl).toBeDefined();

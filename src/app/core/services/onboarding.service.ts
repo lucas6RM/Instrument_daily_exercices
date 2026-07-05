@@ -16,7 +16,7 @@ export const SLIDES: readonly OnboardingSlide[] = [
     description:
       'Organisez et suivez votre pratique musicale quotidienne en quelques clics. Voici comment ça marche.',
     iconName: 'lucideMusic',
-    screenshotUrl: '/onboarding-bienvenue-step1.jpg',
+    screenshotUrl: 'onboarding-bienvenue-step1.jpg',
     screenshotAlt: "Vue d'ensemble de l'application",
   },
   {
@@ -24,21 +24,21 @@ export const SLIDES: readonly OnboardingSlide[] = [
     description:
       'Définissez vos exercices avec nom, durée, lien YouTube (pour votre backing track par exemple) et description.',
     iconName: 'lucideListTodo',
-    screenshotUrl: '/onboarding-routine-step2.jpg',
+    screenshotUrl: 'onboarding-routine-step2.jpg',
     screenshotAlt: 'Page de configuration de la routine',
   },
   {
     title: 'Jouez vos exercices',
     description: 'Chaque jour, accédez à votre séance pour jouer vos exercices avec un timer.',
     iconName: 'lucidePlay',
-    screenshotUrl: '/onboarding-session-step3.jpg',
+    screenshotUrl: 'onboarding-session-step3.jpg',
     screenshotAlt: 'Page de séance du jour',
   },
   {
     title: 'Suivez votre progression',
     description: 'Consultez votre historique hebdomadaire avec le résumé de vos temps de pratique.',
     iconName: 'lucideBarChart3',
-    screenshotUrl: '/onboarding-history-step4.jpg',
+    screenshotUrl: 'onboarding-history-step4.jpg',
     screenshotAlt: "Page d'historique et de progression hebdomadaire",
   },
   {
@@ -46,7 +46,7 @@ export const SLIDES: readonly OnboardingSlide[] = [
     description:
       "Vous avez raté un jour ? Rattrapez vos exercices en retard directement depuis l'historique.",
     iconName: 'lucideRotateCcw',
-    screenshotUrl: '/onboarding-rattrapage-step5.jpg',
+    screenshotUrl: 'onboarding-rattrapage-step5.jpg',
     screenshotAlt: "Modal de rattrapage d'un exercice manqué",
   },
 ] as const;
