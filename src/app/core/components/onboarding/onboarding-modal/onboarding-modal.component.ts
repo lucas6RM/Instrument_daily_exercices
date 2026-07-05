@@ -17,19 +17,20 @@ import { OnboardingService } from '../../../services/onboarding.service';
       aria-labelledby="onboarding-title"
       tabindex="-1"
     >
-      <button
-        type="button"
-        hlmBtn
-        variant="ghost"
-        size="sm"
-        class="absolute top-6 right-6"
-        (click)="onSkip()"
-        aria-label="Passer l'onboarding"
-      >
-        Passer
-      </button>
+      <div class="flex flex-col items-center text-center max-w-2xl w-full" aria-live="polite">
+        <div class="self-end mb-6">
+          <button
+            type="button"
+            hlmBtn
+            variant="ghost"
+            size="sm"
+            (click)="onSkip()"
+            aria-label="Passer l'onboarding"
+          >
+            Passer
+          </button>
+        </div>
 
-      <div class="flex flex-col items-center text-center max-w-2xl" aria-live="polite">
         <ng-icon
           [name]="slide().iconName"
           size="3xl"
