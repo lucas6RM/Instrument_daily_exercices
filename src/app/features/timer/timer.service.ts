@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
+import { Injectable, inject, signal, computed, effect, OnDestroy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Subject, interval } from 'rxjs';
 
@@ -25,6 +25,9 @@ export class TimerService implements OnDestroy {
   private readonly tick$ = new Subject<void>();
   private readonly tick = toSignal(interval(250), { initialValue: 0 });
 
+  // --- Guard pour éviter les appels multiples à onTimerExpired ---
+  private readonly hasExpired = signal(false);
+
   // --- Computed ---
   readonly remainingMs = computed(() => {
     this.tick(); // dépendance pour forcer le recalcul
@@ -41,6 +44,17 @@ export class TimerService implements OnDestroy {
     return `${mins}:${secs}`;
   });
 
+  // --- Détection d'expiration via tick réactif (bug B3 : setTimeout throttled) ---
+  private readonly expirationEffect = effect(() => {
+    const remaining = this.remainingMs();
+    const running = this.isRunning();
+
+    if (remaining <= 0 && running && !this.hasExpired()) {
+      this.hasExpired.set(true);
+      this.onTimerExpired();
+    }
+  });
+
   // --- Événements ---
   private readonly expiredSubject = new Subject<TimerExpiredEvent>();
   readonly expired$ = this.expiredSubject.asObservable();
@@ -53,6 +67,7 @@ export class TimerService implements OnDestroy {
   start(exerciseId: string, durationMs: number): void {
     const now = Date.now();
 
+    this.hasExpired.set(false);
     this.isRunning.set(true);
     this.currentExerciseId.set(exerciseId);
     this.endTime.set(now + durationMs);
@@ -85,6 +100,7 @@ export class TimerService implements OnDestroy {
 
     const now = Date.now();
 
+    this.hasExpired.set(false);
     this.isRunning.set(true);
     this.endTime.set(now + remaining);
     this.durationMs.set(remaining);
@@ -99,6 +115,7 @@ export class TimerService implements OnDestroy {
   close(): void {
     clearTimeout(this.expirationTimeoutId);
 
+    this.hasExpired.set(false);
     this.isRunning.set(false);
     this.currentExerciseId.set(null);
     this.endTime.set(null);
@@ -114,6 +131,7 @@ export class TimerService implements OnDestroy {
       return;
     }
     const now = Date.now();
+    this.hasExpired.set(false);
     this.isRunning.set(false);
     this.endTime.set(now + original);
     this.durationMs.set(original);
@@ -139,6 +157,7 @@ export class TimerService implements OnDestroy {
 
   // --- Lifecycle ---
   ngOnDestroy(): void {
+    this.expirationEffect.destroy();
     this.close();
     this.expiredSubject.complete();
     this.tick$.complete();

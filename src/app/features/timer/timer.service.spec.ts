@@ -334,6 +334,87 @@ describe('TimerService', () => {
 
       expect(emitted).toBe(false);
     });
+
+    it('should detect expiration via reactive tick (effect) when remainingMs reaches 0', () => {
+      let emittedEvent: { exerciseId: string; durationMs: number } | null = null;
+      service.expired$.subscribe((event) => {
+        emittedEvent = event;
+      });
+
+      // Start a very short timer
+      service.start('exercise-1', 1);
+
+      // Advance time past the expiration via tick intervals
+      vi.advanceTimersByTime(250);
+
+      expect(emittedEvent).not.toBeNull();
+      expect(emittedEvent!.exerciseId).toBe('exercise-1');
+    });
+
+    it('should call playBeep only once when both effect and setTimeout fire', () => {
+      service.start('exercise-1', 1);
+
+      // runAllTimers fires both the interval ticks AND the setTimeout backup
+      vi.runAllTimers();
+
+      expect(playBeepSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not emit expired$ twice when both detection mechanisms trigger', () => {
+      let emitCount = 0;
+      service.expired$.subscribe(() => {
+        emitCount++;
+      });
+
+      service.start('exercise-1', 1);
+      vi.runAllTimers();
+
+      expect(emitCount).toBe(1);
+    });
+  });
+
+  describe('expiration guard', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should reset the guard on close() so a new timer can expire', () => {
+      let emitCount = 0;
+      service.expired$.subscribe(() => {
+        emitCount++;
+      });
+
+      // First timer expires
+      service.start('exercise-1', 1);
+      vi.runAllTimers();
+      expect(emitCount).toBe(1);
+
+      // Second timer should also be able to expire
+      service.start('exercise-2', 1);
+      vi.runAllTimers();
+      expect(emitCount).toBe(2);
+    });
+
+    it('should reset the guard on resetToOriginal()', () => {
+      let emitCount = 0;
+      service.expired$.subscribe(() => {
+        emitCount++;
+      });
+
+      service.start('exercise-1', 1);
+      vi.runAllTimers();
+      expect(emitCount).toBe(1);
+
+      // Reset and start again
+      service.resetToOriginal();
+      service.start('exercise-2', 1);
+      vi.runAllTimers();
+      expect(emitCount).toBe(2);
+    });
   });
 
   describe('ngOnDestroy()', () => {

@@ -52,5 +52,9 @@
       },
     },
   },
-  "mcp": {},
+  "mcp": {
+    "model-switcher": {
+      "enabled": false
+    }
+  },
 }
