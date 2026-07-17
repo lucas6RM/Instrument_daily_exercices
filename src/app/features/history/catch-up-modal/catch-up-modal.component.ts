@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, NgZone } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { Subject } from 'rxjs';
 
 import { Exercise } from '../../../core/models';
@@ -33,7 +32,6 @@ export interface PlayExerciseEvent {
   imports: [
     ExerciseTimeDisplayComponent,
     HlmButton,
-    HlmCheckbox,
     NgIcon,
   ],
   templateUrl: './catch-up-modal.component.html',
@@ -46,6 +44,7 @@ export class CatchUpModalComponent {
   readonly playExercise = output<PlayExerciseEvent>();
 
   private readonly progressService = inject(ProgressService);
+  private readonly ngZone = inject(NgZone);
 
   private readonly completeSubject = new Subject<string>();
 
@@ -62,19 +61,21 @@ export class CatchUpModalComponent {
     this.completeSubject
       .pipe(takeUntilDestroyed())
       .subscribe((exerciseId) => {
-        const exercise = this.catchUpExercises().find((e) => e.exerciseId === exerciseId);
-        const session = this.currentSession();
-        const updatedExercises = session.exercises.map((se) => {
-          if (se.exerciseId === exerciseId) {
-            return {
-              ...se,
-              completed: true,
-              actualMinutes: exercise?.durationMinutes ?? se.actualMinutes,
-            };
-          }
-          return se;
+        this.ngZone.run(() => {
+          const exercise = this.catchUpExercises().find((e) => e.exerciseId === exerciseId);
+          const session = this.currentSession();
+          const updatedExercises = session.exercises.map((se) => {
+            if (se.exerciseId === exerciseId) {
+              return {
+                ...se,
+                completed: true,
+                actualMinutes: exercise?.durationMinutes ?? se.actualMinutes,
+              };
+            }
+            return se;
+          });
+          this.progressService.addSession({ ...session, exercises: updatedExercises });
         });
-        this.progressService.addSession({ ...session, exercises: updatedExercises });
       });
   }
 
@@ -154,10 +155,7 @@ export class CatchUpModalComponent {
   }
 
   // --- F12 : Validation directe via Subject RxJS ---
-  onToggleComplete(exerciseId: string, completed: boolean): void {
-    if (completed) {
-      return;
-    }
+  onToggleComplete(exerciseId: string): void {
     this.completeSubject.next(exerciseId);
   }
 }
