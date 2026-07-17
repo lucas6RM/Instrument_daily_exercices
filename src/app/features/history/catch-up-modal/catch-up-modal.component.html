@@ -33,8 +33,8 @@
         <div class="flex flex-1 items-center gap-3">
           <hlm-checkbox
             [checked]="ex.completed"
-            [disabled]="true"
             [ariaLabel]="'Statut de ' + ex.name + ': ' + (ex.completed ? 'terminé' : 'non terminé')"
+            (change)="onToggleComplete(ex.exerciseId, ex.completed)"
           />
 
           <div class="min-w-0 flex-1">
@@ -83,4 +83,25 @@
     }
   </div>
 </div>
+
+<!-- F12 : Dialog de confirmation de validation manuelle -->
+@if (confirmTarget()) {
+  <hlm-dialog [state]="'open'">
+    <button type="button" hlmDialogTrigger class="sr-only" aria-hidden="true" tabindex="-1">
+      Confirmer le changement
+    </button>
+    <hlm-dialog-content *hlmDialogPortal [showCloseButton]="false">
+      <hlm-dialog-header>
+        <h2 hlmDialogTitle>Confirmer le changement</h2>
+        <p hlmDialogDescription>
+          {{ confirmTargetActionText() }} <strong>{{ confirmTargetName() }}</strong> ?
+        </p>
+      </hlm-dialog-header>
+      <hlm-dialog-footer>
+        <button type="button" hlmBtn variant="outline" hlmDialogClose (click)="cancelConfirm()">Annuler</button>
+        <button type="button" hlmBtn variant="default" hlmDialogClose (click)="confirmToggle()">Confirmer</button>
+      </hlm-dialog-footer>
+    </hlm-dialog-content>
+  </hlm-dialog>
+}
 

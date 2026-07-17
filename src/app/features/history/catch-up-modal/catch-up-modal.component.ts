@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, ou
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { HlmDialog, HlmDialogClose, HlmDialogContent, HlmDialogDescription, HlmDialogFooter, HlmDialogHeader, HlmDialogPortal, HlmDialogTitle, HlmDialogTrigger } from '@spartan-ng/helm/dialog';
 
 import { DailySession, Exercise } from '../../../core/models';
 import { ProgressService } from '../../progress/progress.service';
@@ -32,6 +33,15 @@ export interface PlayExerciseEvent {
     ExerciseTimeDisplayComponent,
     HlmButton,
     HlmCheckbox,
+    HlmDialog,
+    HlmDialogContent,
+    HlmDialogHeader,
+    HlmDialogFooter,
+    HlmDialogTitle,
+    HlmDialogDescription,
+    HlmDialogTrigger,
+    HlmDialogPortal,
+    HlmDialogClose,
     NgIcon,
   ],
   templateUrl: './catch-up-modal.component.html',
@@ -129,5 +139,54 @@ export class CatchUpModalComponent {
 
   closeModal(): void {
     this.closed.emit();
+  }
+
+  // --- F12 : Garde-fou manuel ---
+  readonly confirmTarget = signal<{ exerciseId: string; action: 'complete' | 'uncomplete' } | null>(null);
+
+  readonly confirmTargetName = computed(() => {
+    const target = this.confirmTarget();
+    if (!target) return null;
+    const exercise = this.catchUpExercises().find((e) => e.exerciseId === target.exerciseId);
+    return exercise?.name ?? null;
+  });
+
+  readonly confirmTargetActionText = computed(() => {
+    const target = this.confirmTarget();
+    if (!target) return null;
+    return target.action === 'complete' ? 'Valider' : 'Annuler';
+  });
+
+  onToggleComplete(exerciseId: string, completed: boolean): void {
+    const action: 'complete' | 'uncomplete' = completed ? 'uncomplete' : 'complete';
+    this.confirmTarget.set({ exerciseId, action });
+  }
+
+  confirmToggle(): void {
+    const target = this.confirmTarget();
+    if (!target) return;
+
+    const session = this.localSession();
+    const updatedExercises = session.exercises.map((se) => {
+      if (se.exerciseId === target.exerciseId) {
+        if (target.action === 'complete') {
+          const exercise = this.catchUpExercises().find((e) => e.exerciseId === target.exerciseId);
+          return {
+            ...se,
+            completed: true,
+            actualMinutes: exercise?.durationMinutes ?? se.actualMinutes,
+          };
+        }
+        return { ...se, completed: false, actualMinutes: 0 };
+      }
+      return se;
+    });
+
+    this.progressService.addSession({ ...session, exercises: updatedExercises });
+    this.confirmTarget.set(null);
+  }
+
+  cancelConfirm(): void {
+    this.confirmTarget.set(null);
   }
 }
