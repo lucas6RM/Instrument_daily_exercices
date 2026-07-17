@@ -85,30 +85,4 @@
   </div>
 </div>
 
-<!-- F12 : Overlay de confirmation de validation manuelle -->
-@if (confirmTarget()) {
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="confirm-overlay-title"
-    (click)="cancelConfirm()"
-  >
-    <div
-      class="mx-4 w-full max-w-sm rounded-lg bg-background p-6 shadow-lg"
-      (click)="$event.stopPropagation()"
-    >
-      <h2 id="confirm-overlay-title" class="text-lg font-semibold tracking-tight text-foreground">
-        Confirmer le changement
-      </h2>
-      <p class="mt-2 text-sm text-muted-foreground">
-        {{ confirmTargetActionText() }} <strong>{{ confirmTargetName() }}</strong> ?
-      </p>
-      <div class="mt-4 flex justify-end gap-2">
-        <button type="button" hlmBtn variant="outline" (click)="cancelConfirm()">Annuler</button>
-        <button type="button" hlmBtn variant="default" (click)="confirmToggle()">Confirmer</button>
-      </div>
-    </div>
-  </div>
-}
 

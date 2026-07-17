@@ -131,52 +131,25 @@ export class CatchUpModalComponent {
     this.closed.emit();
   }
 
-  // --- F12 : Garde-fou manuel ---
-  readonly confirmTarget = signal<{ exerciseId: string; action: 'complete' | 'uncomplete' } | null>(null);
-
-  readonly confirmTargetName = computed(() => {
-    const target = this.confirmTarget();
-    if (!target) return null;
-    const exercise = this.catchUpExercises().find((e) => e.exerciseId === target.exerciseId);
-    return exercise?.name ?? null;
-  });
-
-  readonly confirmTargetActionText = computed(() => {
-    const target = this.confirmTarget();
-    if (!target) return null;
-    return target.action === 'complete' ? 'Valider' : 'Annuler';
-  });
-
+  // --- F12 : Validation directe sans modale ---
   onToggleComplete(exerciseId: string, completed: boolean): void {
-    const action: 'complete' | 'uncomplete' = completed ? 'uncomplete' : 'complete';
-    this.confirmTarget.set({ exerciseId, action });
-  }
-
-  confirmToggle(): void {
-    const target = this.confirmTarget();
-    if (!target) return;
+    if (completed) {
+      return;
+    }
 
     const session = this.localSession();
     const updatedExercises = session.exercises.map((se) => {
-      if (se.exerciseId === target.exerciseId) {
-        if (target.action === 'complete') {
-          const exercise = this.catchUpExercises().find((e) => e.exerciseId === target.exerciseId);
-          return {
-            ...se,
-            completed: true,
-            actualMinutes: exercise?.durationMinutes ?? se.actualMinutes,
-          };
-        }
-        return { ...se, completed: false, actualMinutes: 0 };
+      if (se.exerciseId === exerciseId) {
+        const exercise = this.catchUpExercises().find((e) => e.exerciseId === exerciseId);
+        return {
+          ...se,
+          completed: true,
+          actualMinutes: exercise?.durationMinutes ?? se.actualMinutes,
+        };
       }
       return se;
     });
 
     this.progressService.addSession({ ...session, exercises: updatedExercises });
-    this.confirmTarget.set(null);
-  }
-
-  cancelConfirm(): void {
-    this.confirmTarget.set(null);
   }
 }
