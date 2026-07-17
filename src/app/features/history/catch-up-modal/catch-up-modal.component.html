@@ -33,6 +33,7 @@
         <div class="flex flex-1 items-center gap-3">
           <hlm-checkbox
             [checked]="ex.completed"
+            [disabled]="ex.completed"
             [ariaLabel]="'Statut de ' + ex.name + ': ' + (ex.completed ? 'terminé' : 'non terminé')"
             (change)="onToggleComplete(ex.exerciseId, ex.completed)"
           />

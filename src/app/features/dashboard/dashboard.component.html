@@ -30,6 +30,7 @@
           [playCount]="item.playCount"
           (playExercise)="onPlayExercise(item.exercise.id)"
           (toggleComplete)="onToggleComplete(item.exercise.id)"
+          [isDisabled]="item.completed"
         />
       }
     </div>
