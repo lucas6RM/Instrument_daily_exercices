@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 
-import { DailySession, Exercise } from '../../../core/models';
+import { Exercise } from '../../../core/models';
 import { ProgressService } from '../../progress/progress.service';
 import { ExerciseTimeDisplayComponent } from '../../dashboard/components/exercise-time-display/exercise-time-display.component';
 
@@ -45,14 +45,14 @@ export class CatchUpModalComponent {
 
   private readonly progressService = inject(ProgressService);
 
-  // Local copy of the session managed via ProgressService
-  private readonly localSession = signal<DailySession>({ date: '', exercises: [] });
+  readonly currentSession = computed(() => {
+    const date = this.date();
+    return this.progressService.getOrCreateSession(date);
+  });
 
   constructor() {
     effect(() => {
-      const date = this.date();
-      const session = this.progressService.getOrCreateSession(date);
-      this.localSession.set({ ...session });
+      this.currentSession();
     });
   }
 
@@ -63,7 +63,7 @@ export class CatchUpModalComponent {
    */
   readonly catchUpExercises = computed<CatchUpExercise[]>(() => {
     const routineExercises = this.exercises();
-    const session = this.localSession();
+    const session = this.currentSession();
 
     const routineIds = new Set(routineExercises.map((e) => e.id));
     const sessionMap = new Map(session.exercises.map((se) => [se.exerciseId, se]));
@@ -137,10 +137,10 @@ export class CatchUpModalComponent {
       return;
     }
 
-    const session = this.localSession();
+    const exercise = this.catchUpExercises().find((e) => e.exerciseId === exerciseId);
+    const session = this.currentSession();
     const updatedExercises = session.exercises.map((se) => {
       if (se.exerciseId === exerciseId) {
-        const exercise = this.catchUpExercises().find((e) => e.exerciseId === exerciseId);
         return {
           ...se,
           completed: true,
@@ -150,8 +150,6 @@ export class CatchUpModalComponent {
       return se;
     });
 
-    const updatedSession = { ...session, exercises: updatedExercises };
-    this.localSession.set(updatedSession);
-    this.progressService.addSession(updatedSession);
+    this.progressService.addSession({ ...session, exercises: updatedExercises });
   }
 }
