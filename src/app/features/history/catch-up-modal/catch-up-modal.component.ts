@@ -150,6 +150,8 @@ export class CatchUpModalComponent {
       return se;
     });
 
-    this.progressService.addSession({ ...session, exercises: updatedExercises });
+    const updatedSession = { ...session, exercises: updatedExercises };
+    this.localSession.set(updatedSession);
+    this.progressService.addSession(updatedSession);
   }
 }
