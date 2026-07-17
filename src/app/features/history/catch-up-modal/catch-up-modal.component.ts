@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, input, output } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
@@ -44,6 +44,7 @@ export class CatchUpModalComponent {
   readonly playExercise = output<PlayExerciseEvent>();
 
   private readonly progressService = inject(ProgressService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly currentSession = computed(() => {
     const date = this.date();
@@ -151,5 +152,6 @@ export class CatchUpModalComponent {
     });
 
     this.progressService.addSession({ ...session, exercises: updatedExercises });
+    this.cdr.markForCheck();
   }
 }
