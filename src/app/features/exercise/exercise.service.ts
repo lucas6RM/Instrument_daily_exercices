@@ -5,6 +5,16 @@ import { STORAGE_KEYS } from '../../core/services/storage-keys';
 import { StorageService } from '../../core/services/storage.service';
 import { ProgressService } from '../progress/progress.service';
 
+function generateId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x4).toString(16);
+  });
+}
+
 @Injectable({ providedIn: 'root' })
 export class ExerciseService {
   private readonly storageService = inject(StorageService);
@@ -34,7 +44,7 @@ export class ExerciseService {
   addExercise(exercise: Omit<Exercise, 'id'>): void {
     const newExercise: Exercise = {
       ...exercise,
-      id: crypto.randomUUID(),
+      id: generateId(),
     };
     this.exercises.update((list) => [...list, newExercise]);
 
