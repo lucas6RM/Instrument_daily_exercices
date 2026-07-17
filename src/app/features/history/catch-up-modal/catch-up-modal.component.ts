@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { Subject } from 'rxjs';
 
 import { Exercise } from '../../../core/models';
 import { ProgressService } from '../../progress/progress.service';
@@ -44,7 +46,8 @@ export class CatchUpModalComponent {
   readonly playExercise = output<PlayExerciseEvent>();
 
   private readonly progressService = inject(ProgressService);
-  private readonly cdr = inject(ChangeDetectorRef);
+
+  private readonly completeSubject = new Subject<string>();
 
   readonly currentSession = computed(() => {
     const date = this.date();
@@ -55,6 +58,24 @@ export class CatchUpModalComponent {
     effect(() => {
       this.currentSession();
     });
+
+    this.completeSubject
+      .pipe(takeUntilDestroyed())
+      .subscribe((exerciseId) => {
+        const exercise = this.catchUpExercises().find((e) => e.exerciseId === exerciseId);
+        const session = this.currentSession();
+        const updatedExercises = session.exercises.map((se) => {
+          if (se.exerciseId === exerciseId) {
+            return {
+              ...se,
+              completed: true,
+              actualMinutes: exercise?.durationMinutes ?? se.actualMinutes,
+            };
+          }
+          return se;
+        });
+        this.progressService.addSession({ ...session, exercises: updatedExercises });
+      });
   }
 
   /**
@@ -132,26 +153,11 @@ export class CatchUpModalComponent {
     this.closed.emit();
   }
 
-  // --- F12 : Validation directe sans modale ---
+  // --- F12 : Validation directe via Subject RxJS ---
   onToggleComplete(exerciseId: string, completed: boolean): void {
     if (completed) {
       return;
     }
-
-    const exercise = this.catchUpExercises().find((e) => e.exerciseId === exerciseId);
-    const session = this.currentSession();
-    const updatedExercises = session.exercises.map((se) => {
-      if (se.exerciseId === exerciseId) {
-        return {
-          ...se,
-          completed: true,
-          actualMinutes: exercise?.durationMinutes ?? se.actualMinutes,
-        };
-      }
-      return se;
-    });
-
-    this.progressService.addSession({ ...session, exercises: updatedExercises });
-    this.cdr.markForCheck();
+    this.completeSubject.next(exerciseId);
   }
 }
