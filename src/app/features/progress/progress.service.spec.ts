@@ -767,13 +767,13 @@ describe('ProgressService', () => {
     ];
 
     it('should return a Signal', () => {
-      const result = service.getWeeklyStats(new Date('2025-01-06'), routine);
+      const result = service.getWeeklyStats(new Date('2025-01-06'), routine, new Date('2025-01-20'));
       expect(typeof result).toBe('function');
     });
 
     it('should return 7 days in the days array', () => {
       const start = new Date('2025-01-06');
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
 
       expect(stats().days).toHaveLength(7);
     });
@@ -793,7 +793,7 @@ describe('ProgressService', () => {
         exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 20, bonusMinutes: 0 }],
       });
 
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
       expect(stats().totalMinutes).toBe(45);
     });
 
@@ -813,7 +813,7 @@ describe('ProgressService', () => {
         exercises: [{ exerciseId: 'e2', exerciseName: 'Gammes', completed: true, actualMinutes: 5, bonusMinutes: 0 }],
       });
 
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
       expect(stats().minutesByExercise.get('Chromatique')).toBe(30);
       expect(stats().minutesByExercise.get('Gammes')).toBe(5);
     });
@@ -830,7 +830,7 @@ describe('ProgressService', () => {
         exercises: [{ exerciseId: 'e2', completed: true, actualMinutes: 5, bonusMinutes: 0 }],
       });
 
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
       expect(stats().minutesByExercise.get('(nom inconnu)')).toBe(15);
     });
 
@@ -853,7 +853,7 @@ describe('ProgressService', () => {
         exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 20, bonusMinutes: 0 }],
       });
 
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
       // totalActual = 10 + 15 + 20 = 45, totalTarget = 60 * 7 = 420
       expect(stats().completionRate).toBeCloseTo((45 / 420) * 100);
     });
@@ -872,14 +872,14 @@ describe('ProgressService', () => {
         ],
       });
 
-      const stats = service.getWeeklyStats(start, singleRoutine);
+      const stats = service.getWeeklyStats(start, singleRoutine, new Date('2025-01-20'));
       expect(stats().completionRate).toBeCloseTo((40 / 210) * 100);
     });
 
     it('should return 0 completionRate when no sessions in the week', () => {
       const start = new Date('2025-01-06');
 
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
 
       expect(stats().completionRate).toBe(0);
     });
@@ -893,7 +893,7 @@ describe('ProgressService', () => {
         exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 0 }],
       });
 
-      const stats = service.getWeeklyStats(start, []);
+      const stats = service.getWeeklyStats(start, [], new Date('2025-01-20'));
       expect(stats().completionRate).toBe(0);
     });
 
@@ -913,13 +913,13 @@ describe('ProgressService', () => {
         });
       }
 
-      const stats = service.getWeeklyStats(start, singleRoutine);
+      const stats = service.getWeeklyStats(start, singleRoutine, new Date('2025-01-20'));
       expect(stats().completionRate).toBeCloseTo(100);
     });
 
     it('should have correct dates for each day', () => {
       const start = new Date('2025-01-06'); // Monday
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
 
       const expectedDates = ['2025-01-06', '2025-01-07', '2025-01-08', '2025-01-09',
         '2025-01-10', '2025-01-11', '2025-01-12'];
@@ -930,7 +930,7 @@ describe('ProgressService', () => {
 
     it('should reactively update when sessions change', () => {
       const start = new Date('2025-01-06');
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
 
       expect(stats().totalMinutes).toBe(0);
 
@@ -944,7 +944,7 @@ describe('ProgressService', () => {
 
     it('should return empty minutesByExercise when no sessions', () => {
       const start = new Date('2025-01-06');
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
 
       expect(stats().minutesByExercise.size).toBe(0);
     });
@@ -961,11 +961,100 @@ describe('ProgressService', () => {
         ],
       });
 
-      const stats = service.getWeeklyStats(start, routine);
+      const stats = service.getWeeklyStats(start, routine, new Date('2025-01-20'));
       expect(stats().totalMinutes).toBe(35);
       expect(stats().minutesByExercise.get('Chromatique')).toBe(10);
       expect(stats().minutesByExercise.get('Gammes')).toBe(20);
       expect(stats().minutesByExercise.get('Accords')).toBe(5);
+    });
+
+    it('should calculate completionRate over partial week when viewing the current week', () => {
+      const start = new Date('2025-01-06'); // Monday
+      const singleRoutine: Exercise[] = [
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+      ];
+
+      // today = Wednesday 2025-01-08 → 3 days elapsed (Mon, Tue, Wed)
+      const today = new Date('2025-01-08');
+
+      // Mon: 30min, Tue: 30min, Wed: 15min → totalActual = 75
+      service.addSession({
+        date: '2025-01-06',
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 0 }],
+      });
+      service.addSession({
+        date: '2025-01-07',
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 0 }],
+      });
+      service.addSession({
+        date: '2025-01-08',
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 15, bonusMinutes: 0 }],
+      });
+
+      const stats = service.getWeeklyStats(start, singleRoutine, today);
+      // target = 30min × 3 days = 90, actual = 75
+      expect(stats().completionRate).toBeCloseTo((75 / 90) * 100);
+    });
+
+    it('should use 7-day target for a past week', () => {
+      const start = new Date('2025-01-06'); // Monday
+      const singleRoutine: Exercise[] = [
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+      ];
+
+      // today is in a different (later) week → past week → 7-day target
+      const today = new Date('2025-01-20');
+
+      service.addSession({
+        date: '2025-01-06',
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 0 }],
+      });
+
+      const stats = service.getWeeklyStats(start, singleRoutine, today);
+      // target = 30 × 7 = 210, actual = 30
+      expect(stats().completionRate).toBeCloseTo((30 / 210) * 100);
+    });
+
+    it('should use 1-day target when today is Monday', () => {
+      const start = new Date('2025-01-06'); // Monday
+      const singleRoutine: Exercise[] = [
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+      ];
+
+      // today = Monday 2025-01-06 → 1 day elapsed
+      const today = new Date('2025-01-06');
+
+      service.addSession({
+        date: '2025-01-06',
+        exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 0 }],
+      });
+
+      const stats = service.getWeeklyStats(start, singleRoutine, today);
+      // target = 30 × 1 = 30, actual = 30
+      expect(stats().completionRate).toBeCloseTo(100);
+    });
+
+    it('should use 7-day target when today is Sunday of the same week', () => {
+      const start = new Date('2025-01-06'); // Monday
+      const singleRoutine: Exercise[] = [
+        { id: 'e1', name: 'Chromatique', durationMinutes: 30, order: 1 },
+      ];
+
+      // today = Sunday 2025-01-12 → 7 days elapsed
+      const today = new Date('2025-01-12');
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(start);
+        d.setDate(d.getDate() + i);
+        service.addSession({
+          date: d.toISOString().slice(0, 10),
+          exercises: [{ exerciseId: 'e1', completed: true, actualMinutes: 30, bonusMinutes: 0 }],
+        });
+      }
+
+      const stats = service.getWeeklyStats(start, singleRoutine, today);
+      // target = 30 × 7 = 210, actual = 210
+      expect(stats().completionRate).toBeCloseTo(100);
     });
   });
 

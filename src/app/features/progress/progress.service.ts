@@ -5,6 +5,15 @@ import { DailySession, ProgressState, WeekDayStats, WeeklyStats } from '../../co
 import { STORAGE_KEYS } from '../../core/services/storage-keys';
 import { StorageService } from '../../core/services/storage.service';
 
+function getMondayOfDate(date: Date): Date {
+  const monday = new Date(date);
+  monday.setHours(0, 0, 0, 0);
+  const dayOfWeek = monday.getDay();
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  monday.setDate(monday.getDate() + diff);
+  return monday;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProgressService {
   private readonly storageService = inject(StorageService);
@@ -256,7 +265,7 @@ export class ProgressService {
     });
   }
 
-  getWeeklyStats(startDate: Date, exercises: Exercise[]): Signal<WeeklyStats> {
+  getWeeklyStats(startDate: Date, exercises: Exercise[], today: Date): Signal<WeeklyStats> {
     const toLocalISOString = (date: Date): string => {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -303,15 +312,41 @@ export class ProgressService {
         }
       }
 
-      // Completion rate: (actual time + bonus time) / (target time for the week) * 100
-      // Target time = sum of current routine exercise durations × 7 days
-      const totalTargetMinutes = exercises.reduce((sum, ex) => sum + ex.durationMinutes, 0) * 7;
-
       const totalActualMinutes = weekSessions.reduce(
         (sum, session) =>
           sum + session.exercises.reduce((eSum, ex) => eSum + ex.actualMinutes + ex.bonusMinutes, 0),
         0,
       );
+
+      // Build exerciseId → durationMinutes lookup from the current routine
+      const durationLookup = new Map<string, number>();
+      for (const ex of exercises) {
+        durationLookup.set(ex.id, ex.durationMinutes);
+      }
+
+      // Determine the range of days to consider for the target
+      const isCurrentWeek = startDate.toDateString() === getMondayOfDate(today).toDateString();
+      const maxDayIndex = isCurrentWeek
+        ? Math.floor((today.getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
+        : 6;
+
+      // Calculate total target per day: only days with sessions contribute to the target
+      let totalTargetMinutes = 0;
+      for (let i = 0; i <= maxDayIndex; i++) {
+        const dayDate = new Date(startDate);
+        dayDate.setDate(dayDate.getDate() + i);
+        const dayStr = toLocalISOString(dayDate);
+
+        const daySession = weekSessions.find((s) => s.date === dayStr);
+        if (daySession) {
+          for (const se of daySession.exercises) {
+            const duration = durationLookup.get(se.exerciseId);
+            if (duration !== undefined) {
+              totalTargetMinutes += duration;
+            }
+          }
+        }
+      }
 
       const completionRate = totalTargetMinutes > 0 ? (totalActualMinutes / totalTargetMinutes) * 100 : 0;
 
