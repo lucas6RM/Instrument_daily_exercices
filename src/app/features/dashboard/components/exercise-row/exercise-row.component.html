@@ -5,14 +5,19 @@
   class="flex items-center gap-3 rounded-[14px] border border-border bg-white px-4 py-4 sm:gap-4"
   [class]="completed ? 'border-border' : ''"
 >
-  <div class="relative flex shrink-0 items-center" role="presentation">
+  <div
+    class="relative flex shrink-0 items-center cursor-pointer"
+    role="presentation"
+    (click)="toggleComplete.emit()"
+  >
     <input
       type="checkbox"
       [checked]="completed"
-      [disabled]="true"
+      [disabled]="isDisabled()"
       tabindex="-1"
       [attr.aria-label]="'Marquer ' + ex.name + ' comme terminé'"
       class="h-5 w-5 rounded border border-border"
+      (change)="toggleComplete.emit()"
     />
   </div>
 
