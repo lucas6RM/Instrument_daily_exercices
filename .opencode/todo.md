@@ -65,7 +65,7 @@ Ajout d'un garde-fou permettant à l'utilisateur de marquer manuellement un exer
 
 ## Tableau d'Avancement (La Source de Vérité)
 - [x] Tâche 1 : ExerciseRowComponent — checkbox cliquable + output toggleComplete
-- [ ] Tâche 2 : DashboardComponent — dialog de confirmation + logique de complétion
+- [x] Tâche 2 : DashboardComponent — dialog de confirmation + logique de complétion
 - [ ] Tâche 3 : Catch-up modal — même comportement de confirmation
 
 ## Zone de Transit & Logs

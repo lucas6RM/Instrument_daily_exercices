@@ -29,8 +29,30 @@
           [bonusMinutes]="item.bonusMinutes"
           [playCount]="item.playCount"
           (playExercise)="onPlayExercise(item.exercise.id)"
+          (toggleComplete)="onToggleComplete(item.exercise.id)"
         />
       }
     </div>
+  }
+
+  <!-- F12 : Dialog de confirmation de validation manuelle -->
+  @if (confirmTarget()) {
+    <hlm-dialog [state]="'open'">
+      <button type="button" hlmDialogTrigger class="sr-only" aria-hidden="true" tabindex="-1">
+        Confirmer la validation
+      </button>
+      <hlm-dialog-content *hlmDialogPortal [showCloseButton]="false">
+        <hlm-dialog-header>
+          <h2 hlmDialogTitle>Confirmer la validation</h2>
+          <p hlmDialogDescription>
+            Valider <strong>{{ confirmTargetName() }}</strong> comme complété ?
+          </p>
+        </hlm-dialog-header>
+        <hlm-dialog-footer>
+          <button type="button" hlmBtn variant="outline" hlmDialogClose (click)="cancelConfirm()">Annuler</button>
+          <button type="button" hlmBtn variant="default" hlmDialogClose (click)="confirmComplete()">Oui, valider</button>
+        </hlm-dialog-footer>
+      </hlm-dialog-content>
+    </hlm-dialog>
   }
 </main>

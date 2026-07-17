@@ -1,5 +1,7 @@
-import { ApplicationRef, ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
+import { ApplicationRef, ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'; // Pour nettoyer proprement l'abonnement
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmDialog, HlmDialogClose, HlmDialogContent, HlmDialogDescription, HlmDialogFooter, HlmDialogHeader, HlmDialogPortal, HlmDialogTitle, HlmDialogTrigger } from '@spartan-ng/helm/dialog';
 import { DailySession } from '../../core/models';
 import { ExerciseService } from '../exercise/exercise.service';
 import { ProgressService } from '../progress/progress.service';
@@ -14,7 +16,20 @@ function getTodayIso(): string {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ExerciseRowComponent, ProgressBarComponent],
+  imports: [
+    ExerciseRowComponent,
+    ProgressBarComponent,
+    HlmDialog,
+    HlmDialogContent,
+    HlmDialogHeader,
+    HlmDialogFooter,
+    HlmDialogTitle,
+    HlmDialogDescription,
+    HlmDialogTrigger,
+    HlmDialogPortal,
+    HlmDialogClose,
+    HlmButton,
+  ],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -68,6 +83,36 @@ export class DashboardComponent implements OnInit {
     () => this.exercisesWithProgress().filter((item) => item.completed).length,
   );
   readonly totalCount = computed(() => this.exercisesWithProgress().length);
+
+  // --- F12 : Garde-fou manuel ---
+  readonly confirmTarget = signal<string | null>(null);
+
+  readonly confirmTargetName = computed(() => {
+    const id = this.confirmTarget();
+    if (!id) return null;
+    const exercise = this.exerciseService.sortedExercises().find((ex) => ex.id === id);
+    return exercise?.name ?? null;
+  });
+
+  onToggleComplete(exerciseId: string): void {
+    const item = this.exercisesWithProgress().find((i) => i.exercise.id === exerciseId);
+    if (item?.completed) {
+      return;
+    }
+    this.confirmTarget.set(exerciseId);
+  }
+
+  confirmComplete(): void {
+    const exerciseId = this.confirmTarget();
+    if (exerciseId) {
+      this.onTimerComplete(exerciseId);
+    }
+    this.confirmTarget.set(null);
+  }
+
+  cancelConfirm(): void {
+    this.confirmTarget.set(null);
+  }
 
   ngOnInit(): void {
     const sessionExists = this.progressService.getSession(this.today);
