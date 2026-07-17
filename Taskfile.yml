@@ -14,8 +14,11 @@ tasks:
 
   deploy:
     desc: Deploiement
+    vars:
+      COMMIT:
+        sh: git rev-parse --short HEAD
     cmds:
       # 1. On re-compile l'application proprement
       - pnpm ng build --configuration production --base-href /Instrument_daily_exercices/
-      # 2. On envoie le dossier browser sur GitHub
-      - pnpm angular-cli-ghpages --dir=dist/instrument-daily-exercices/browser
+      # 2. On envoie le dossier browser sur GitHub avec le hash du commit de main
+      - pnpm angular-cli-ghpages --dir=dist/instrument-daily-exercices/browser --msg "deploy: {{.COMMIT}}"
