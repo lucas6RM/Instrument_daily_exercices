@@ -19,4 +19,6 @@ export class ExerciseRowComponent {
   readonly playCount = input<number>(1);
 
   readonly playExercise = output<void>();
+  readonly toggleComplete = output<void>();
+  readonly isDisabled = input<boolean>(false);
 }

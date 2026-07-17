@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, NgZone } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
+import { Subject } from 'rxjs';
 
-import { DailySession, Exercise } from '../../../core/models';
+import { Exercise } from '../../../core/models';
 import { ProgressService } from '../../progress/progress.service';
 import { ExerciseTimeDisplayComponent } from '../../dashboard/components/exercise-time-display/exercise-time-display.component';
 
@@ -31,7 +32,6 @@ export interface PlayExerciseEvent {
   imports: [
     ExerciseTimeDisplayComponent,
     HlmButton,
-    HlmCheckbox,
     NgIcon,
   ],
   templateUrl: './catch-up-modal.component.html',
@@ -44,16 +44,39 @@ export class CatchUpModalComponent {
   readonly playExercise = output<PlayExerciseEvent>();
 
   private readonly progressService = inject(ProgressService);
+  private readonly ngZone = inject(NgZone);
 
-  // Local copy of the session managed via ProgressService
-  private readonly localSession = signal<DailySession>({ date: '', exercises: [] });
+  private readonly completeSubject = new Subject<string>();
+
+  readonly currentSession = computed(() => {
+    const date = this.date();
+    return this.progressService.getOrCreateSession(date);
+  });
 
   constructor() {
     effect(() => {
-      const date = this.date();
-      const session = this.progressService.getOrCreateSession(date);
-      this.localSession.set({ ...session });
+      this.currentSession();
     });
+
+    this.completeSubject
+      .pipe(takeUntilDestroyed())
+      .subscribe((exerciseId) => {
+        this.ngZone.run(() => {
+          const exercise = this.catchUpExercises().find((e) => e.exerciseId === exerciseId);
+          const session = this.currentSession();
+          const updatedExercises = session.exercises.map((se) => {
+            if (se.exerciseId === exerciseId) {
+              return {
+                ...se,
+                completed: true,
+                actualMinutes: exercise?.durationMinutes ?? se.actualMinutes,
+              };
+            }
+            return se;
+          });
+          this.progressService.addSession({ ...session, exercises: updatedExercises });
+        });
+      });
   }
 
   /**
@@ -63,7 +86,7 @@ export class CatchUpModalComponent {
    */
   readonly catchUpExercises = computed<CatchUpExercise[]>(() => {
     const routineExercises = this.exercises();
-    const session = this.localSession();
+    const session = this.currentSession();
 
     const routineIds = new Set(routineExercises.map((e) => e.id));
     const sessionMap = new Map(session.exercises.map((se) => [se.exerciseId, se]));
@@ -129,5 +152,10 @@ export class CatchUpModalComponent {
 
   closeModal(): void {
     this.closed.emit();
+  }
+
+  // --- F12 : Validation directe via Subject RxJS ---
+  onToggleComplete(exerciseId: string): void {
+    this.completeSubject.next(exerciseId);
   }
 }

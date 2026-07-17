@@ -64,9 +64,9 @@ Ajout d'un garde-fou permettant à l'utilisateur de marquer manuellement un exer
 - Adapter les checkbox pour émettre vers `confirmTarget`
 
 ## Tableau d'Avancement (La Source de Vérité)
-- [ ] Tâche 1 : ExerciseRowComponent — checkbox cliquable + output toggleComplete
-- [ ] Tâche 2 : DashboardComponent — dialog de confirmation + logique de complétion
-- [ ] Tâche 3 : Catch-up modal — même comportement de confirmation
+- [x] Tâche 1 : ExerciseRowComponent — checkbox cliquable + output toggleComplete
+- [x] Tâche 2 : DashboardComponent — dialog de confirmation + logique de complétion
+- [x] Tâche 3 : Catch-up modal — même comportement de confirmation
 
 ## Zone de Transit & Logs
 ### Tâche en cours :
