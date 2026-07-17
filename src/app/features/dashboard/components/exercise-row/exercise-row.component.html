@@ -55,16 +55,17 @@
     <button
       type="button"
       hlmBtn
-      variant="default"
+      [variant]="completed ? 'destructive' : 'default'"
       size="sm"
+      [class]="completed ? 'bg-pink-300 hover:bg-pink-400 focus-visible:ring-pink-200 dark:bg-pink-400 dark:hover:bg-pink-500 text-white focus-visible:border-pink-300' : ''"
       (click)="playExercise.emit()"
-      aria-label="Lancer le timer pour {{ ex.name }}"
+      [attr.aria-label]="'Lancer le timer pour ' + ex.name"
     >
       <ng-icon
         name="lucidePlay"
         class="text-[length:--spacing(3.5)] sm:text-[length:--spacing(4)]"
       />
-      Play
+      {{ completed ? 'Bonus' : 'Play' }}
     </button>
   </div>
 </div>

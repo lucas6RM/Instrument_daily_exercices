@@ -36,6 +36,7 @@
             [class.pointer-events-none]="ex.completed"
             [class.opacity-60]="ex.completed"
             (click)="onToggleComplete(ex.exerciseId)"
+            (keyup)="onToggleComplete(ex.exerciseId)"
             [attr.aria-label]="'Statut de ' + ex.name + ': ' + (ex.completed ? 'terminé' : 'non terminé')"
             role="checkbox"
             [attr.aria-checked]="ex.completed"
@@ -86,13 +87,14 @@
           <button
             type="button"
             hlmBtn
-            variant="default"
+            [variant]="ex.completed ? 'destructive' : 'default'"
             size="sm"
+            [class]="ex.completed ? 'bg-pink-300 hover:bg-pink-400 focus-visible:ring-pink-200 dark:bg-pink-400 dark:hover:bg-pink-500 text-white focus-visible:border-pink-300' : ''"
             (click)="onPlay(ex.exerciseId)"
             [attr.aria-label]="'Lancer le timer pour ' + ex.name"
           >
             <ng-icon name="lucidePlay" size="sm" />
-            PLAY
+            {{ ex.completed ? 'Bonus' : 'PLAY' }}
           </button>
         }
       </div>
