@@ -12,14 +12,14 @@
 
   @if (exercisesWithProgress().length === 0) {
     <div
-      class="mb-6 sm:mt-8 rounded-[14px] border-2 border-dashed border-[#e5e5e5] bg-muted/30 py-12 text-center"
+      class="mt-6 mb-6 sm:mt-8 rounded-[14px] border-2 border-dashed border-[#e5e5e5] bg-muted/30 py-12 text-center"
     >
       <p class="mt-4 text-sm text-muted-foreground">
         Aucun exercice configuré. Ajoutez des exercices dans la rubrique Routine.
       </p>
     </div>
   } @else {
-    <div class="mb-6 sm:mt-8 flex flex-col gap-3" role="list" aria-label="Liste des exercices">
+    <div class="mt-6 mb-6 sm:mt-8 flex flex-col gap-3" role="list" aria-label="Liste des exercices">
       @for (item of exercisesWithProgress(); track item.exercise.id) {
         <app-exercise-row
           role="listitem"
