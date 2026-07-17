@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, ou
 import { NgIcon } from '@ng-icons/core';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
-import { HlmDialog, HlmDialogClose, HlmDialogContent, HlmDialogDescription, HlmDialogFooter, HlmDialogHeader, HlmDialogPortal, HlmDialogTitle, HlmDialogTrigger } from '@spartan-ng/helm/dialog';
 
 import { DailySession, Exercise } from '../../../core/models';
 import { ProgressService } from '../../progress/progress.service';
@@ -33,15 +32,6 @@ export interface PlayExerciseEvent {
     ExerciseTimeDisplayComponent,
     HlmButton,
     HlmCheckbox,
-    HlmDialog,
-    HlmDialogContent,
-    HlmDialogHeader,
-    HlmDialogFooter,
-    HlmDialogTitle,
-    HlmDialogDescription,
-    HlmDialogTrigger,
-    HlmDialogPortal,
-    HlmDialogClose,
     NgIcon,
   ],
   templateUrl: './catch-up-modal.component.html',

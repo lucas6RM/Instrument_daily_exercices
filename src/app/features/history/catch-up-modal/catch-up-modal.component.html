@@ -85,24 +85,30 @@
   </div>
 </div>
 
-<!-- F12 : Dialog de confirmation de validation manuelle -->
+<!-- F12 : Overlay de confirmation de validation manuelle -->
 @if (confirmTarget()) {
-  <hlm-dialog [state]="'open'">
-    <button type="button" hlmDialogTrigger class="sr-only" aria-hidden="true" tabindex="-1">
-      Confirmer le changement
-    </button>
-    <hlm-dialog-content *hlmDialogPortal [showCloseButton]="false">
-      <hlm-dialog-header>
-        <h2 hlmDialogTitle>Confirmer le changement</h2>
-        <p hlmDialogDescription>
-          {{ confirmTargetActionText() }} <strong>{{ confirmTargetName() }}</strong> ?
-        </p>
-      </hlm-dialog-header>
-      <hlm-dialog-footer>
-        <button type="button" hlmBtn variant="outline" hlmDialogClose (click)="cancelConfirm()">Annuler</button>
-        <button type="button" hlmBtn variant="default" hlmDialogClose (click)="confirmToggle()">Confirmer</button>
-      </hlm-dialog-footer>
-    </hlm-dialog-content>
-  </hlm-dialog>
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="confirm-overlay-title"
+    (click)="cancelConfirm()"
+  >
+    <div
+      class="mx-4 w-full max-w-sm rounded-lg bg-background p-6 shadow-lg"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="confirm-overlay-title" class="text-lg font-semibold tracking-tight text-foreground">
+        Confirmer le changement
+      </h2>
+      <p class="mt-2 text-sm text-muted-foreground">
+        {{ confirmTargetActionText() }} <strong>{{ confirmTargetName() }}</strong> ?
+      </p>
+      <div class="mt-4 flex justify-end gap-2">
+        <button type="button" hlmBtn variant="outline" (click)="cancelConfirm()">Annuler</button>
+        <button type="button" hlmBtn variant="default" (click)="confirmToggle()">Confirmer</button>
+      </div>
+    </div>
+  </div>
 }
 
